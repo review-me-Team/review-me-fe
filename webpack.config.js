@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 module.exports = {
   mode: process.env.MODE,
@@ -25,9 +26,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(tsx|ts|jsx|js)$/,
+        test: /\.(tsx|ts)$/,
         exclude: /node_modules/,
-        loader: "babel-loader",
+        loader: "ts-loader",
       },
       {
         test: /\.css$/,
@@ -51,6 +52,7 @@ module.exports = {
       mode: process.env.MODE,
       port: process.env.PORT,
     }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
   devServer: {
     host: "localhost",
