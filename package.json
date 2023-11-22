@@ -12,6 +12,14 @@
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@storybook/addon-essentials": "^7.5.3",
+    "@storybook/addon-interactions": "^7.5.3",
+    "@storybook/addon-links": "^7.5.3",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.5.3",
+    "@storybook/react": "^7.5.3",
+    "@storybook/react-webpack5": "^7.5.3",
+    "@storybook/testing-library": "^0.2.2",
     "@types/dotenv": "^8.2.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
@@ -22,6 +30,7 @@
     "fork-ts-checker-webpack-plugin": "^9.0.2",
     "html-webpack-plugin": "^5.5.3",
     "json-loader": "^0.5.7",
+    "storybook": "^7.5.3",
     "style-loader": "^3.3.3",
     "ts-loader": "^9.5.1",
     "typescript": "^5.2.2",
@@ -31,6 +40,8 @@
   },
   "scripts": {
     "start": "webpack-dev-server --progress --mode development",
-    "build": "webpack --progress --mode production"
+    "build": "webpack --progress --mode production",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   }
 }
