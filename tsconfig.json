@@ -18,7 +18,9 @@
       "@styles/*": ["./styles/*"],
       "@contexts/*": ["./contexts/*"],
       "@hooks/*": ["./hooks/*"],
+      "@utils": ["./utils/index.ts"],
       "@utils/*": ["./utils/*"],
+      "@constants": ["./constants/index.ts"],
       "@constants/*": ["./constants/*"]
     }
   },
