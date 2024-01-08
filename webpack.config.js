@@ -3,6 +3,8 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = {
   mode: process.env.MODE,
@@ -50,8 +52,7 @@ module.exports = {
       template: './public/index.html',
     }),
     new webpack.DefinePlugin({
-      mode: process.env.MODE,
-      port: process.env.PORT,
+      'process.env': JSON.stringify(process.env),
     }),
     new ForkTsCheckerWebpackPlugin(),
   ],
