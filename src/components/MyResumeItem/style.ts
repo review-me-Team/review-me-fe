@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 const MyResumeItemLayout = styled.li`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   padding: 1rem;
 
   background-color: ${theme.color.neutral.bg.default};
@@ -19,7 +19,7 @@ const MyResumeItemLayout = styled.li`
 const DescriptionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
 `;
 
 const Title = styled.span`
