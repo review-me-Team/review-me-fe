@@ -38,10 +38,10 @@ module.exports = {
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        loader: 'file-loader',
-        options: {
-          name: 'assets/[contenthash].[ext]',
+        test: /\.svg$/,
+        issuer: /\.[jt]sx?$/,
+        use: {
+          loader: '@svgr/webpack',
         },
       },
     ],
