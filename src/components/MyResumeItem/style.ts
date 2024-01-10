@@ -1,0 +1,56 @@
+import { theme } from 'review-me-design-system';
+import styled, { css } from 'styled-components';
+
+const MyResumeItemLayout = styled.li`
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+
+  background-color: ${theme.color.neutral.bg.default};
+  border: 1px solid ${theme.color.accent.bd.strong};
+
+  color: ${theme.color.accent.text.strong};
+  ${theme.font.body.default};
+
+  cursor: pointer;
+`;
+
+const DescriptionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const Title = styled.span`
+  ${theme.font.title.default}
+`;
+
+const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid ${theme.color.accent.bd.strong};
+`;
+
+const leftButtonStyles = css`
+  border-right: 1px solid ${theme.color.accent.bd.strong};
+`;
+
+const Button = styled.button<{ position: 'left' | 'right' }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 2.75rem;
+  ${({ position: $position }) => $position === 'left' && leftButtonStyles}
+
+  background-color: ${theme.color.neutral.bg.default};
+
+  color: ${theme.color.accent.text.strong};
+
+  cursor: pointer;
+`;
+
+export { MyResumeItemLayout, DescriptionContainer, Title, ButtonsContainer, Button };
