@@ -23,6 +23,7 @@
     "@storybook/react": "^7.5.3",
     "@storybook/react-webpack5": "^7.5.3",
     "@storybook/testing-library": "^0.2.2",
+    "@svgr/webpack": "^8.1.0",
     "@tanstack/eslint-plugin-query": "^5.8.4",
     "@types/dotenv": "^8.2.0",
     "@types/react": "^18.2.37",
