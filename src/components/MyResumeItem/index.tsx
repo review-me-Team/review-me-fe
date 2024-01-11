@@ -1,5 +1,12 @@
 import React from 'react';
-import { Button, ButtonsContainer, DescriptionContainer, MyResumeItemLayout, Title } from './style';
+import {
+  Button,
+  ButtonsContainer,
+  Occupation,
+  DescriptionContainer,
+  MyResumeItemLayout,
+  Title,
+} from './style';
 
 interface Props {
   title: string;
@@ -22,7 +29,7 @@ const MyResumeItem = ({ title, year, occupation, scope, createdAt }: Props) => {
     <MyResumeItemLayout>
       <Title>{title}</Title>
       <DescriptionContainer>
-        <span>직군: {occupation}</span>
+        <Occupation>직군: {occupation}</Occupation>
         <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
         <span>{scope}</span>
         <span>{formattedDate}</span>

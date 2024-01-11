@@ -22,8 +22,20 @@ const DescriptionContainer = styled.div`
   gap: 0.25rem;
 `;
 
+const ellipsisStyles = css`
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+`;
+
 const Title = styled.span`
   ${theme.font.title.default}
+  ${ellipsisStyles}
+`;
+
+const Occupation = styled.span`
+  ${ellipsisStyles}
 `;
 
 const ButtonsContainer = styled.div`
@@ -53,4 +65,4 @@ const Button = styled.button<{ position: 'left' | 'right' }>`
   cursor: pointer;
 `;
 
-export { MyResumeItemLayout, DescriptionContainer, Title, ButtonsContainer, Button };
+export { MyResumeItemLayout, DescriptionContainer, Title, Occupation, ButtonsContainer, Button };
