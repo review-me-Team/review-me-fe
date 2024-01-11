@@ -17,18 +17,16 @@ const Main = styled.main`
   }
 `;
 
-const MainContainer = styled.div``;
-
 const MyResumeList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.5rem;
   width: 100%;
 
   @media screen and (max-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 0.625rem;
   }
 `;
 
-export { MyResumeLayout, Main, MainContainer, MyResumeList };
+export { MyResumeLayout, Main, MyResumeList };
