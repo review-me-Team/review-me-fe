@@ -1,4 +1,6 @@
 import React from 'react';
+import { useModal } from 'review-me-design-system';
+import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
 import {
   Button,
   ButtonsContainer,
@@ -9,6 +11,7 @@ import {
 } from './style';
 
 interface Props {
+  id: number;
   title: string;
   year: number;
   occupation: string;
@@ -16,7 +19,7 @@ interface Props {
   createdAt: string;
 }
 
-const MyResumeItem = ({ title, year, occupation, scope, createdAt }: Props) => {
+const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) => {
   const dateObj = new Date(createdAt);
   const formattedDate = `
     ${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj
@@ -24,6 +27,7 @@ const MyResumeItem = ({ title, year, occupation, scope, createdAt }: Props) => {
       .toString()
       .padStart(2, '0')}
   `;
+  const { isOpen: isOpenDeleteModal, open: openDeleteModal, close: closeDeleteModal } = useModal();
 
   return (
     <MyResumeItemLayout>
@@ -36,8 +40,12 @@ const MyResumeItem = ({ title, year, occupation, scope, createdAt }: Props) => {
       </DescriptionContainer>
       <ButtonsContainer>
         <Button position="left">수정</Button>
-        <Button position="right">삭제</Button>
+        <Button position="right" onClick={openDeleteModal}>
+          삭제
+        </Button>
       </ButtonsContainer>
+
+      <ResumeDeleteModal isOpen={isOpenDeleteModal} onClose={closeDeleteModal} resumeId={id} />
     </MyResumeItemLayout>
   );
 };
