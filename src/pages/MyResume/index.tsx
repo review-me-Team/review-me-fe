@@ -19,6 +19,7 @@ const MyResume = () => {
 
         <MyResumeList>
           <MyResumeItem
+            id={1}
             title="이력서 제목"
             year={0}
             occupation="backend"
@@ -26,6 +27,7 @@ const MyResume = () => {
             createdAt="2023-12-22 15:16:42"
           />
           <MyResumeItem
+            id={2}
             title="이력서 제목"
             year={0}
             occupation="backend"
@@ -33,6 +35,7 @@ const MyResume = () => {
             createdAt="2023-12-22 15:16:42"
           />
           <MyResumeItem
+            id={3}
             title="이력서 제목"
             year={0}
             occupation="backend"
@@ -40,6 +43,7 @@ const MyResume = () => {
             createdAt="2023-12-22 15:16:42"
           />
           <MyResumeItem
+            id={4}
             title="이력서 제목"
             year={0}
             occupation="backend"
@@ -47,6 +51,7 @@ const MyResume = () => {
             createdAt="2023-12-22 15:16:42"
           />
           <MyResumeItem
+            id={5}
             title="이력서 제목"
             year={0}
             occupation="backend"
