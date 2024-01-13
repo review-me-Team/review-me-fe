@@ -1,19 +1,21 @@
 import React from 'react';
-import { Button } from 'review-me-design-system';
+import { Button, useModal } from 'review-me-design-system';
 import Header from '@components/Header';
+import ResumeUploadModal from '@components/Modal/ResumeUploadModal';
 import MyResumeItem from '@components/MyResumeItem';
 import { Main, MyResumeLayout, MyResumeList } from './style';
 
 const MyResume = () => {
+  const { isOpen: isOpenUploadModal, open: openUploadModal, close: closeUploadModal } = useModal();
+
   return (
     <MyResumeLayout>
       <Header />
       <Main>
-        <div>
-          <Button variant="default" size="m">
-            이력서 pdf 올리기
-          </Button>
-        </div>
+        <Button variant="default" size="m" onClick={openUploadModal}>
+          이력서 pdf 올리기
+        </Button>
+        <ResumeUploadModal isOpen={isOpenUploadModal} onClose={closeUploadModal} />
 
         <MyResumeList>
           <MyResumeItem
