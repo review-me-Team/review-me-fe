@@ -41,10 +41,10 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <span>{formattedDate}</span>
       </DescriptionContainer>
       <ButtonsContainer>
-        <Button position="left" onClick={openUpdateModal}>
+        <Button $position="left" onClick={openUpdateModal}>
           수정
         </Button>
-        <Button position="right" onClick={openDeleteModal}>
+        <Button $position="right" onClick={openDeleteModal}>
           삭제
         </Button>
       </ButtonsContainer>

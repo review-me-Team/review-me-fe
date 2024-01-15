@@ -50,13 +50,13 @@ const leftButtonStyles = css`
   border-right: 1px solid ${theme.color.accent.bd.strong};
 `;
 
-const Button = styled.button<{ position: 'left' | 'right' }>`
+const Button = styled.button<{ $position: 'left' | 'right' }>`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 2.75rem;
-  ${({ position: $position }) => $position === 'left' && leftButtonStyles}
+  ${({ $position }) => $position === 'left' && leftButtonStyles}
 
   background-color: ${theme.color.neutral.bg.default};
 
