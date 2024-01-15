@@ -1,6 +1,7 @@
-import React, { FormEvent, useState } from 'react';
-import { Input, Modal, Select } from 'review-me-design-system';
-import { Description, Field, FileLabel, Label, Form } from './style';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { Button, Input, Modal, Select } from 'review-me-design-system';
+import PdfViewer from '@components/PdfViewer';
+import { Description, Field, FileLabel, Label, Form, ButtonContainer, FileName } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -105,12 +106,21 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
   const [selectedScope, setSelectedScope] = useState<Scope | undefined>(scopeList[0]);
   const [selectedOccupation, setSelectedOccupation] = useState<Occupation | undefined>();
 
+  const [file, setFile] = useState<File | undefined>();
+  const [numPages, setNumPages] = useState<number>();
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+
+    if (files && files[0]) setFile(files[0]);
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose}>
+    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="24.5rem">
       <Description>
         <Modal.Title>이력서 pdf를 올려주세요</Modal.Title>
         <Modal.Description>제출된 이력서 pdf 파일은 변경이 불가합니다.</Modal.Description>
@@ -172,8 +182,27 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
 
         <Field>
           <FileLabel htmlFor="file">파일 선택</FileLabel>
-          <input type="file" id="file" name="file" accept=".pdf" style={{ display: 'none' }} />
+          <input
+            type="file"
+            id="file"
+            name="file"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <FileName>{file?.name}</FileName>
         </Field>
+
+        <PdfViewer file={file} numPages={numPages} onLoadSuccess={setNumPages} height="15rem" />
+
+        <ButtonContainer>
+          <Button variant="outline" size="m" onClick={onClose} width="36%">
+            취소
+          </Button>
+          <Button variant="default" size="m" width="36%">
+            올리기
+          </Button>
+        </ButtonContainer>
       </Form>
     </Modal>
   );

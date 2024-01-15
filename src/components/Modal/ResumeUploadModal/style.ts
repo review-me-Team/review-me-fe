@@ -43,4 +43,18 @@ const FileLabel = styled.label`
   ${theme.font.button.weak}
 `;
 
-export { Description, Form, Field, Label, FileLabel };
+const FileName = styled.span`
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+export { Description, Form, Field, Label, FileLabel, FileName, ButtonContainer };
