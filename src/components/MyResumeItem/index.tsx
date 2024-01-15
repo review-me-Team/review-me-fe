@@ -1,6 +1,7 @@
 import React from 'react';
 import { useModal } from 'review-me-design-system';
 import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
+import ResumeUpdateModal from '@components/Modal/ResumeUpdateModal';
 import {
   Button,
   ButtonsContainer,
@@ -27,6 +28,7 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
       .toString()
       .padStart(2, '0')}
   `;
+  const { isOpen: isOpenUpdateModal, open: openUpdateModal, close: closeUpdateModal } = useModal();
   const { isOpen: isOpenDeleteModal, open: openDeleteModal, close: closeDeleteModal } = useModal();
 
   return (
@@ -39,12 +41,15 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <span>{formattedDate}</span>
       </DescriptionContainer>
       <ButtonsContainer>
-        <Button position="left">수정</Button>
+        <Button position="left" onClick={openUpdateModal}>
+          수정
+        </Button>
         <Button position="right" onClick={openDeleteModal}>
           삭제
         </Button>
       </ButtonsContainer>
 
+      <ResumeUpdateModal isOpen={isOpenUpdateModal} onClose={closeUpdateModal} />
       <ResumeDeleteModal isOpen={isOpenDeleteModal} onClose={closeDeleteModal} resumeId={id} />
     </MyResumeItemLayout>
   );
