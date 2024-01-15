@@ -1,6 +1,7 @@
 import React, { FormEvent, useState } from 'react';
-import { Input, Modal, Select } from 'review-me-design-system';
-import { Description, Field, Label, Form } from './style';
+import { Button, Input, Modal, Select } from 'review-me-design-system';
+import PdfViewer from '@components/PdfViewer';
+import { Description, Field, Label, Form, ButtonContainer } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -110,7 +111,7 @@ const ResumeUpdateModal = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose}>
+    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="24.5rem">
       <Description>
         <Modal.Title>이력서 pdf를 수정해주세요</Modal.Title>
       </Description>
@@ -168,6 +169,15 @@ const ResumeUpdateModal = ({ isOpen, onClose }: Props) => {
           <Label htmlFor="year">재직 기간</Label>
           <Input type="number" id="year" name="year" placeholder="신입일 경우 0 입력" min={0} />
         </Field>
+
+        <ButtonContainer>
+          <Button variant="outline" size="m" onClick={onClose} width="36%">
+            취소
+          </Button>
+          <Button variant="default" size="m" width="36%">
+            수정
+          </Button>
+        </ButtonContainer>
       </Form>
     </Modal>
   );

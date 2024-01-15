@@ -30,4 +30,11 @@ const Label = styled.label`
   ${theme.font.body.default}
 `;
 
-export { Description, Form, Field, Label };
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+`;
+
+export { Description, Form, Field, Label, ButtonContainer };
