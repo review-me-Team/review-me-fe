@@ -35,6 +35,7 @@ const FileLabel = styled.label`
   padding: 0.75rem 1.25rem;
   justify-content: center;
   align-items: center;
+  margin-right: 0.5rem;
 
   border-radius: 0.75rem;
   background: ${theme.color.accent.bg.default};
