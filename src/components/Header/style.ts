@@ -4,6 +4,9 @@ import styled from 'styled-components';
 const HeaderLayout = styled.header`
   width: 100%;
   padding: 0 2rem;
+
+  background: ${theme.color.neutral.bg.default};
+  border-bottom: 1px solid ${theme.palette.grey300};
 `;
 
 const NavContainer = styled.nav`
