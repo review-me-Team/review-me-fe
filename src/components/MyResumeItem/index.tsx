@@ -2,6 +2,7 @@ import React from 'react';
 import { useModal } from 'review-me-design-system';
 import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
 import ResumeUpdateModal from '@components/Modal/ResumeUpdateModal';
+import { formatDate } from '@utils';
 import {
   Button,
   ButtonsContainer,
@@ -21,13 +22,6 @@ interface Props {
 }
 
 const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) => {
-  const dateObj = new Date(createdAt);
-  const formattedDate = `
-    ${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj
-      .getDate()
-      .toString()
-      .padStart(2, '0')}
-  `;
   const { isOpen: isOpenUpdateModal, open: openUpdateModal, close: closeUpdateModal } = useModal();
   const { isOpen: isOpenDeleteModal, open: openDeleteModal, close: closeDeleteModal } = useModal();
 
@@ -38,7 +32,7 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <Occupation>직군: {occupation}</Occupation>
         <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
         <span>{scope}</span>
-        <span>{formattedDate}</span>
+        <span>{formatDate(createdAt)}</span>
       </DescriptionContainer>
       <ButtonsContainer>
         <Button $position="left" onClick={openUpdateModal}>
