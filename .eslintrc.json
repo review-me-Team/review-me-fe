@@ -18,19 +18,11 @@
   },
   "plugins": ["react", "@typescript-eslint", "import"],
   "rules": {
+    "@typescript-eslint/no-unused-vars": "warn",
     "import/order": [
       "error",
       {
-        "groups": [
-          "builtin",
-          "type",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-          "unknown"
-        ],
+        "groups": ["builtin", "type", "external", "internal", "parent", "sibling", "index", "unknown"],
         "pathGroups": [
           {
             "pattern": "{react*,react*/**}",
