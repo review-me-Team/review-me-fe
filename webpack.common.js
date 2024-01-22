@@ -7,11 +7,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = {
-  mode: process.env.MODE,
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
+    filename: '[name].bundle.js',
+    clean: true,
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
@@ -35,7 +36,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.svg$/,
@@ -56,11 +57,4 @@ module.exports = {
     }),
     new ForkTsCheckerWebpackPlugin(),
   ],
-  devServer: {
-    host: 'localhost',
-    port: process.env.PORT,
-    open: true,
-    historyApiFallback: true,
-    hot: true,
-  },
 };
