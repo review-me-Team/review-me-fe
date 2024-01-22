@@ -12,6 +12,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
+    filename: 'index.js',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
@@ -57,7 +58,7 @@ module.exports = {
     new ForkTsCheckerWebpackPlugin(),
   ],
   devServer: {
-    host: 'localhost',
+    host: '127.0.0.1',
     port: process.env.PORT,
     open: true,
     historyApiFallback: true,
