@@ -84,6 +84,10 @@ const OpenReplyButton = styled.button`
   }
 `;
 
+const EmojiContainer = styled.div`
+  position: relative;
+`;
+
 const EmojiButton = styled.button`
   display: flex;
   justify-content: center;
@@ -102,6 +106,25 @@ const EmojiButton = styled.button`
   cursor: pointer;
 `;
 
+const EmojiModal = styled.div`
+  display: none;
+  padding: 0.5rem;
+  gap: 0.25rem;
+  position: absolute;
+  left: -1.5rem;
+  top: auto;
+  bottom: 100%;
+  z-index: ${theme.zIndex.modal};
+
+  background-color: ${theme.color.neutral.bg.default};
+  border-radius: 1rem;
+  box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.25);
+
+  &.active {
+    display: flex;
+  }
+`;
+
 export {
   CommentLayout,
   Top,
@@ -114,5 +137,7 @@ export {
   Content,
   Bottom,
   OpenReplyButton,
+  EmojiContainer,
   EmojiButton,
+  EmojiModal,
 };

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
+import { Icon, Label as EmojiLabel, theme, Label } from 'review-me-design-system';
+import useHover from '@hooks/useHover';
 import { formatDate } from '@utils';
 import {
   CommentLayout,
@@ -14,6 +15,8 @@ import {
   EmojiButton,
   Top,
   IconButton,
+  EmojiModal,
+  EmojiContainer,
 } from './style';
 
 type Emoji = {
@@ -50,6 +53,8 @@ const Comment = ({
   emojis,
   myEmojiId,
 }: Props) => {
+  const { isHover, changeHoverState } = useHover();
+
   return (
     <CommentLayout>
       <Top>
@@ -97,9 +102,37 @@ const Comment = ({
             <span>{countOfReplies}</span>
           </OpenReplyButton>
         )}
-        <EmojiButton>
-          <Icon iconName="emoji" />
-        </EmojiButton>
+        <EmojiContainer>
+          <EmojiButton
+            onMouseEnter={() => changeHoverState(true)}
+            onMouseLeave={() => changeHoverState(false)}
+          >
+            <Icon iconName="emoji" />
+          </EmojiButton>
+          <EmojiModal
+            className={isHover ? 'active' : ''}
+            onMouseEnter={() => changeHoverState(true)}
+            onMouseLeave={() => changeHoverState(false)}
+          >
+            {/* todo: 서버에서 받은 이모지 리스트로 수정 및 isActive를 emojiId === myEmojiId로 수정하기 */}
+            <Label isActive={false} py="0.5rem" px="0.75rem">
+              🤔
+            </Label>
+            <Label isActive={false} py="0.5rem" px="0.75rem">
+              👍
+            </Label>
+            <Label isActive={false} py="0.5rem" px="0.75rem">
+              👀
+            </Label>
+            <Label isActive={false} py="0.5rem" px="0.75rem">
+              😎
+            </Label>
+            <Label isActive={false} py="0.5rem" px="0.75rem">
+              🙏
+            </Label>
+          </EmojiModal>
+        </EmojiContainer>
+
         {emojis.map(({ id, count }) => {
           return (
             <EmojiLabel key={id} isActive={id === myEmojiId} px="0.75rem">
