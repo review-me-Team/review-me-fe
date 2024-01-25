@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const CommentLayout = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   padding: 0.75rem 1rem;
 
   color: ${theme.color.neutral.text.default};
@@ -13,7 +12,8 @@ const CommentLayout = styled.div`
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 1rem;
 `;
 
 const Info = styled.div`
@@ -23,9 +23,14 @@ const Info = styled.div`
 `;
 
 const IconButton = styled.button`
-  height: 1.75rem;
+  height: 1.5rem;
   background-color: transparent;
   cursor: pointer;
+`;
+
+const CommentInfo = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const UserImg = styled.img`
@@ -35,12 +40,18 @@ const UserImg = styled.img`
 `;
 
 const UserName = styled.span`
-  ${theme.font.title.default}
+  ${theme.font.title.weak}
 `;
 
 const Time = styled.span`
   color: ${theme.color.neutral.text.sub};
-  ${theme.font.body.default}
+  ${theme.font.body.weak}
+`;
+
+const CommentContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const SelectedLabel = styled.div`
@@ -48,9 +59,9 @@ const SelectedLabel = styled.div`
   justify-content: center;
   align-items: center;
   width: fit-content;
-  padding: 0.5rem 1.25rem;
+  padding: 0 1rem;
 
-  background: ${theme.color.accent.bg.default};
+  background: ${theme.color.accent.bg.strong};
   border-radius: 1rem;
 
   ${theme.font.label}
@@ -58,13 +69,14 @@ const SelectedLabel = styled.div`
 `;
 
 const Content = styled.span`
-  ${theme.font.body.default}
+  ${theme.font.body.weak}
 `;
 
 const Bottom = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  margin-top: 1rem;
 `;
 
 const OpenReplyButton = styled.button`
@@ -84,7 +96,7 @@ const OpenReplyButton = styled.button`
   }
 `;
 
-const EmojiContainer = styled.div`
+const EmojiButtonContainer = styled.div`
   position: relative;
 `;
 
@@ -104,6 +116,16 @@ const EmojiButton = styled.button`
   }
 
   cursor: pointer;
+`;
+
+const EmojiLabelList = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+`;
+
+const EmojiLabelItem = styled.li`
+  margin-right: 0.5rem;
 `;
 
 const EmojiModal = styled.div`
@@ -130,14 +152,18 @@ export {
   Top,
   Info,
   IconButton,
+  CommentInfo,
   UserImg,
   UserName,
   Time,
   SelectedLabel,
   Content,
+  CommentContent,
   Bottom,
   OpenReplyButton,
-  EmojiContainer,
+  EmojiButtonContainer,
   EmojiButton,
   EmojiModal,
+  EmojiLabelList,
+  EmojiLabelItem,
 };

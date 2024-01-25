@@ -16,7 +16,11 @@ import {
   Top,
   IconButton,
   EmojiModal,
-  EmojiContainer,
+  EmojiButtonContainer,
+  EmojiLabelList,
+  EmojiLabelItem,
+  CommentContent,
+  CommentInfo,
 } from './style';
 
 type Emoji = {
@@ -27,24 +31,25 @@ type Emoji = {
 interface Props {
   // id: number;
   content: string;
-  writerId: number;
-  writerName: string;
-  writerProfileUrl: string;
+  commenterId: number;
+  commenterName: string;
+  commenterProfileUrl: string;
   createdAt: string;
-  checked: boolean;
   emojis: Emoji[];
   myEmojiId: number;
+  checked?: boolean;
   bookmarked?: boolean;
   labelContent?: string;
   countOfReplies?: number;
+  writerId?: number;
 }
 
 const Comment = ({
   // id,
   content,
-  writerId,
-  writerName,
-  writerProfileUrl,
+  commenterId,
+  commenterName,
+  commenterProfileUrl,
   labelContent,
   createdAt,
   countOfReplies,
@@ -52,57 +57,72 @@ const Comment = ({
   bookmarked,
   emojis,
   myEmojiId,
+  writerId,
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
+  const hasReply = countOfReplies === undefined;
+  const hasCheckMarkIcon = typeof checked === 'boolean';
+  const hasBookMarkIcon = typeof bookmarked === 'boolean' && commenterId === writerId;
 
   return (
     <CommentLayout>
       <Top>
         <Info>
-          <UserImg src={writerProfileUrl} />
-          <UserName>{writerName}</UserName>
-          <Time>{formatDate(createdAt)}</Time>
+          <UserImg src={commenterProfileUrl} />
+          <CommentInfo>
+            <UserName>{commenterName}</UserName>
+            <Time>{formatDate(createdAt)}</Time>
+          </CommentInfo>
         </Info>
 
         <div>
-          <IconButton>
-            {bookmarked !== undefined &&
-              (bookmarked ? (
+          {hasBookMarkIcon && (
+            <IconButton>
+              {bookmarked ? (
                 <Icon
                   iconName="filledBookMark"
-                  width={28}
-                  height={28}
+                  width={24}
+                  height={24}
                   color={theme.color.accent.bg.default}
                 />
               ) : (
-                <Icon iconName="bookMark" width={28} height={28} color={theme.color.accent.bg.strong} />
-              ))}
-          </IconButton>
+                <Icon iconName="bookMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+              )}
+            </IconButton>
+          )}
+          {hasCheckMarkIcon && (
+            <IconButton>
+              {checked ? (
+                <Icon
+                  iconName="filledCheckMark"
+                  width={24}
+                  height={24}
+                  color={theme.color.accent.bg.default}
+                />
+              ) : (
+                <Icon iconName="checkMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+              )}
+            </IconButton>
+          )}
           <IconButton>
-            {checked ? (
-              <Icon iconName="filledCheckMark" width={28} height={28} color={theme.color.accent.bg.default} />
-            ) : (
-              <Icon iconName="checkMark" width={28} height={28} color={theme.color.accent.bg.strong} />
-            )}
-          </IconButton>
-          <IconButton>
-            <Icon iconName="more" width={28} height={28} color={theme.color.accent.bg.strong} />
+            <Icon iconName="more" width={24} height={24} color={theme.color.accent.bg.strong} />
           </IconButton>
         </div>
       </Top>
 
-      {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
-
-      <Content>{content}</Content>
+      <CommentContent>
+        {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
+        <Content>{content}</Content>
+      </CommentContent>
 
       <Bottom>
-        {countOfReplies && (
+        {!hasReply && (
           <OpenReplyButton>
-            <Icon iconName="communication" />
+            <Icon iconName="communication" width={24} height={24} />
             <span>{countOfReplies}</span>
           </OpenReplyButton>
         )}
-        <EmojiContainer>
+        <EmojiButtonContainer>
           <EmojiButton
             onMouseEnter={() => changeHoverState(true)}
             onMouseLeave={() => changeHoverState(false)}
@@ -131,15 +151,19 @@ const Comment = ({
               🙏
             </Label>
           </EmojiModal>
-        </EmojiContainer>
+        </EmojiButtonContainer>
 
-        {emojis.map(({ id, count }) => {
-          return (
-            <EmojiLabel key={id} isActive={id === myEmojiId} px="0.75rem">
-              🤔 {count}
-            </EmojiLabel>
-          );
-        })}
+        <EmojiLabelList>
+          {emojis.map(({ id, count }) => {
+            return (
+              <EmojiLabelItem key={id}>
+                <EmojiLabel isActive={id === myEmojiId} py="0" px="0.75rem">
+                  🤔 {count}
+                </EmojiLabel>
+              </EmojiLabelItem>
+            );
+          })}
+        </EmojiLabelList>
       </Bottom>
     </CommentLayout>
   );
