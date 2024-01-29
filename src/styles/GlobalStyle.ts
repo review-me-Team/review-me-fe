@@ -7,4 +7,8 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100%;
     background-color: ${theme.color.neutral.bg.light};
   }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
