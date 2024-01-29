@@ -66,15 +66,6 @@ const Header = () => {
                   <span>이력서 보러가기</span>
                   <Icon iconName="rightArrow" width={28} height={28} />
                 </MobileMenuItem>
-                <MobileMenuItem
-                  onClick={() => {
-                    handleCloseMobileMenu();
-                    navigate(ROUTE_PATH.MY_RESUME);
-                  }}
-                >
-                  <span>My 이력서 보러가기</span>
-                  <Icon iconName="rightArrow" width={28} height={28} />
-                </MobileMenuItem>
               </MobileMenuList>
 
               <JoinUsMessage>
