@@ -41,7 +41,12 @@ const Header = () => {
               </MobileMenuTop>
 
               <MobileMenuList>
-                <MobileMenuItem>
+                <MobileMenuItem
+                  onClick={() => {
+                    setIsOpenMobileMenu(false);
+                    navigate(ROUTE_PATH.RESUME);
+                  }}
+                >
                   <span>이력서 보러가기</span>
                   <Icon iconName="rightArrow" width={28} height={28} />
                 </MobileMenuItem>
