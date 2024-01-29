@@ -3,17 +3,22 @@ import styled from 'styled-components';
 
 const HeaderLayout = styled.header`
   width: 100%;
+  height: 3.75rem;
   padding: 0 2rem;
 
   background: ${theme.color.neutral.bg.default};
   border-bottom: 1px solid ${theme.palette.grey300};
+
+  @media screen and (max-width: 600px) {
+    padding: 0 0.5rem;
+  }
 `;
 
 const NavContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 4rem;
+  height: 100%;
 `;
 
 const RightContainer = styled.div`
@@ -41,7 +46,6 @@ const MenuList = styled.ul`
 const MenuItem = styled.li`
   display: flex;
   align-items: center;
-  height: 100%;
   padding: 0 1rem;
 
   color: ${theme.color.neutral.text.default};
@@ -61,7 +65,7 @@ const LeftContainer = styled.div`
   flex-shrink: 0;
 `;
 
-const UserInfoButton = styled.button`
+const IconButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,6 +73,75 @@ const UserInfoButton = styled.button`
   background-color: transparent;
 
   cursor: pointer;
+`;
+
+const MobileMenu = styled.aside`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 100vh;
+  padding: 0.5rem 1.875rem;
+  transform: translateX(-80%);
+  visibility: hidden;
+
+  background-color: ${theme.color.neutral.bg.default};
+  transition: all 0.2s;
+
+  z-index: ${theme.zIndex.modal};
+  &.open {
+    transform: translateX(0);
+    display: flex;
+    visibility: visible;
+  }
+`;
+
+const MobileMenuTop = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const MobileMenuList = styled.ul`
+  display: flex;
+  flex-direction: column;
+`;
+
+const MobileMenuItem = styled.li`
+  display: flex;
+  padding: 0.5rem 0;
+  justify-content: space-between;
+  align-items: center;
+
+  ${theme.font.title.default}
+  color: ${theme.color.neutral.text.default};
+`;
+
+const JoinUsMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0rem;
+
+  ${theme.font.body.weak}
+  color: ${theme.color.neutral.text.default};
+`;
+
+const MobileMenuButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
+const BackDrop = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(0 0 0 / 0.5);
+  z-index: ${({ theme }) => theme.zIndex.backDrop};
 `;
 
 export {
@@ -79,5 +152,12 @@ export {
   MenuList,
   MenuItem,
   LeftContainer,
-  UserInfoButton,
+  IconButton,
+  MobileMenu,
+  MobileMenuTop,
+  MobileMenuList,
+  MobileMenuItem,
+  JoinUsMessage,
+  MobileMenuButtonContainer,
+  BackDrop,
 };

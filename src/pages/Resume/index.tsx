@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Select } from 'review-me-design-system';
-import Header from '@components/Header';
 import ResumeItem from '@components/ResumeItem';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
@@ -28,107 +27,103 @@ const Resume = () => {
   ];
 
   return (
-    <>
-      <Header />
+    <Main>
+      <MainHeader>
+        <FilterContainer>
+          <Filter>
+            <span>직군</span>
+            <Select width="10rem">
+              <Select.TriggerButton />
+              <Select.OptionList>
+                {scope.map((option) => {
+                  return (
+                    <Select.OptionItem key={option.value} value={option.value} label={option.label}>
+                      {option.label}
+                    </Select.OptionItem>
+                  );
+                })}
+              </Select.OptionList>
+            </Select>
+          </Filter>
+          <Filter>
+            <span>경력</span>
+            <Select width="10rem">
+              <Select.TriggerButton />
+              <Select.OptionList>
+                {yearOptions.map((option) => {
+                  return (
+                    <Select.OptionItem key={option.value} value={option.value} label={option.label}>
+                      {option.label}
+                    </Select.OptionItem>
+                  );
+                })}
+              </Select.OptionList>
+            </Select>
+          </Filter>
+        </FilterContainer>
 
-      <Main>
-        <MainHeader>
-          <FilterContainer>
-            <Filter>
-              <span>직군</span>
-              <Select width="10rem">
-                <Select.TriggerButton />
-                <Select.OptionList>
-                  {scope.map((option) => {
-                    return (
-                      <Select.OptionItem key={option.value} value={option.value} label={option.label}>
-                        {option.label}
-                      </Select.OptionItem>
-                    );
-                  })}
-                </Select.OptionList>
-              </Select>
-            </Filter>
-            <Filter>
-              <span>경력</span>
-              <Select width="10rem">
-                <Select.TriggerButton />
-                <Select.OptionList>
-                  {yearOptions.map((option) => {
-                    return (
-                      <Select.OptionItem key={option.value} value={option.value} label={option.label}>
-                        {option.label}
-                      </Select.OptionItem>
-                    );
-                  })}
-                </Select.OptionList>
-              </Select>
-            </Filter>
-          </FilterContainer>
+        <Button variant="default" size="m">
+          내 이력서 보러가기
+        </Button>
+      </MainHeader>
 
-          <Button variant="default" size="m">
-            내 이력서 보러가기
-          </Button>
-        </MainHeader>
-
-        <ResumeList>
-          <ResumeItem
-            id={1}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-          <ResumeItem
-            id={2}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-          <ResumeItem
-            id={3}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-          <ResumeItem
-            id={4}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-          <ResumeItem
-            id={5}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-          <ResumeItem
-            id={6}
-            title="이력서"
-            writerName="aken-you"
-            writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-            year={0}
-            occupation="DevOps System Engineer"
-            createdAt="2023-12-22 15:16:42"
-          />
-        </ResumeList>
-      </Main>
-    </>
+      <ResumeList>
+        <ResumeItem
+          id={1}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+        <ResumeItem
+          id={2}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+        <ResumeItem
+          id={3}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+        <ResumeItem
+          id={4}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+        <ResumeItem
+          id={5}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+        <ResumeItem
+          id={6}
+          title="이력서"
+          writerName="aken-you"
+          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+          year={0}
+          occupation="DevOps System Engineer"
+          createdAt="2023-12-22 15:16:42"
+        />
+      </ResumeList>
+    </Main>
   );
 };
 
