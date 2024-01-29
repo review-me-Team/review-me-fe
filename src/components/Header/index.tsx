@@ -18,6 +18,7 @@ import {
   JoinUsMessage,
   MobileMenuTop,
   MobileMenuButtonContainer,
+  BackDrop,
 } from './style';
 
 const Header = () => {
@@ -75,6 +76,7 @@ const Header = () => {
                 </Button>
               </MobileMenuButtonContainer>
             </MobileMenu>
+            {isOpenMobileMenu && <BackDrop onClick={() => setIsOpenMobileMenu(false)} />}
           </>
         )}
         {!isSMDevice && (

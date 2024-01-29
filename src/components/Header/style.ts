@@ -78,7 +78,7 @@ const IconButton = styled.button`
 const MobileMenu = styled.aside`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
   flex-shrink: 0;
   position: fixed;
   top: 0;
@@ -134,6 +134,16 @@ const MobileMenuButtonContainer = styled.div`
   gap: 0.5rem;
 `;
 
+const BackDrop = styled.div`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(0 0 0 / 0.5);
+  z-index: ${({ theme }) => theme.zIndex.backDrop};
+`;
+
 export {
   HeaderLayout,
   NavContainer,
@@ -149,4 +159,5 @@ export {
   MobileMenuItem,
   JoinUsMessage,
   MobileMenuButtonContainer,
+  BackDrop,
 };
