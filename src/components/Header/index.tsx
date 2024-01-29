@@ -19,7 +19,7 @@ const Header = () => {
           <ReviewMe>review me</ReviewMe>
           <MenuList>
             <MenuItem>이력서</MenuItem>
-            <MenuItem>자소서</MenuItem>
+            <MenuItem>My 이력서</MenuItem>
           </MenuList>
         </RightContainer>
 
