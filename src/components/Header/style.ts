@@ -75,6 +75,65 @@ const IconButton = styled.button`
   cursor: pointer;
 `;
 
+const MobileMenu = styled.aside`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 100vh;
+  padding: 0.5rem 1.875rem;
+  transform: translateX(-80%);
+  visibility: hidden;
+
+  background-color: ${theme.color.neutral.bg.default};
+  transition: all 0.2s;
+
+  z-index: ${theme.zIndex.modal};
+  &.open {
+    transform: translateX(0);
+    display: flex;
+    visibility: visible;
+  }
+`;
+
+const MobileMenuTop = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const MobileMenuList = styled.ul`
+  display: flex;
+  flex-direction: column;
+`;
+
+const MobileMenuItem = styled.li`
+  display: flex;
+  padding: 0.5rem 0;
+  justify-content: space-between;
+  align-items: center;
+
+  ${theme.font.title.default}
+  color: ${theme.color.neutral.text.default};
+`;
+
+const JoinUsMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0rem;
+
+  ${theme.font.body.weak}
+  color: ${theme.color.neutral.text.default};
+`;
+
+const MobileMenuButtonContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+`;
+
 export {
   HeaderLayout,
   NavContainer,
@@ -84,4 +143,10 @@ export {
   MenuItem,
   LeftContainer,
   IconButton,
+  MobileMenu,
+  MobileMenuTop,
+  MobileMenuList,
+  MobileMenuItem,
+  JoinUsMessage,
+  MobileMenuButtonContainer,
 };
