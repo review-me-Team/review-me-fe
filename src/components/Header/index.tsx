@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Icon, theme } from 'review-me-design-system';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { ROUTE_PATH } from '@constants';
+import { manageBodyScroll } from '@utils';
 import {
   HeaderLayout,
   LeftContainer,
@@ -26,17 +27,31 @@ const Header = () => {
   const { matches: isSMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 600px)' });
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
+  const handleOpenMobileMenu = () => {
+    if (!isSMDevice) return;
+
+    setIsOpenMobileMenu(true);
+    manageBodyScroll(false);
+  };
+
+  const handleCloseMobileMenu = () => {
+    if (!isSMDevice) return;
+
+    setIsOpenMobileMenu(false);
+    manageBodyScroll(true);
+  };
+
   return (
     <HeaderLayout>
       <NavContainer>
         {isSMDevice && (
           <>
-            <IconButton onClick={() => setIsOpenMobileMenu(true)}>
+            <IconButton onClick={handleOpenMobileMenu}>
               <Icon iconName="menu" color={theme.color.accent.text.strong} width={28} height={28} />
             </IconButton>
             <MobileMenu className={isOpenMobileMenu ? 'open' : ''}>
               <MobileMenuTop>
-                <IconButton onClick={() => setIsOpenMobileMenu(false)}>
+                <IconButton onClick={handleCloseMobileMenu}>
                   <Icon iconName="xMark" width={28} height={28} />
                 </IconButton>
               </MobileMenuTop>
@@ -44,7 +59,7 @@ const Header = () => {
               <MobileMenuList>
                 <MobileMenuItem
                   onClick={() => {
-                    setIsOpenMobileMenu(false);
+                    handleCloseMobileMenu();
                     navigate(ROUTE_PATH.RESUME);
                   }}
                 >
@@ -53,7 +68,7 @@ const Header = () => {
                 </MobileMenuItem>
                 <MobileMenuItem
                   onClick={() => {
-                    setIsOpenMobileMenu(false);
+                    handleCloseMobileMenu();
                     navigate(ROUTE_PATH.MY_RESUME);
                   }}
                 >
@@ -76,7 +91,7 @@ const Header = () => {
                 </Button>
               </MobileMenuButtonContainer>
             </MobileMenu>
-            {isOpenMobileMenu && <BackDrop onClick={() => setIsOpenMobileMenu(false)} />}
+            {isOpenMobileMenu && <BackDrop onClick={handleCloseMobileMenu} />}
           </>
         )}
         {!isSMDevice && (

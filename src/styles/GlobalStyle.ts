@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
   body {
-    overflow: visible;
+    overflow: auto;
     min-height: 100%;
     background-color: ${theme.color.neutral.bg.light};
   }

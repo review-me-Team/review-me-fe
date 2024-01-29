@@ -9,3 +9,11 @@ export const formatDate = (date: string) => {
 
   return formattedDate;
 };
+
+export const manageBodyScroll = (canScroll: boolean) => {
+  if (canScroll) {
+    document.body.style.overflow = 'auto';
+    return;
+  }
+  document.body.style.overflow = 'hidden';
+};
