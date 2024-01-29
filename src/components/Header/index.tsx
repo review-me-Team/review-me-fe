@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button, Icon, theme } from 'review-me-design-system';
 import useMediaQuery from '@hooks/useMediaQuery';
+import { ROUTE_PATH } from '@constants';
 import {
   HeaderLayout,
   LeftContainer,
@@ -27,7 +29,9 @@ const Header = () => {
           <RightContainer>
             <ReviewMe>review me</ReviewMe>
             <MenuList>
-              <MenuItem>이력서</MenuItem>
+              <MenuItem>
+                <Link to={ROUTE_PATH.RESUME}>이력서</Link>
+              </MenuItem>
               <MenuItem>My 이력서</MenuItem>
             </MenuList>
           </RightContainer>

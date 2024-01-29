@@ -46,7 +46,6 @@ const MenuList = styled.ul`
 const MenuItem = styled.li`
   display: flex;
   align-items: center;
-  height: 100%;
   padding: 0 1rem;
 
   color: ${theme.color.neutral.text.default};
