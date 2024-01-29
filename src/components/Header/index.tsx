@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Icon, theme } from 'review-me-design-system';
+import useMediaQuery from '@hooks/useMediaQuery';
 import {
   HeaderLayout,
   LeftContainer,
@@ -8,28 +9,39 @@ import {
   NavContainer,
   ReviewMe,
   RightContainer,
-  UserInfoButton,
+  IconButton,
 } from './style';
 
 const Header = () => {
+  const { matches: isSMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 600px)' });
+
   return (
     <HeaderLayout>
       <NavContainer>
-        <RightContainer>
-          <ReviewMe>review me</ReviewMe>
-          <MenuList>
-            <MenuItem>이력서</MenuItem>
-            <MenuItem>My 이력서</MenuItem>
-          </MenuList>
-        </RightContainer>
+        {isSMDevice && (
+          <IconButton>
+            <Icon iconName="menu" color={theme.color.accent.text.strong} width={32} height={32} />
+          </IconButton>
+        )}
+        {!isSMDevice && (
+          <RightContainer>
+            <ReviewMe>review me</ReviewMe>
+            <MenuList>
+              <MenuItem>이력서</MenuItem>
+              <MenuItem>My 이력서</MenuItem>
+            </MenuList>
+          </RightContainer>
+        )}
 
         <LeftContainer>
-          <UserInfoButton>
+          <IconButton>
             <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
-          </UserInfoButton>
-          <Button variant="default" size="s">
-            로그아웃
-          </Button>
+          </IconButton>
+          {!isSMDevice && (
+            <Button variant="default" size="s">
+              로그아웃
+            </Button>
+          )}
         </LeftContainer>
       </NavContainer>
     </HeaderLayout>

@@ -3,17 +3,22 @@ import styled from 'styled-components';
 
 const HeaderLayout = styled.header`
   width: 100%;
+  height: 3.75rem;
   padding: 0 2rem;
 
   background: ${theme.color.neutral.bg.default};
   border-bottom: 1px solid ${theme.palette.grey300};
+
+  @media screen and (max-width: 600px) {
+    padding: 0 0.5rem;
+  }
 `;
 
 const NavContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 4rem;
+  height: 100%;
 `;
 
 const RightContainer = styled.div`
@@ -61,7 +66,7 @@ const LeftContainer = styled.div`
   flex-shrink: 0;
 `;
 
-const UserInfoButton = styled.button`
+const IconButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -79,5 +84,5 @@ export {
   MenuList,
   MenuItem,
   LeftContainer,
-  UserInfoButton,
+  IconButton,
 };
