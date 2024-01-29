@@ -28,7 +28,9 @@ const Header = () => {
         )}
         {!isSMDevice && (
           <RightContainer>
-            <ReviewMe>review me</ReviewMe>
+            <ReviewMe>
+              <Link to={ROUTE_PATH.ROOT}>review me</Link>
+            </ReviewMe>
             <MenuList>
               <MenuItem>
                 <Link to={ROUTE_PATH.RESUME}>이력서</Link>
