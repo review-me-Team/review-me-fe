@@ -28,6 +28,7 @@ const config: StorybookConfig = {
         '@hooks': path.resolve(__dirname, '../src/hooks'),
         '@utils': path.resolve(__dirname, '../src/utils'),
         '@constants': path.resolve(__dirname, '../src/constants'),
+        '@apis': path.resolve(__dirname, '../src/apis'),
       };
 
       if (config.module?.rules) {
