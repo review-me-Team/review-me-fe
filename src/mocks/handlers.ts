@@ -16,7 +16,7 @@ export const handlers = [
     const pageNumber = Number(url.searchParams.get('page') || 0);
     const pageSize = Number(url.searchParams.get('size') || 10);
     const totalCount = resumes.length;
-    const lastPage = Math.ceil(totalCount / pageSize);
+    const lastPage = Math.ceil(totalCount / pageSize) - 1;
 
     return HttpResponse.json({
       data: {

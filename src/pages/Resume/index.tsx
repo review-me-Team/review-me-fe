@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Select } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useResumeList } from '@apis/resumeApi';
+import { Occupation, useOccupationList } from '@apis/utilApi';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
-  const scope = [
-    {
-      id: 1,
-      scope: '전체 공개',
-    },
-    {
-      id: 2,
-      scope: '친구만 공개',
-    },
-    {
-      id: 3,
-      scope: '비공개',
-    },
-  ].map(({ id, scope }) => ({ value: id, label: scope }));
   const yearOptions = [
-    { value: 1, label: '신입' },
-    { value: 2, label: '1 ~ 3년차' },
-    { value: 3, label: '4 ~ 6년차' },
-    { value: 4, label: '7 ~ 9년차' },
-    { value: 5, label: '10년차 이상' },
+    { value: 0, label: '신입' },
+    { value: 1, label: '1 ~ 3년차' },
+    { value: 2, label: '4 ~ 6년차' },
+    { value: 3, label: '7 ~ 9년차' },
+    { value: 4, label: '10년차 이상' },
   ];
+  const [, setSelectedOccupation] = useState<Occupation | undefined>();
+
+  const { data: occupationList } = useOccupationList();
+  const { data: resumeListData, fetchNextPage } = useResumeList();
+
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => fetchNextPage(),
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  const resumeList = resumeListData?.pages.map((page) => page.resumes).flat();
 
   return (
     <Main>
@@ -32,13 +34,19 @@ const Resume = () => {
         <FilterContainer>
           <Filter>
             <span>직군</span>
-            <Select width="10rem">
+            <Select
+              width="12.5rem"
+              onSelectOption={(option) => {
+                if (option && typeof option.name === 'number' && typeof option.value === 'string')
+                  setSelectedOccupation({ id: option.name, occupation: option.value });
+              }}
+            >
               <Select.TriggerButton />
-              <Select.OptionList>
-                {scope.map((option) => {
+              <Select.OptionList maxHeight="12.5rem">
+                {occupationList?.map(({ id, occupation }) => {
                   return (
-                    <Select.OptionItem key={option.value} value={option.value} label={option.label}>
-                      {option.label}
+                    <Select.OptionItem key={id} value={id} name={occupation}>
+                      {occupation}
                     </Select.OptionItem>
                   );
                 })}
@@ -47,12 +55,12 @@ const Resume = () => {
           </Filter>
           <Filter>
             <span>경력</span>
-            <Select width="10rem">
+            <Select width="12.5rem">
               <Select.TriggerButton />
               <Select.OptionList>
                 {yearOptions.map((option) => {
                   return (
-                    <Select.OptionItem key={option.value} value={option.value} label={option.label}>
+                    <Select.OptionItem key={option.value} value={option.value} name={option.label}>
                       {option.label}
                     </Select.OptionItem>
                   );
@@ -68,61 +76,11 @@ const Resume = () => {
       </MainHeader>
 
       <ResumeList>
-        <ResumeItem
-          id={1}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={2}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={3}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={4}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={5}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={6}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
+        {resumeList?.map((resume) => {
+          return <ResumeItem key={resume.id} {...resume} />;
+        })}
       </ResumeList>
+      <div ref={setTarget}></div>
     </Main>
   );
 };
