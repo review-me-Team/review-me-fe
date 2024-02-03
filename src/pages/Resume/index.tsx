@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Select } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useResumeList } from '@apis/resumeApi';
 import { Occupation, useOccupationList } from '@apis/utilApi';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
@@ -15,6 +17,16 @@ const Resume = () => {
   const [, setSelectedOccupation] = useState<Occupation | undefined>();
 
   const { data: occupationList } = useOccupationList();
+  const { data: resumeListData, fetchNextPage } = useResumeList();
+
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => fetchNextPage(),
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  const resumeList = resumeListData?.pages.map((page) => page.resumes).flat();
 
   return (
     <Main>
@@ -64,61 +76,11 @@ const Resume = () => {
       </MainHeader>
 
       <ResumeList>
-        <ResumeItem
-          id={1}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={2}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={3}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={4}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={5}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
-        <ResumeItem
-          id={6}
-          title="이력서"
-          writerName="aken-you"
-          writerProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-          year={0}
-          occupation="DevOps System Engineer"
-          createdAt="2023-12-22 15:16:42"
-        />
+        {resumeList?.map((resume) => {
+          return <ResumeItem key={resume.id} {...resume} />;
+        })}
       </ResumeList>
+      <div ref={setTarget}></div>
     </Main>
   );
 };
