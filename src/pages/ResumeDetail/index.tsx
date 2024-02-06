@@ -49,7 +49,14 @@ const ResumeDetail = () => {
             </ResumeInfo>
           </ResumeViewerHeader>
 
-          <PdfViewer file={file} numPages={numPages} onLoadSuccess={setNumPages} width="100%" height="100%" />
+          <PdfViewer
+            showAllPages={false}
+            file={`${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`}
+            numPages={numPages}
+            onLoadSuccess={setNumPages}
+            width="100%"
+            height="100%"
+          />
         </ResumeViewer>
 
         <FeedbackAndQuestion>

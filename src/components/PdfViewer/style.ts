@@ -4,11 +4,9 @@ import styled from 'styled-components';
 const PDFViewerLayout = styled.div<{ $width: string; $height: string }>`
   display: flex;
   justify-content: center;
-  align-items: center;
-  /* width: 24.5rem; */
-  /* height: 15rem; */
   width: ${({ $width }) => $width};
   height: ${({ $height }) => $height};
+  overflow-y: auto;
   border: 1px solid ${theme.color.accent.bd.weak};
 `;
 
