@@ -53,6 +53,7 @@ const ResumeDetail = () => {
             showAllPages={false}
             file={`${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`}
             numPages={numPages}
+            pageNum={1}
             onLoadSuccess={setNumPages}
             width="100%"
             height="100%"

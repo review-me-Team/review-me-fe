@@ -10,24 +10,37 @@ interface Props {
   showAllPages: boolean;
   file?: File | string;
   numPages: number;
+  pageNum?: number;
   onLoadSuccess: (numPages: number) => void;
   width?: string;
   height: string;
 }
 
-const PdfViewer = ({ showAllPages, file, onLoadSuccess, numPages, width = '100%', height }: Props) => {
+const PdfViewer = ({
+  showAllPages,
+  file,
+  onLoadSuccess,
+  numPages,
+  pageNum,
+  width = '100%',
+  height,
+}: Props) => {
   return (
     <PDFViewerLayout $width={width} $height={height}>
       <PDFViewerContainer>
         <Document file={file} onLoadSuccess={({ numPages }) => onLoadSuccess(numPages)}>
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              renderAnnotationLayer={false}
-              renderTextLayer={false}
-            />
-          ))}
+          {showAllPages ? (
+            Array.from(new Array(numPages), (el, index) => (
+              <Page
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+                renderAnnotationLayer={false}
+                renderTextLayer={false}
+              />
+            ))
+          ) : (
+            <Page pageNumber={pageNum} renderAnnotationLayer={false} renderTextLayer={false} />
+          )}
         </Document>
       </PDFViewerContainer>
     </PDFViewerLayout>
