@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Label, Textarea } from 'review-me-design-system';
+import { Button, Icon, Label, Textarea } from 'review-me-design-system';
+import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import {
@@ -22,13 +23,20 @@ import {
   ReplyList,
   ReplyForm,
   ResumeViewer,
+  PdfViewerContainer,
+  PdfViewerInfo,
+  PdfPagesInfo,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const [file, setFile] = useState<File | undefined>();
-  const [numPages, setNumPages] = useState<number>(1);
+  // * 초기값 임시로 설정
+  const [file, setFile] = useState<string | undefined>(
+    `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
+  );
+  const [numPages, setNumPages] = useState<number>();
+  const [currentPageNum, setCurrentPageNum] = useState<number>(1);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   return (
@@ -49,15 +57,40 @@ const ResumeDetail = () => {
             </ResumeInfo>
           </ResumeViewerHeader>
 
-          <PdfViewer
-            showAllPages={false}
-            file={`${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`}
-            numPages={numPages}
-            pageNum={1}
-            onLoadSuccess={setNumPages}
-            width="100%"
-            height="100%"
-          />
+          <PdfViewerContainer>
+            <PdfViewerInfo>
+              <PdfPagesInfo>
+                current: {currentPageNum} / {numPages}
+              </PdfPagesInfo>
+              <ButtonGroup height="2rem">
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (currentPageNum > 1) setCurrentPageNum(currentPageNum - 1);
+                  }}
+                >
+                  <Icon iconName="leftArrow" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button>
+                  <Icon iconName="plus" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button>
+                  <Icon iconName="minus" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button>
+                  <Icon iconName="rightArrow" width={24} height={24} />
+                </ButtonGroup.Button>
+              </ButtonGroup>
+            </PdfViewerInfo>
+            <PdfViewer
+              showAllPages={false}
+              file={file}
+              numPages={numPages}
+              pageNum={currentPageNum}
+              onLoadSuccess={setNumPages}
+              width="100%"
+              height="100%"
+            />
+          </PdfViewerContainer>
         </ResumeViewer>
 
         <FeedbackAndQuestion>

@@ -87,6 +87,34 @@ const Career = styled.span`
 `;
 
 // * Main 중간: pdf, 피드백, 예상질문
+const PdfViewerContainer = styled.div`
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+`;
+
+const PdfViewerInfo = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  z-index: ${theme.zIndex.floating};
+`;
+
+const PdfPagesInfo = styled.span`
+  display: flex;
+  align-items: center;
+  padding: 0 0.25rem;
+
+  border-radius: 0.5rem;
+  background-color: ${theme.color.accent.bg.default};
+
+  ${theme.font.body.default}
+  color: ${theme.color.neutral.text.weak};
+`;
 
 const FeedbackAndQuestion = styled.aside`
   display: flex;
@@ -185,6 +213,9 @@ export {
   WriterInfo,
   Career,
   ResumeContentWrapper,
+  PdfViewerContainer,
+  PdfViewerInfo,
+  PdfPagesInfo,
   FeedbackAndQuestion,
   TabList,
   Tab,
