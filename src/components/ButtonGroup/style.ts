@@ -24,6 +24,8 @@ const Button = styled.button`
 
   border-right: 1px solid ${theme.color.accent.bd.weak};
   background-color: ${theme.color.neutral.bg.default};
+
+  cursor: pointer;
 `;
 
 export { ButtonGroupLayout, Button };
