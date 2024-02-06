@@ -9,7 +9,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 interface Props {
   showAllPages: boolean;
   file?: File | string;
-  numPages: number;
+  numPages?: number;
   pageNum?: number;
   onLoadSuccess: (numPages: number) => void;
   width?: string;
