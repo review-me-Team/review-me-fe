@@ -76,7 +76,12 @@ const ResumeDetail = () => {
                 <ButtonGroup.Button>
                   <Icon iconName="minus" width={24} height={24} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (!numPages) return;
+                    if (currentPageNum < numPages) setCurrentPageNum(currentPageNum + 1);
+                  }}
+                >
                   <Icon iconName="rightArrow" width={24} height={24} />
                 </ButtonGroup.Button>
               </ButtonGroup>
