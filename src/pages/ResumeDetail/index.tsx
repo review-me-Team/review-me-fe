@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Label, Textarea } from 'review-me-design-system';
+import { Button, Icon, Label, Textarea } from 'review-me-design-system';
+import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import {
@@ -22,13 +23,26 @@ import {
   ReplyList,
   ReplyForm,
   ResumeViewer,
+  PdfViewerContainer,
+  PdfViewerInfo,
+  PdfPagesInfo,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const [file, setFile] = useState<File | undefined>();
-  const [numPages, setNumPages] = useState<number>(1);
+  // * 초기값 임시로 설정
+  const INIT_CURRENT_PAGE_NUM = 1;
+  const INIT_SCALE = 1.2;
+  const MAX_SCALE = 2;
+  const MIN_SCALE = 0.6;
+  const SCALE_STEP = 0.2;
+  const [file, setFile] = useState<string | undefined>(
+    `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
+  );
+  const [numPages, setNumPages] = useState<number>();
+  const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
+  const [scale, setScale] = useState<number>(INIT_SCALE);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   return (
@@ -49,7 +63,58 @@ const ResumeDetail = () => {
             </ResumeInfo>
           </ResumeViewerHeader>
 
-          <PdfViewer file={file} numPages={numPages} onLoadSuccess={setNumPages} width="100%" height="100%" />
+          <PdfViewerContainer>
+            <PdfViewerInfo>
+              <PdfPagesInfo>
+                current: {currentPageNum} / {numPages}
+              </PdfPagesInfo>
+              <ButtonGroup height="2rem">
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (currentPageNum > 1) setCurrentPageNum(currentPageNum - 1);
+                  }}
+                >
+                  <Icon iconName="leftArrow" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale < MAX_SCALE) {
+                      setScale((scale) => Math.round((scale + SCALE_STEP) * 10) / 10);
+                    }
+                  }}
+                >
+                  <Icon iconName="plus" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale > MIN_SCALE) {
+                      setScale((scale) => Math.round((scale - SCALE_STEP) * 10) / 10);
+                    }
+                  }}
+                >
+                  <Icon iconName="minus" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (!numPages) return;
+                    if (currentPageNum < numPages) setCurrentPageNum(currentPageNum + 1);
+                  }}
+                >
+                  <Icon iconName="rightArrow" width={24} height={24} />
+                </ButtonGroup.Button>
+              </ButtonGroup>
+            </PdfViewerInfo>
+            <PdfViewer
+              showAllPages={false}
+              file={file}
+              numPages={numPages}
+              scale={scale}
+              pageNum={currentPageNum}
+              onLoadSuccess={setNumPages}
+              width="100%"
+              height="100%"
+            />
+          </PdfViewerContainer>
         </ResumeViewer>
 
         <FeedbackAndQuestion>

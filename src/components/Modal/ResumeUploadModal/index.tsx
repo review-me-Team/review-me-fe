@@ -107,7 +107,7 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
   const [selectedOccupation, setSelectedOccupation] = useState<Occupation | undefined>();
 
   const [file, setFile] = useState<File | undefined>();
-  const [numPages, setNumPages] = useState<number>();
+  const [numPages, setNumPages] = useState<number>(1);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -135,17 +135,17 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
         <Field>
           <Label htmlFor="scope">공개 범위</Label>
           <Select
-            defaultOption={{ value: scopeList[0].id, label: scopeList[0].scope }}
+            defaultOption={{ value: scopeList[0].id, name: scopeList[0].scope }}
             onSelectOption={(option) => {
-              if (option && typeof option.label === 'string')
-                setSelectedScope({ id: option.value, scope: option.label });
+              if (option && typeof option.name === 'string')
+                setSelectedScope({ id: option.value, scope: option.name });
             }}
           >
             <Select.TriggerButton />
             <Select.OptionList>
               {scopeList.map(({ id, scope }) => {
                 return (
-                  <Select.OptionItem key={id} value={id} label={scope}>
+                  <Select.OptionItem key={id} value={id} name={scope}>
                     {scope}
                   </Select.OptionItem>
                 );
@@ -158,15 +158,15 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
           <Label htmlFor="occupation">직군</Label>
           <Select
             onSelectOption={(option) => {
-              if (option && typeof option.label === 'string')
-                setSelectedOccupation({ id: option.value, occupation: option.label });
+              if (option && typeof option.name === 'string')
+                setSelectedOccupation({ id: option.value, occupation: option.name });
             }}
           >
             <Select.TriggerButton />
             <Select.OptionList maxHeight="8.25rem">
               {occupations.map(({ id, occupation }) => {
                 return (
-                  <Select.OptionItem key={id} value={id} label={occupation}>
+                  <Select.OptionItem key={id} value={id} name={occupation}>
                     {occupation}
                   </Select.OptionItem>
                 );
@@ -193,7 +193,13 @@ const ResumeUploadModal = ({ isOpen, onClose }: Props) => {
           <FileName>{file?.name}</FileName>
         </Field>
 
-        <PdfViewer file={file} numPages={numPages} onLoadSuccess={setNumPages} height="15rem" />
+        <PdfViewer
+          showAllPages={true}
+          file={file}
+          numPages={numPages}
+          onLoadSuccess={setNumPages}
+          height="15rem"
+        />
 
         <ButtonContainer>
           <Button variant="outline" size="m" onClick={onClose} width="36%">
