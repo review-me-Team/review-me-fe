@@ -80,7 +80,13 @@ const ResumeDetail = () => {
                 >
                   <Icon iconName="plus" width={24} height={24} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale > 0.6) {
+                      setScale((scale) => Math.round((scale - 0.2) * 10) / 10);
+                    }
+                  }}
+                >
                   <Icon iconName="minus" width={24} height={24} />
                 </ButtonGroup.Button>
                 <ButtonGroup.Button
