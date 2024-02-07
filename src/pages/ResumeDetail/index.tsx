@@ -37,6 +37,7 @@ const ResumeDetail = () => {
   );
   const [numPages, setNumPages] = useState<number>();
   const [currentPageNum, setCurrentPageNum] = useState<number>(1);
+  const [scale, setScale] = useState<number>(1.4);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   return (
@@ -70,7 +71,13 @@ const ResumeDetail = () => {
                 >
                   <Icon iconName="leftArrow" width={24} height={24} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale < 2) {
+                      setScale((scale) => Math.round((scale + 0.2) * 10) / 10);
+                    }
+                  }}
+                >
                   <Icon iconName="plus" width={24} height={24} />
                 </ButtonGroup.Button>
                 <ButtonGroup.Button>
@@ -90,6 +97,7 @@ const ResumeDetail = () => {
               showAllPages={false}
               file={file}
               numPages={numPages}
+              scale={scale}
               pageNum={currentPageNum}
               onLoadSuccess={setNumPages}
               width="100%"
