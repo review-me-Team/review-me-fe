@@ -32,12 +32,17 @@ type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
   // * 초기값 임시로 설정
+  const INIT_CURRENT_PAGE_NUM = 1;
+  const INIT_SCALE = 1.2;
+  const MAX_SCALE = 2;
+  const MIN_SCALE = 0.6;
+  const SCALE_STEP = 0.2;
   const [file, setFile] = useState<string | undefined>(
     `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
   );
   const [numPages, setNumPages] = useState<number>();
-  const [currentPageNum, setCurrentPageNum] = useState<number>(1);
-  const [scale, setScale] = useState<number>(1.4);
+  const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
+  const [scale, setScale] = useState<number>(INIT_SCALE);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   return (
@@ -73,8 +78,8 @@ const ResumeDetail = () => {
                 </ButtonGroup.Button>
                 <ButtonGroup.Button
                   onClick={() => {
-                    if (scale < 2) {
-                      setScale((scale) => Math.round((scale + 0.2) * 10) / 10);
+                    if (scale < MAX_SCALE) {
+                      setScale((scale) => Math.round((scale + SCALE_STEP) * 10) / 10);
                     }
                   }}
                 >
@@ -82,8 +87,8 @@ const ResumeDetail = () => {
                 </ButtonGroup.Button>
                 <ButtonGroup.Button
                   onClick={() => {
-                    if (scale > 0.6) {
-                      setScale((scale) => Math.round((scale - 0.2) * 10) / 10);
+                    if (scale > MIN_SCALE) {
+                      setScale((scale) => Math.round((scale - SCALE_STEP) * 10) / 10);
                     }
                   }}
                 >
