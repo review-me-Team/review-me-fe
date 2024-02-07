@@ -11,17 +11,9 @@ const PDFViewerLayout = styled.div<{ $width: string; $height: string }>`
 `;
 
 const PDFViewerContainer = styled.div`
+  width: 100%;
   height: 100%;
   overflow-y: auto;
-
-  & div.react-pdf__Page {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  & canvas.react-pdf__Page__canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
 `;
 
 export { PDFViewerLayout, PDFViewerContainer };
