@@ -12,6 +12,7 @@ interface Props {
   numPages?: number;
   pageNum?: number;
   onLoadSuccess: (numPages: number) => void;
+  scale?: number;
   width?: string;
   height: string;
 }
@@ -22,6 +23,7 @@ const PdfViewer = ({
   onLoadSuccess,
   numPages,
   pageNum,
+  scale = 1,
   width = '100%',
   height,
 }: Props) => {
@@ -34,12 +36,13 @@ const PdfViewer = ({
               <Page
                 key={`page_${index + 1}`}
                 pageNumber={index + 1}
+                scale={scale}
                 renderAnnotationLayer={false}
                 renderTextLayer={false}
               />
             ))
           ) : (
-            <Page pageNumber={pageNum} renderAnnotationLayer={false} renderTextLayer={false} />
+            <Page pageNumber={pageNum} scale={scale} renderAnnotationLayer={false} renderTextLayer={false} />
           )}
         </Document>
       </PDFViewerContainer>
