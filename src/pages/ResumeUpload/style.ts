@@ -27,6 +27,11 @@ const ResumeUploadContainer = styled.div`
 
 const ResumeUploadFormContainer = styled.div`
   display: flex;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 `;
 
 const ResumeUploadForm = styled.form`
@@ -36,6 +41,12 @@ const ResumeUploadForm = styled.form`
   align-items: flex-end;
   width: 45%;
   margin-left: 1rem;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    gap: 0.5rem;
+    margin-left: 0;
+  }
 `;
 
 const Description = styled.div`

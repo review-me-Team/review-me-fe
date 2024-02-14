@@ -1,6 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Button, Icon, Input, Select } from 'review-me-design-system';
 import PdfViewer from '@components/PdfViewer';
+import useMediaQuery from '@hooks/useMediaQuery';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
 import { PageMain } from '@styles/common';
 import {
@@ -20,6 +21,8 @@ import {
 const ResumeUpload = () => {
   const [file, setFile] = useState<File | undefined>();
   const [numPages, setNumPages] = useState<number>(1);
+
+  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
   const [, setSelectedOccupation] = useState<Occupation | undefined>();
   const [, setSelectedScope] = useState<Scope | undefined>();
@@ -51,28 +54,43 @@ const ResumeUpload = () => {
         </Description>
 
         <ResumeUploadFormContainer>
+          {isMDevice && (
+            <Field>
+              <FileLabel htmlFor="file">파일 선택</FileLabel>
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
+            </Field>
+          )}
           <PdfViewer
             showAllPages={true}
             file={file}
             numPages={numPages}
             onLoadSuccess={setNumPages}
-            width="55%"
+            width={isMDevice ? '100%' : '55%'}
             height="35rem"
           />
 
           <ResumeUploadForm onSubmit={handleSubmit}>
             <FieldContainer>
-              <Field>
-                <FileLabel htmlFor="file">파일 선택</FileLabel>
-                <input
-                  type="file"
-                  id="file"
-                  name="file"
-                  accept=".pdf"
-                  style={{ display: 'none' }}
-                  onChange={handleFileChange}
-                />
-              </Field>
+              {!isMDevice && (
+                <Field>
+                  <FileLabel htmlFor="file">파일 선택</FileLabel>
+                  <input
+                    type="file"
+                    id="file"
+                    name="file"
+                    accept=".pdf"
+                    style={{ display: 'none' }}
+                    onChange={handleFileChange}
+                  />
+                </Field>
+              )}
 
               <Field>
                 <Label htmlFor="title">제목</Label>
