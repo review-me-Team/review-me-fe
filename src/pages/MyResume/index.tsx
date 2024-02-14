@@ -1,18 +1,18 @@
 import React from 'react';
-import { Button, useModal } from 'review-me-design-system';
-import ResumeUploadModal from '@components/Modal/ResumeUploadModal';
+import { useNavigate } from 'react-router-dom';
+import { Button } from 'review-me-design-system';
 import MyResumeItem from '@components/MyResumeItem';
+import { ROUTE_PATH } from '@constants';
 import { Main, MyResumeList } from './style';
 
 const MyResume = () => {
-  const { isOpen: isOpenUploadModal, open: openUploadModal, close: closeUploadModal } = useModal();
+  const navigate = useNavigate();
 
   return (
     <Main>
-      <Button variant="default" size="m" onClick={openUploadModal}>
+      <Button variant="default" size="m" onClick={() => navigate(ROUTE_PATH.RESUME_UPLOAD)}>
         이력서 pdf 올리기
       </Button>
-      <ResumeUploadModal isOpen={isOpenUploadModal} onClose={closeUploadModal} />
 
       <MyResumeList>
         <MyResumeItem
