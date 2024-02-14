@@ -3,6 +3,7 @@ export const ROUTE_PATH = {
   MY_PAGE: '/my-page',
   RESUME: '/resume',
   MY_RESUME: '/my-resume',
+  RESUME_UPLOAD: '/resume-upload',
 } as const;
 
 const BASE_URL = process.env.BASE_URL;
