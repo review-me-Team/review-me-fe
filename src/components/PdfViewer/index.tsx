@@ -37,7 +37,7 @@ const PdfViewer = ({
                 key={`page_${index + 1}`}
                 pageNumber={index + 1}
                 scale={scale}
-                renderAnnotationLayer={false}
+                renderAnnotationLayer={true}
                 renderTextLayer={false}
               />
             ))
