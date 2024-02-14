@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Icon, Input, Select } from 'review-me-design-system';
 import PdfViewer from '@components/PdfViewer';
 import useMediaQuery from '@hooks/useMediaQuery';
@@ -19,6 +20,8 @@ import {
 } from './style';
 
 const ResumeUpload = () => {
+  const navigate = useNavigate();
+
   const [file, setFile] = useState<File | undefined>();
   const [numPages, setNumPages] = useState<number>(1);
 
@@ -42,7 +45,7 @@ const ResumeUpload = () => {
 
   return (
     <PageMain>
-      <IconButton>
+      <IconButton onClick={() => navigate(-1)}>
         <Icon iconName="leftArrow" />
         <span>뒤로</span>
       </IconButton>
