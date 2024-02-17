@@ -1,3 +1,4 @@
+import { theme } from 'review-me-design-system';
 import styled, { css } from 'styled-components';
 
 export const ellipsisStyles = css`
@@ -22,4 +23,22 @@ export const PageMain = styled.main`
     width: 90%;
     margin: 0.5rem auto;
   }
+`;
+
+export const PdfViewerContainer = styled.div<{ $width?: string }>`
+  position: relative;
+  width: ${({ $width }) => $width || '100%'};
+  height: 100%;
+  overflow-y: auto;
+`;
+
+export const PdfViewerInfo = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  z-index: ${theme.zIndex.floating};
 `;

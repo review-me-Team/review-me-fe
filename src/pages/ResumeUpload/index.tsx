@@ -1,10 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icon, Input, Select } from 'review-me-design-system';
+import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
-import { PageMain } from '@styles/common';
+import { PageMain, PdfViewerContainer, PdfViewerInfo } from '@styles/common';
+import { PDF_VIEWER_SCALE } from '@constants';
 import {
   ResumeUploadContainer,
   IconButton,
@@ -24,6 +26,7 @@ const ResumeUpload = () => {
 
   const [file, setFile] = useState<File | undefined>();
   const [numPages, setNumPages] = useState<number>(1);
+  const [scale, setScale] = useState<number>(PDF_VIEWER_SCALE.INIT_SCALE);
 
   const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
@@ -70,14 +73,38 @@ const ResumeUpload = () => {
               />
             </Field>
           )}
-          <PdfViewer
-            showAllPages={true}
-            file={file}
-            numPages={numPages}
-            onLoadSuccess={setNumPages}
-            width={isMDevice ? '100%' : '55%'}
-            height="35rem"
-          />
+          <PdfViewerContainer $width={isMDevice ? '100%' : '55%'}>
+            <PdfViewerInfo>
+              <ButtonGroup height="2rem">
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale < PDF_VIEWER_SCALE.MAX_SCALE) {
+                      setScale((scale) => Math.round((scale + PDF_VIEWER_SCALE.SCALE_STEP) * 10) / 10);
+                    }
+                  }}
+                >
+                  <Icon iconName="plus" width={24} height={24} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button
+                  onClick={() => {
+                    if (scale > PDF_VIEWER_SCALE.MIN_SCALE) {
+                      setScale((scale) => Math.round((scale - PDF_VIEWER_SCALE.SCALE_STEP) * 10) / 10);
+                    }
+                  }}
+                >
+                  <Icon iconName="minus" width={24} height={24} />
+                </ButtonGroup.Button>
+              </ButtonGroup>
+            </PdfViewerInfo>
+            <PdfViewer
+              showAllPages={true}
+              file={file}
+              numPages={numPages}
+              scale={scale}
+              onLoadSuccess={setNumPages}
+              height="35rem"
+            />
+          </PdfViewerContainer>
 
           <ResumeUploadForm onSubmit={handleSubmit}>
             <FieldContainer>
