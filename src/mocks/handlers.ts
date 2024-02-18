@@ -50,6 +50,22 @@ export const handlers = [
       status: 404,
     });
   }),
+  http.post(REQUEST_URL.RESUME, async ({ request }) => {
+    const data = await request.formData();
+    const title = data.get('title');
+    const year = data.get('year');
+    const scopeId = data.get('scopeId');
+    const occupationId = data.get('occupationId');
+    const pdf = data.get('pdf');
+
+    if (!title || !year || !scopeId || !occupationId || !pdf) {
+      return new HttpResponse('Required data was not provided.', { status: 400 });
+    }
+
+    return HttpResponse.json({
+      data: { id: 1 },
+    });
+  }),
 
   // * comment
   http.get(`${REQUEST_URL.RESUME}/:resumeId/comment`, ({ request }) => {
