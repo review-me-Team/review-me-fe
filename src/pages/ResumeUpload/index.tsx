@@ -4,6 +4,7 @@ import { Button, Icon, Input, Select } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
 import useMediaQuery from '@hooks/useMediaQuery';
+import { usePostResume } from '@apis/resumeApi';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
 import { PageMain, PdfViewerContainer, PdfViewerInfo } from '@styles/common';
 import { PDF_VIEWER_SCALE } from '@constants';
@@ -30,8 +31,11 @@ const ResumeUpload = () => {
 
   const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
-  const [, setSelectedOccupation] = useState<Occupation | undefined>();
-  const [, setSelectedScope] = useState<Scope | undefined>();
+  const [title, setTitle] = useState<string>('');
+  const [selectedOccupation, setSelectedOccupation] = useState<Occupation | undefined>();
+  const [selectedScope, setSelectedScope] = useState<Scope | undefined>();
+  const [year, setYear] = useState<number | undefined>();
+  const { mutate } = usePostResume();
 
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
@@ -44,6 +48,15 @@ const ResumeUpload = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!file || !selectedOccupation || !selectedScope || title.length === 0 || !year) return;
+
+    mutate({
+      title,
+      pdf: file,
+      scopeId: selectedScope.id,
+      occupationId: selectedOccupation.id,
+      year,
+    });
   };
 
   return (
@@ -124,7 +137,7 @@ const ResumeUpload = () => {
 
               <Field>
                 <Label htmlFor="title">제목</Label>
-                <Input id="title" name="title" />
+                <Input id="title" name="title" onChange={(e) => setTitle(e.target.value)} />
               </Field>
 
               <Field>
@@ -132,8 +145,8 @@ const ResumeUpload = () => {
                 <Select
                   width="100%"
                   onSelectOption={(option) => {
-                    if (option && typeof option.name === 'number' && typeof option.value === 'string')
-                      setSelectedScope({ id: option.name, scope: option.value });
+                    if (option && typeof option.name === 'string' && typeof option.value === 'number')
+                      setSelectedScope({ id: option.value, scope: option.name });
                   }}
                 >
                   <Select.TriggerButton height="2.875rem" />
@@ -154,8 +167,8 @@ const ResumeUpload = () => {
                 <Select
                   width="100%"
                   onSelectOption={(option) => {
-                    if (option && typeof option.name === 'number' && typeof option.value === 'string')
-                      setSelectedOccupation({ id: option.name, occupation: option.value });
+                    if (option && typeof option.name === 'string' && typeof option.value === 'number')
+                      setSelectedOccupation({ id: option.value, occupation: option.name });
                   }}
                 >
                   <Select.TriggerButton height="2.875rem" />
@@ -173,7 +186,14 @@ const ResumeUpload = () => {
 
               <Field>
                 <Label htmlFor="year">재직 기간</Label>
-                <Input type="number" id="year" name="year" placeholder="신입일 경우 0 입력" min={0} />
+                <Input
+                  type="number"
+                  id="year"
+                  name="year"
+                  placeholder="신입일 경우 0 입력"
+                  min={0}
+                  onChange={(e) => setYear(e.target.valueAsNumber)}
+                />
               </Field>
             </FieldContainer>
 
