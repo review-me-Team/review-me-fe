@@ -7,6 +7,7 @@ import MyPage from '@pages/MyPage';
 import MyResume from '@pages/MyResume';
 import Resume from '@pages/Resume';
 import ResumeDetail from '@pages/ResumeDetail';
+import ResumeUpload from '@pages/ResumeUpload';
 import { ROUTE_PATH } from '@constants';
 
 const router = createBrowserRouter([
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: ROUTE_PATH.RESUME, element: <Resume /> },
       { path: `${ROUTE_PATH.RESUME}/:id`, element: <ResumeDetail /> },
       { path: ROUTE_PATH.MY_RESUME, element: <MyResume /> },
+      { path: ROUTE_PATH.RESUME_UPLOAD, element: <ResumeUpload /> },
     ],
   },
 ]);

@@ -29,3 +29,31 @@ export const getOccupationList = async () => {
 export const useOccupationList = () => {
   return useQuery({ queryKey: ['occupationList'], queryFn: getOccupationList });
 };
+
+// GET 공개 범위 목록 조회
+export interface Scope {
+  id: number;
+  scope: string;
+}
+
+interface GetScopeList {
+  scopes: Scope[];
+}
+
+export const getScopeList = async () => {
+  const response = await fetch(REQUEST_URL.SCOPE);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const {
+    data: { scopes },
+  }: ApiResponse<GetScopeList> = await response.json();
+
+  return scopes;
+};
+
+export const useScopeList = () => {
+  return useQuery({ queryKey: ['scopeList'], queryFn: getScopeList });
+};
