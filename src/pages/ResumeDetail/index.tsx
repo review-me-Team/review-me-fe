@@ -4,6 +4,7 @@ import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import { useLabelList } from '@apis/utilApi';
+import { PDF_VIEWER_SCALE } from '@constants';
 import {
   Career,
   CommentList,
@@ -33,18 +34,17 @@ import {
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  // * 초기값 임시로 설정
   const INIT_CURRENT_PAGE_NUM = 1;
-  const INIT_SCALE = 1.2;
-  const MAX_SCALE = 2;
-  const MIN_SCALE = 0.6;
-  const SCALE_STEP = 0.2;
+  const { INIT_SCALE, MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
+
   const [file, setFile] = useState<string | undefined>(
     `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
   );
+
   const [numPages, setNumPages] = useState<number>();
   const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
   const [scale, setScale] = useState<number>(INIT_SCALE);
+
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   const [labelContent, setLabelContent] = useState<string>('');
