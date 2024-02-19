@@ -9,7 +9,7 @@ import {
   CommentList,
   FeedbackAndQuestion,
   Form,
-  FeedbackFormContent,
+  FormContent,
   LabelList,
   Main,
   ResumeContentWrapper,
@@ -220,12 +220,12 @@ const ResumeDetail = () => {
                 );
               })}
             </LabelList>
-            <FeedbackFormContent>
+            <FormContent>
               <Textarea placeholder="피드백" />
               <Button variant="default" size="s">
                 작성
               </Button>
-            </FeedbackFormContent>
+            </FormContent>
           </Form>
         </FeedbackAndQuestion>
       </ResumeContentWrapper>

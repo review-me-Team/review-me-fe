@@ -155,7 +155,7 @@ const LabelList = styled.div`
   gap: 0.5rem;
 `;
 
-const FeedbackFormContent = styled.div`
+const FormContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -214,7 +214,7 @@ export {
   TabList,
   Tab,
   Form,
-  FeedbackFormContent,
+  FormContent,
   LabelList,
   CommentList,
   ReplyList,
