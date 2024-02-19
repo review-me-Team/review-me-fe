@@ -84,6 +84,16 @@ export const handlers = [
       },
     });
   }),
+  http.post(`${REQUEST_URL.RESUME}/:resumeId/comment`, async ({ request }) => {
+    const data = await request.formData();
+    const content = data.get('content');
+
+    if (!content) {
+      return new HttpResponse('Required data was not provided.', { status: 400 });
+    }
+
+    return new HttpResponse(null, { status: 201 });
+  }),
 
   // * feedback
   http.get(`${REQUEST_URL.RESUME}/:resumeId/feedback`, ({ request }) => {
