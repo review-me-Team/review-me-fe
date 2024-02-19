@@ -134,6 +134,23 @@ export const handlers = [
       },
     });
   }),
+  http.post(`${REQUEST_URL.RESUME}/:resumeId/question`, async ({ request }) => {
+    const data = await request.formData();
+    const content = data.get('content');
+    const labelId = data.get('labelId');
+    const labelContent = data.get('labelContent');
+    const resumePage = data.get('resumePage');
+
+    // * headers에 authorization이 있는지 확인해야 하는데, 로그인 구현을 안했으므로 생략
+    // * labelContent가 이미 존재한다면, labelId 보내기
+    // * labelContent가 존재하지 않다면, labelContent 보내기
+    // * labelId, labelContent는 선택사항
+    if (!content || !resumePage) {
+      return new HttpResponse('Required data was not provided.', { status: 400 });
+    }
+
+    return new HttpResponse(null, { status: 201 });
+  }),
 
   // * util
   http.get(REQUEST_URL.LABEL, () => {
