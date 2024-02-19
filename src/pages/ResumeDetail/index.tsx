@@ -7,7 +7,7 @@ import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useCommentList } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { useQuestionList } from '@apis/questionApi';
+import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
 import {
@@ -85,6 +85,7 @@ const ResumeDetail = () => {
   });
 
   const { mutate: mutateAboutFeedback } = usePostFeedback();
+  const { mutate: mutateAboutQuestion } = usePostQuestion();
 
   const textareaPlaceholder = {
     feedback: '피드백',
@@ -95,6 +96,7 @@ const ResumeDetail = () => {
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
     setLabelContent('');
+    setLabelId(undefined);
     setComment('');
   };
 
@@ -108,6 +110,16 @@ const ResumeDetail = () => {
         resumeId: Number(resumeId),
         content: comment,
         labelId,
+        resumePage: currentPageNum,
+      });
+    } else if (currentTab === 'question') {
+      if (!comment) return;
+
+      mutateAboutQuestion({
+        resumeId: Number(resumeId),
+        content: comment,
+        labelId,
+        labelContent,
         resumePage: currentPageNum,
       });
     }
