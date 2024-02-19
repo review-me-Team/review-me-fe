@@ -138,10 +138,11 @@ const Tab = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
 `;
 
-const FeedbackForm = styled.form`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 0.75rem;
   padding: 0.75rem 1rem;
 
   box-shadow: rgba(0, 0, 0, 0.07) 0 0 1.25rem;
@@ -149,7 +150,6 @@ const FeedbackForm = styled.form`
 
 const LabelList = styled.div`
   display: flex;
-  margin-bottom: 0.75rem;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
@@ -179,8 +179,6 @@ const ReplyForm = styled.form`
   }
 `;
 
-const QuestionForm = styled.form``;
-
 // * 댓글 관련
 const CommentList = styled.ul`
   display: flex;
@@ -197,10 +195,6 @@ const ReplyList = styled.ul`
 
   background-color: ${theme.palette.green100};
 `;
-
-// * Main 하단: 댓글
-
-const CommentForm = styled.form``;
 
 export {
   Main,
@@ -219,11 +213,10 @@ export {
   FeedbackAndQuestion,
   TabList,
   Tab,
-  FeedbackForm,
+  Form,
   FeedbackFormContent,
   LabelList,
   CommentList,
   ReplyList,
   ReplyForm,
-  CommentForm,
 };

@@ -7,7 +7,7 @@ import {
   Career,
   CommentList,
   FeedbackAndQuestion,
-  FeedbackForm,
+  Form,
   FeedbackFormContent,
   LabelList,
   Main,
@@ -207,7 +207,7 @@ const ResumeDetail = () => {
             </li>
           </CommentList>
 
-          <FeedbackForm>
+          <Form>
             <LabelList>
               {/* todo: label api에서 받아온 데이터로 바꾸기 */}
               <Label isActive={false} py="0.25rem" px="0.75rem">
@@ -229,7 +229,7 @@ const ResumeDetail = () => {
                 작성
               </Button>
             </FeedbackFormContent>
-          </FeedbackForm>
+          </Form>
         </FeedbackAndQuestion>
       </ResumeContentWrapper>
     </Main>
