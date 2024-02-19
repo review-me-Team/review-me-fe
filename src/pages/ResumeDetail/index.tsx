@@ -5,6 +5,7 @@ import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useCommentList } from '@apis/commentApi';
 import { useFeedbackList } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
@@ -63,14 +64,19 @@ const ResumeDetail = () => {
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
   });
+  const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
+    resumeId: Number(resumeId),
+  });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
   const questionList = questionListData?.pages.map((page) => page.questions).flat();
+  const commentList = commentListData?.pages.map((page) => page.comments).flat();
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       if (currentTab === 'feedback') fetchNextPageAboutFeedback();
       else if (currentTab === 'question') fetchNextPageAboutQuestion();
+      else if (currentTab === 'comment') fetchNextPageAboutComment();
     },
     options: {
       threshold: 0.5,
@@ -215,6 +221,14 @@ const ResumeDetail = () => {
                 return (
                   <li key={question.id}>
                     <Comment {...question} />
+                  </li>
+                );
+              })}
+            {currentTab === 'comment' &&
+              commentList?.map((comment) => {
+                return (
+                  <li key={comment.id}>
+                    <Comment {...comment} />
                   </li>
                 );
               })}
