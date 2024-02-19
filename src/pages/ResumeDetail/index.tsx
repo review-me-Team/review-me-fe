@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { FormEvent, MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
@@ -6,7 +6,7 @@ import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useCommentList } from '@apis/commentApi';
-import { useFeedbackList } from '@apis/feedbackApi';
+import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
@@ -52,12 +52,13 @@ const ResumeDetail = () => {
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
+  const [labelId, setLabelId] = useState<number | undefined>();
   const [labelContent, setLabelContent] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
   const { data: labelList } = useLabelList();
 
-  const resumeId = useParams();
+  const { id: resumeId } = useParams();
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
   });
@@ -83,6 +84,8 @@ const ResumeDetail = () => {
     },
   });
 
+  const { mutate: mutateAboutFeedback } = usePostFeedback();
+
   const textareaPlaceholder = {
     feedback: '피드백',
     question: '예상질문',
@@ -93,6 +96,21 @@ const ResumeDetail = () => {
     setCurrentTab(tab);
     setLabelContent('');
     setComment('');
+  };
+
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (currentTab === 'feedback') {
+      if (!comment) return;
+
+      mutateAboutFeedback({
+        resumeId: Number(resumeId),
+        content: comment,
+        labelId,
+        resumePage: currentPageNum,
+      });
+    }
   };
 
   return (
@@ -235,12 +253,18 @@ const ResumeDetail = () => {
             <div ref={setTarget}></div>
           </CommentList>
 
-          <Form>
+          <Form onSubmit={handleFormSubmit}>
             {currentTab === 'feedback' && (
               <LabelList>
                 {labelList?.map(({ id, label }) => {
                   return (
-                    <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
+                    <Label
+                      key={id}
+                      isActive={labelId === id}
+                      py="0.25rem"
+                      px="0.75rem"
+                      onClick={() => setLabelId(id)}
+                    >
                       {label}
                     </Label>
                   );
