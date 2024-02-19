@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 import { Emoji } from './utilApi';
@@ -51,4 +51,42 @@ export const useQuestionList = ({ resumeId }: UseQuestionListProps) => {
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
   });
+};
+
+// POST 예상 질문 추가
+export const postQuestion = async ({
+  resumeId,
+  content,
+  labelId,
+  labelContent,
+  resumePage,
+}: {
+  resumeId: number;
+  content: string;
+  labelId?: number;
+  labelContent?: string;
+  resumePage: number;
+}) => {
+  const formData = new FormData();
+  formData.append('content', content);
+  formData.append('resumePage', String(resumePage));
+  if (labelId) formData.append('labelId', String(labelId));
+  if (labelContent) formData.append('labelContent', labelContent);
+
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data } = await response.json();
+
+  return data;
+};
+
+export const usePostQuestion = () => {
+  return useMutation({ mutationFn: postQuestion });
 };

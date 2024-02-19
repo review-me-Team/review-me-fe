@@ -1,13 +1,13 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { FormEvent, MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useCommentList } from '@apis/commentApi';
-import { useFeedbackList } from '@apis/feedbackApi';
-import { useQuestionList } from '@apis/questionApi';
+import { useCommentList, usePostComment } from '@apis/commentApi';
+import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
+import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
 import {
@@ -52,12 +52,13 @@ const ResumeDetail = () => {
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
+  const [labelId, setLabelId] = useState<number | undefined>();
   const [labelContent, setLabelContent] = useState<string>('');
   const [comment, setComment] = useState<string>('');
 
   const { data: labelList } = useLabelList();
 
-  const resumeId = useParams();
+  const { resumeId } = useParams();
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
   });
@@ -83,16 +84,59 @@ const ResumeDetail = () => {
     },
   });
 
+  const { mutate: mutateAboutFeedback } = usePostFeedback();
+  const { mutate: mutateAboutQuestion } = usePostQuestion();
+  const { mutate: mutateAboutComment } = usePostComment();
+
   const textareaPlaceholder = {
     feedback: '피드백',
     question: '예상질문',
     comment: '댓글',
   };
 
+  const resetForm = () => {
+    setLabelContent('');
+    setLabelId(undefined);
+    setComment('');
+  };
+
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
-    setLabelContent('');
-    setComment('');
+    resetForm();
+  };
+
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (currentTab === 'feedback') {
+      if (!comment) return;
+
+      mutateAboutFeedback({
+        resumeId: Number(resumeId),
+        content: comment,
+        labelId,
+        resumePage: currentPageNum,
+      });
+    } else if (currentTab === 'question') {
+      if (!comment) return;
+
+      mutateAboutQuestion({
+        resumeId: Number(resumeId),
+        content: comment,
+        labelId,
+        labelContent,
+        resumePage: currentPageNum,
+      });
+    } else if (currentTab === 'comment') {
+      if (!comment) return;
+
+      mutateAboutComment({
+        resumeId: Number(resumeId),
+        content: comment,
+      });
+    }
+
+    resetForm();
   };
 
   return (
@@ -235,12 +279,18 @@ const ResumeDetail = () => {
             <div ref={setTarget}></div>
           </CommentList>
 
-          <Form>
+          <Form onSubmit={handleFormSubmit}>
             {currentTab === 'feedback' && (
               <LabelList>
                 {labelList?.map(({ id, label }) => {
                   return (
-                    <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
+                    <Label
+                      key={id}
+                      isActive={labelId === id}
+                      py="0.25rem"
+                      px="0.75rem"
+                      onClick={() => setLabelId(id)}
+                    >
                       {label}
                     </Label>
                   );
@@ -250,7 +300,11 @@ const ResumeDetail = () => {
             {currentTab === 'question' && (
               <>
                 <KeywordLabel>{labelContent}</KeywordLabel>
-                <Input placeholder="예상질문 키워드" onChange={(e) => setLabelContent(e.target.value)} />
+                <Input
+                  placeholder="예상질문 키워드"
+                  value={labelContent}
+                  onChange={(e) => setLabelContent(e.target.value)}
+                />
               </>
             )}
             <FormContent>

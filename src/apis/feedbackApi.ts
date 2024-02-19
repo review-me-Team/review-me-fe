@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 import { Emoji } from './utilApi';
@@ -51,4 +51,40 @@ export const useFeedbackList = ({ resumeId }: UseFeedbackListProps) => {
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
   });
+};
+
+// POST 피드백 작성
+export const postFeedback = async ({
+  resumeId,
+  content,
+  labelId,
+  resumePage,
+}: {
+  resumeId: number;
+  content: string;
+  labelId?: number;
+  resumePage: number;
+}) => {
+  const formData = new FormData();
+  formData.append('content', content);
+  formData.append('resumePage', String(resumePage));
+  if (labelId) formData.append('labelId', String(labelId));
+
+  // todo: request headers에 authorization 추가하기
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data } = await response.json();
+
+  return data;
+};
+
+export const usePostFeedback = () => {
+  return useMutation({ mutationFn: postFeedback });
 };
