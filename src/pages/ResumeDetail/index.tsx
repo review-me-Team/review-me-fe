@@ -5,7 +5,7 @@ import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useCommentList } from '@apis/commentApi';
+import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
 import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
@@ -86,6 +86,7 @@ const ResumeDetail = () => {
 
   const { mutate: mutateAboutFeedback } = usePostFeedback();
   const { mutate: mutateAboutQuestion } = usePostQuestion();
+  const { mutate: mutateAboutComment } = usePostComment();
 
   const textareaPlaceholder = {
     feedback: '피드백',
@@ -121,6 +122,13 @@ const ResumeDetail = () => {
         labelId,
         labelContent,
         resumePage: currentPageNum,
+      });
+    } else if (currentTab === 'comment') {
+      if (!comment) return;
+
+      mutateAboutComment({
+        resumeId: Number(resumeId),
+        content: comment,
       });
     }
   };
