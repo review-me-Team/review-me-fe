@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Icon, Label, Textarea } from 'review-me-design-system';
+import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
@@ -27,6 +27,7 @@ import {
   PdfViewerContainer,
   PdfViewerInfo,
   PdfPagesInfo,
+  KeywordLabel,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
@@ -46,11 +47,13 @@ const ResumeDetail = () => {
   const [scale, setScale] = useState<number>(INIT_SCALE);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
+  const [labelContent, setLabelContent] = useState<string>('');
+
   const { data: labelList } = useLabelList();
 
   const textareaPlaceholder = {
     feedback: '피드백',
-    question: '예상 질문',
+    question: '예상질문',
     comment: '댓글',
   };
 
@@ -227,6 +230,12 @@ const ResumeDetail = () => {
                   );
                 })}
               </LabelList>
+            )}
+            {currentTab === 'question' && (
+              <>
+                <KeywordLabel>{labelContent}</KeywordLabel>
+                <Input placeholder="예상질문 키워드" onChange={(e) => setLabelContent(e.target.value)} />
+              </>
             )}
             <FormContent>
               <Textarea placeholder={textareaPlaceholder[currentTab] || ''} />

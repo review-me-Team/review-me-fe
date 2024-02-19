@@ -179,6 +179,21 @@ const ReplyForm = styled.form`
   }
 `;
 
+const KeywordLabel = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 1.5rem;
+  padding: 0 1rem;
+
+  background: ${theme.color.accent.bg.strong};
+  border-radius: 1rem;
+
+  ${theme.font.label}
+  color: ${theme.color.neutral.text.weak}
+`;
+
 // * 댓글 관련
 const CommentList = styled.ul`
   display: flex;
@@ -215,6 +230,7 @@ export {
   Tab,
   Form,
   FormContent,
+  KeywordLabel,
   LabelList,
   CommentList,
   ReplyList,
