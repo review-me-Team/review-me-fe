@@ -48,6 +48,12 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
+  const textareaPlaceholder = {
+    feedback: '피드백',
+    question: '예상 질문',
+    comment: '댓글',
+  };
+
   return (
     <Main>
       <ResumeContentWrapper>
@@ -211,17 +217,19 @@ const ResumeDetail = () => {
           </CommentList>
 
           <Form>
-            <LabelList>
-              {labelList?.map(({ id, label }) => {
-                return (
-                  <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
-                    {label}
-                  </Label>
-                );
-              })}
-            </LabelList>
+            {currentTab === 'feedback' && (
+              <LabelList>
+                {labelList?.map(({ id, label }) => {
+                  return (
+                    <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
+                      {label}
+                    </Label>
+                  );
+                })}
+              </LabelList>
+            )}
             <FormContent>
-              <Textarea placeholder="피드백" />
+              <Textarea placeholder={textareaPlaceholder[currentTab] || ''} />
               <Button variant="default" size="s">
                 작성
               </Button>
