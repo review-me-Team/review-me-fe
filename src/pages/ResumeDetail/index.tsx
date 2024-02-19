@@ -3,6 +3,7 @@ import { Button, Icon, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
+import { useLabelList } from '@apis/utilApi';
 import {
   Career,
   CommentList,
@@ -44,6 +45,8 @@ const ResumeDetail = () => {
   const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
   const [scale, setScale] = useState<number>(INIT_SCALE);
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
+
+  const { data: labelList } = useLabelList();
 
   return (
     <Main>
@@ -209,19 +212,13 @@ const ResumeDetail = () => {
 
           <Form>
             <LabelList>
-              {/* todo: label api에서 받아온 데이터로 바꾸기 */}
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                프로젝트
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                자기소개
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                협업
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                기타
-              </Label>
+              {labelList?.map(({ id, label }) => {
+                return (
+                  <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
+                    {label}
+                  </Label>
+                );
+              })}
             </LabelList>
             <FeedbackFormContent>
               <Textarea placeholder="피드백" />
