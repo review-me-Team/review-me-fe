@@ -18,7 +18,7 @@ const router = createBrowserRouter([
       { index: true, element: <MainPage /> },
       { path: ROUTE_PATH.MY_PAGE, element: <MyPage /> },
       { path: ROUTE_PATH.RESUME, element: <Resume /> },
-      { path: `${ROUTE_PATH.RESUME}/:id`, element: <ResumeDetail /> },
+      { path: `${ROUTE_PATH.RESUME}/:resumeId`, element: <ResumeDetail /> },
       { path: ROUTE_PATH.MY_RESUME, element: <MyResume /> },
       { path: ROUTE_PATH.RESUME_UPLOAD, element: <ResumeUpload /> },
     ],

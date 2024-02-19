@@ -58,7 +58,7 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
-  const { id: resumeId } = useParams();
+  const { resumeId } = useParams();
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
   });
