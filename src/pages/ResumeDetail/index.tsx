@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
@@ -48,6 +48,7 @@ const ResumeDetail = () => {
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
   const [labelContent, setLabelContent] = useState<string>('');
+  const [comment, setComment] = useState<string>('');
 
   const { data: labelList } = useLabelList();
 
@@ -55,6 +56,12 @@ const ResumeDetail = () => {
     feedback: '피드백',
     question: '예상질문',
     comment: '댓글',
+  };
+
+  const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
+    setCurrentTab(tab);
+    setLabelContent('');
+    setComment('');
   };
 
   return (
@@ -131,13 +138,13 @@ const ResumeDetail = () => {
 
         <FeedbackAndQuestion>
           <TabList>
-            <Tab $isActive={currentTab === 'feedback'} onClick={() => setCurrentTab('feedback')}>
+            <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
               피드백
             </Tab>
-            <Tab $isActive={currentTab === 'question'} onClick={() => setCurrentTab('question')}>
+            <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
               예상질문
             </Tab>
-            <Tab $isActive={currentTab === 'comment'} onClick={() => setCurrentTab('comment')}>
+            <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
               댓글
             </Tab>
           </TabList>
@@ -238,7 +245,11 @@ const ResumeDetail = () => {
               </>
             )}
             <FormContent>
-              <Textarea placeholder={textareaPlaceholder[currentTab] || ''} />
+              <Textarea
+                placeholder={textareaPlaceholder[currentTab] || ''}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
               <Button variant="default" size="s">
                 작성
               </Button>
