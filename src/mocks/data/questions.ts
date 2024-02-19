@@ -9,7 +9,7 @@ export const questions = Array.from({ length: 120 }, (_, idx) => {
     createdAt: '2024-01-27T15:43:09.752Z',
     countOfReplies: 10,
     bookmarked: true,
-    checked: true,
+    checked: false,
     emojis: [
       {
         id: 1,
