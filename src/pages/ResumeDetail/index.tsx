@@ -1,8 +1,13 @@
 import React, { MouseEvent, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useCommentList } from '@apis/commentApi';
+import { useFeedbackList } from '@apis/feedbackApi';
+import { useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
 import {
@@ -51,6 +56,32 @@ const ResumeDetail = () => {
   const [comment, setComment] = useState<string>('');
 
   const { data: labelList } = useLabelList();
+
+  const resumeId = useParams();
+  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
+    resumeId: Number(resumeId),
+  });
+  const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
+    resumeId: Number(resumeId),
+  });
+  const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
+    resumeId: Number(resumeId),
+  });
+
+  const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
+  const questionList = questionListData?.pages.map((page) => page.questions).flat();
+  const commentList = commentListData?.pages.map((page) => page.comments).flat();
+
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      if (currentTab === 'feedback') fetchNextPageAboutFeedback();
+      else if (currentTab === 'question') fetchNextPageAboutQuestion();
+      else if (currentTab === 'comment') fetchNextPageAboutComment();
+    },
+    options: {
+      threshold: 0.5,
+    },
+  });
 
   const textareaPlaceholder = {
     feedback: '피드백',
@@ -150,80 +181,58 @@ const ResumeDetail = () => {
           </TabList>
 
           <CommentList>
-            <li>
-              <Comment
-                content="뭔가 이력서에 문제 해결과 관련된 내용이 부족한 것같아요."
-                commenterId={2}
-                commenterName="acceptor-gyu"
-                commenterProfileUrl="https://avatars.githubusercontent.com/u/71162390?v=4"
-                labelContent="자기소개"
-                createdAt="2023-12-22 15:46:05"
-                countOfReplies={0}
-                checked={false}
-                emojis={[
-                  {
-                    id: 2,
-                    count: 2,
-                  },
-                  {
-                    id: 3,
-                    count: 1,
-                  },
-                ]}
-                myEmojiId={2}
-              />
-              <ReplyList>
-                <Comment
-                  content="프로젝트에서 react-query를 사용하셨는데 사용한 이유가 궁금합니다."
-                  commenterId={1}
-                  writerId={1}
-                  commenterName="aken-you"
-                  commenterProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-                  createdAt="2024-01-24 16:19:37"
-                  emojis={[
-                    {
-                      id: 1,
-                      count: 10,
-                    },
-                    {
-                      id: 2,
-                      count: 3,
-                    },
-                  ]}
-                  myEmojiId={1}
-                />
-                <ReplyForm>
-                  <Textarea placeholder="댓글" />
-                  <Button variant="default" size="s">
-                    작성
-                  </Button>
-                </ReplyForm>
-              </ReplyList>
-            </li>
-
-            <li>
-              <Comment
-                content="뭔가 이력서에 문제 해결과 관련된 내용이 부족한 것같아요."
-                commenterId={2}
-                commenterName="acceptor-gyu"
-                commenterProfileUrl="https://avatars.githubusercontent.com/u/71162390?v=4"
-                labelContent="자기소개"
-                createdAt="2023-12-22 15:46:05"
-                countOfReplies={0}
-                checked={false}
-                emojis={[
-                  {
-                    id: 2,
-                    count: 2,
-                  },
-                  {
-                    id: 3,
-                    count: 1,
-                  },
-                ]}
-                myEmojiId={2}
-              />
-            </li>
+            {currentTab === 'feedback' &&
+              feedbackList?.map((feedback) => {
+                return (
+                  <li key={feedback.id}>
+                    <Comment {...feedback} />
+                    {/* <ReplyList>
+                      <Comment
+                        content="프로젝트에서 react-query를 사용하셨는데 사용한 이유가 궁금합니다."
+                        commenterId={1}
+                        writerId={1}
+                        commenterName="aken-you"
+                        commenterProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
+                        createdAt="2024-01-24 16:19:37"
+                        emojis={[
+                          {
+                            id: 1,
+                            count: 10,
+                          },
+                          {
+                            id: 2,
+                            count: 3,
+                          },
+                        ]}
+                        myEmojiId={1}
+                      />
+                      <ReplyForm>
+                        <Textarea placeholder="댓글" />
+                        <Button variant="default" size="s">
+                          작성
+                        </Button>
+                      </ReplyForm>
+                    </ReplyList> */}
+                  </li>
+                );
+              })}
+            {currentTab === 'question' &&
+              questionList?.map((question) => {
+                return (
+                  <li key={question.id}>
+                    <Comment {...question} />
+                  </li>
+                );
+              })}
+            {currentTab === 'comment' &&
+              commentList?.map((comment) => {
+                return (
+                  <li key={comment.id}>
+                    <Comment {...comment} />
+                  </li>
+                );
+              })}
+            <div ref={setTarget}></div>
           </CommentList>
 
           <Form>
