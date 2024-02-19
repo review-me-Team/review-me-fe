@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Icon, Label, Textarea } from 'review-me-design-system';
+import React, { MouseEvent, useState } from 'react';
+import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
+import { useLabelList } from '@apis/utilApi';
+import { PDF_VIEWER_SCALE } from '@constants';
 import {
   Career,
   CommentList,
   FeedbackAndQuestion,
-  FeedbackForm,
-  FeedbackFormContent,
+  Form,
+  FormContent,
   LabelList,
   Main,
   ResumeContentWrapper,
@@ -26,24 +28,41 @@ import {
   PdfViewerContainer,
   PdfViewerInfo,
   PdfPagesInfo,
+  KeywordLabel,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  // * 초기값 임시로 설정
   const INIT_CURRENT_PAGE_NUM = 1;
-  const INIT_SCALE = 1.2;
-  const MAX_SCALE = 2;
-  const MIN_SCALE = 0.6;
-  const SCALE_STEP = 0.2;
+  const { INIT_SCALE, MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
+
   const [file, setFile] = useState<string | undefined>(
     `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
   );
+
   const [numPages, setNumPages] = useState<number>();
   const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
   const [scale, setScale] = useState<number>(INIT_SCALE);
+
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
+
+  const [labelContent, setLabelContent] = useState<string>('');
+  const [comment, setComment] = useState<string>('');
+
+  const { data: labelList } = useLabelList();
+
+  const textareaPlaceholder = {
+    feedback: '피드백',
+    question: '예상질문',
+    comment: '댓글',
+  };
+
+  const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
+    setCurrentTab(tab);
+    setLabelContent('');
+    setComment('');
+  };
 
   return (
     <Main>
@@ -119,13 +138,13 @@ const ResumeDetail = () => {
 
         <FeedbackAndQuestion>
           <TabList>
-            <Tab $isActive={currentTab === 'feedback'} onClick={() => setCurrentTab('feedback')}>
+            <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
               피드백
             </Tab>
-            <Tab $isActive={currentTab === 'question'} onClick={() => setCurrentTab('question')}>
+            <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
               예상질문
             </Tab>
-            <Tab $isActive={currentTab === 'comment'} onClick={() => setCurrentTab('comment')}>
+            <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
               댓글
             </Tab>
           </TabList>
@@ -207,29 +226,35 @@ const ResumeDetail = () => {
             </li>
           </CommentList>
 
-          <FeedbackForm>
-            <LabelList>
-              {/* todo: label api에서 받아온 데이터로 바꾸기 */}
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                프로젝트
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                자기소개
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                협업
-              </Label>
-              <Label isActive={false} py="0.25rem" px="0.75rem">
-                기타
-              </Label>
-            </LabelList>
-            <FeedbackFormContent>
-              <Textarea placeholder="피드백" />
+          <Form>
+            {currentTab === 'feedback' && (
+              <LabelList>
+                {labelList?.map(({ id, label }) => {
+                  return (
+                    <Label key={id} isActive={false} py="0.25rem" px="0.75rem">
+                      {label}
+                    </Label>
+                  );
+                })}
+              </LabelList>
+            )}
+            {currentTab === 'question' && (
+              <>
+                <KeywordLabel>{labelContent}</KeywordLabel>
+                <Input placeholder="예상질문 키워드" onChange={(e) => setLabelContent(e.target.value)} />
+              </>
+            )}
+            <FormContent>
+              <Textarea
+                placeholder={textareaPlaceholder[currentTab] || ''}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+              />
               <Button variant="default" size="s">
                 작성
               </Button>
-            </FeedbackFormContent>
-          </FeedbackForm>
+            </FormContent>
+          </Form>
         </FeedbackAndQuestion>
       </ResumeContentWrapper>
     </Main>
