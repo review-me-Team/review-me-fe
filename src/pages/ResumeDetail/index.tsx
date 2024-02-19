@@ -6,6 +6,7 @@ import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useFeedbackList } from '@apis/feedbackApi';
+import { useQuestionList } from '@apis/questionApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
 import {
@@ -59,12 +60,17 @@ const ResumeDetail = () => {
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
   });
+  const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
+    resumeId: Number(resumeId),
+  });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
+  const questionList = questionListData?.pages.map((page) => page.questions).flat();
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       if (currentTab === 'feedback') fetchNextPageAboutFeedback();
+      else if (currentTab === 'question') fetchNextPageAboutQuestion();
     },
     options: {
       threshold: 0.5,
@@ -201,6 +207,14 @@ const ResumeDetail = () => {
                         </Button>
                       </ReplyForm>
                     </ReplyList> */}
+                  </li>
+                );
+              })}
+            {currentTab === 'question' &&
+              questionList?.map((question) => {
+                return (
+                  <li key={question.id}>
+                    <Comment {...question} />
                   </li>
                 );
               })}
