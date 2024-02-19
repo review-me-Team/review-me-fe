@@ -94,11 +94,15 @@ const ResumeDetail = () => {
     comment: '댓글',
   };
 
-  const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
-    setCurrentTab(tab);
+  const resetForm = () => {
     setLabelContent('');
     setLabelId(undefined);
     setComment('');
+  };
+
+  const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
+    setCurrentTab(tab);
+    resetForm();
   };
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -131,6 +135,8 @@ const ResumeDetail = () => {
         content: comment,
       });
     }
+
+    resetForm();
   };
 
   return (
@@ -294,7 +300,11 @@ const ResumeDetail = () => {
             {currentTab === 'question' && (
               <>
                 <KeywordLabel>{labelContent}</KeywordLabel>
-                <Input placeholder="예상질문 키워드" onChange={(e) => setLabelContent(e.target.value)} />
+                <Input
+                  placeholder="예상질문 키워드"
+                  value={labelContent}
+                  onChange={(e) => setLabelContent(e.target.value)}
+                />
               </>
             )}
             <FormContent>
