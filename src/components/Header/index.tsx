@@ -86,7 +86,7 @@ const Header = () => {
           </>
         )}
         {!isSMDevice && (
-          <RightContainer>
+          <LeftContainer>
             <ReviewMe>
               <Link to={ROUTE_PATH.ROOT}>review me</Link>
             </ReviewMe>
@@ -96,10 +96,10 @@ const Header = () => {
               </MenuItem>
               <MenuItem>My 이력서</MenuItem>
             </MenuList>
-          </RightContainer>
+          </LeftContainer>
         )}
 
-        <LeftContainer>
+        <RightContainer>
           <IconButton
             onClick={() => {
               // * 로그인 된 상태일 경우 마이페이지로 이동
@@ -111,10 +111,10 @@ const Header = () => {
           </IconButton>
           {!isSMDevice && (
             <Button variant="default" size="s">
-              로그아웃
+              로그인
             </Button>
           )}
-        </LeftContainer>
+        </RightContainer>
       </NavContainer>
     </HeaderLayout>
   );
