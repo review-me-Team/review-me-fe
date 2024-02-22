@@ -8,6 +8,7 @@ import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
 import { usePostQuestion, useQuestionList } from '@apis/questionApi';
+import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
 import { PDF_VIEWER_SCALE } from '@constants';
 import {
@@ -42,6 +43,10 @@ const ResumeDetail = () => {
   const INIT_CURRENT_PAGE_NUM = 1;
   const { INIT_SCALE, MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
 
+  const { resumeId } = useParams();
+
+  const { data: resumeDetail } = useResumeDetail(Number(resumeId));
+
   const [file, setFile] = useState<string | undefined>(
     `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
   );
@@ -58,7 +63,6 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
-  const { resumeId } = useParams();
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
   });
@@ -145,13 +149,15 @@ const ResumeDetail = () => {
         <ResumeViewer>
           <ResumeViewerHeader>
             <ResumeInfo>
-              <Title>네이버 신입 프론트 공채 준비</Title>
+              <Title>{resumeDetail?.title}</Title>
 
               <WriterInfoContainer>
-                <WriterImg />
+                <WriterImg src={resumeDetail?.writerProfileUrl} />
                 <WriterInfo>
-                  <span>aken-you</span>
-                  <Career>Frontend | 신입</Career>
+                  <span>{resumeDetail?.writerName}</span>
+                  <Career>
+                    {resumeDetail?.occupation} | {resumeDetail?.year === 0 ? '신입' : resumeDetail?.year}
+                  </Career>
                 </WriterInfo>
               </WriterInfoContainer>
             </ResumeInfo>
@@ -200,7 +206,7 @@ const ResumeDetail = () => {
             </PdfViewerInfo>
             <PdfViewer
               showAllPages={false}
-              file={file}
+              file={resumeDetail?.resumeUrl}
               numPages={numPages}
               scale={scale}
               pageNum={currentPageNum}
