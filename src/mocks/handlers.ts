@@ -36,7 +36,7 @@ export const handlers = [
 
       return HttpResponse.json({
         data: {
-          resumeUrl: '',
+          resumeUrl: process.env.FAKE_RESUME_URL,
           title,
           writerName,
           writerProfileUrl,
