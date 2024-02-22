@@ -24,21 +24,3 @@ export const PageMain = styled.main`
     margin: 0.5rem auto;
   }
 `;
-
-export const PdfViewerContainer = styled.div<{ $width?: string }>`
-  position: relative;
-  width: ${({ $width }) => $width || '100%'};
-  height: 100%;
-  overflow-y: auto;
-`;
-
-export const PdfViewerInfo = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  z-index: ${theme.zIndex.floating};
-`;
