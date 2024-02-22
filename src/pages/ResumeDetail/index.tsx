@@ -5,12 +5,12 @@ import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import usePdf from '@hooks/usePdf';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
 import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
-import { PDF_VIEWER_SCALE } from '@constants';
 import {
   Career,
   CommentList,
@@ -31,29 +31,19 @@ import {
   ReplyList,
   ReplyForm,
   ResumeViewer,
-  PdfViewerContainer,
-  PdfViewerInfo,
-  PdfPagesInfo,
   KeywordLabel,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const INIT_CURRENT_PAGE_NUM = 1;
-  const { INIT_SCALE, MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
-
   const { resumeId } = useParams();
 
   const { data: resumeDetail } = useResumeDetail(Number(resumeId));
 
-  const [file, setFile] = useState<string | undefined>(
-    `${process.env.BASE_PDF_URL}/ad6c62c6이력서_샘플.pdf`,
-  );
+  const PDF_BUTTON_ICON_SIZE = 24;
 
-  const [numPages, setNumPages] = useState<number>();
-  const [currentPageNum, setCurrentPageNum] = useState<number>(INIT_CURRENT_PAGE_NUM);
-  const [scale, setScale] = useState<number>(INIT_SCALE);
+  const { numPages, currentPageNum, scale, setNumPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf({});
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
@@ -163,58 +153,34 @@ const ResumeDetail = () => {
             </ResumeInfo>
           </ResumeViewerHeader>
 
-          <PdfViewerContainer>
-            <PdfViewerInfo>
-              <PdfPagesInfo>
-                current: {currentPageNum} / {numPages}
-              </PdfPagesInfo>
-              <ButtonGroup height="2rem">
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (currentPageNum > 1) setCurrentPageNum(currentPageNum - 1);
-                  }}
-                >
-                  <Icon iconName="leftArrow" width={24} height={24} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (scale < MAX_SCALE) {
-                      setScale((scale) => Math.round((scale + SCALE_STEP) * 10) / 10);
-                    }
-                  }}
-                >
-                  <Icon iconName="plus" width={24} height={24} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (scale > MIN_SCALE) {
-                      setScale((scale) => Math.round((scale - SCALE_STEP) * 10) / 10);
-                    }
-                  }}
-                >
-                  <Icon iconName="minus" width={24} height={24} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (!numPages) return;
-                    if (currentPageNum < numPages) setCurrentPageNum(currentPageNum + 1);
-                  }}
-                >
-                  <Icon iconName="rightArrow" width={24} height={24} />
-                </ButtonGroup.Button>
-              </ButtonGroup>
-            </PdfViewerInfo>
-            <PdfViewer
-              showAllPages={false}
-              file={resumeDetail?.resumeUrl}
-              numPages={numPages}
-              scale={scale}
-              pageNum={currentPageNum}
-              onLoadSuccess={setNumPages}
-              width="100%"
-              height="100%"
-            />
-          </PdfViewerContainer>
+          <PdfViewer
+            showAllPages={false}
+            file={resumeDetail?.resumeUrl}
+            numPages={numPages}
+            scale={scale}
+            pageNum={currentPageNum}
+            onLoadSuccess={setNumPages}
+            width="100%"
+            height="100%"
+          >
+            <PdfViewer.PdfPagesInfo>
+              current: {currentPageNum} / {numPages}
+            </PdfViewer.PdfPagesInfo>
+            <ButtonGroup height="2rem">
+              <ButtonGroup.Button onClick={prevPage}>
+                <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button onClick={zoomIn}>
+                <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button onClick={zoomOut}>
+                <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button onClick={nextPage}>
+                <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+            </ButtonGroup>
+          </PdfViewer>
         </ResumeViewer>
 
         <FeedbackAndQuestion>
@@ -293,8 +259,8 @@ const ResumeDetail = () => {
                     <Label
                       key={id}
                       isActive={labelId === id}
-                      py="0.25rem"
-                      px="0.75rem"
+                      py="4px"
+                      px="12px"
                       onClick={() => setLabelId(id)}
                     >
                       {label}
