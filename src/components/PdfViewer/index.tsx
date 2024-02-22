@@ -30,7 +30,10 @@ const PdfViewer = ({
   return (
     <PDFViewerLayout $width={width} $height={height}>
       <PDFViewerContainer>
-        <Document file={file} onLoadSuccess={({ numPages }) => onLoadSuccess(numPages)}>
+        <Document
+          file={typeof file === 'string' ? `${process.env.BASE_PDF_URL}/${file}` : file}
+          onLoadSuccess={({ numPages }) => onLoadSuccess(numPages)}
+        >
           {showAllPages ? (
             Array.from(new Array(numPages), (el, index) => (
               <Page
