@@ -1,17 +1,17 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 
-const PdfViewerLayout = styled.div<{ $width?: string }>`
+const PdfViewerLayout = styled.div<{ $width: string; $height: string }>`
   position: relative;
-  width: ${({ $width }) => $width || '100%'};
-  height: 100%;
+  width: ${({ $width }) => $width};
+  height: ${({ $height }) => $height};
   overflow-y: auto;
 `;
 
-const PDFViewerWrapper = styled.div<{ $height: string }>`
+const PDFViewerWrapper = styled.div`
   display: flex;
   justify-content: center;
-  height: ${({ $height }) => $height};
+  height: 100%;
   overflow-y: auto;
   border: 1px solid ${theme.color.accent.bd.weak};
 `;

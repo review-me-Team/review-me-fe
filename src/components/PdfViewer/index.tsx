@@ -20,7 +20,7 @@ interface Props {
   onLoadSuccess: (numPages: number) => void;
   scale?: number;
   width?: string;
-  height: string;
+  height?: string;
   children?: React.ReactNode;
 }
 
@@ -32,13 +32,13 @@ const PdfViewer = ({
   pageNum,
   scale = 1,
   width = '100%',
-  height,
+  height = '100%',
   children,
 }: Props) => {
   return (
-    <PdfViewerLayout $width={width}>
+    <PdfViewerLayout $width={width} $height={height}>
       <PdfViewerInfoContainer>{children}</PdfViewerInfoContainer>
-      <PDFViewerWrapper $height={height}>
+      <PDFViewerWrapper>
         <DocumentWrapper>
           <Document
             file={typeof file === 'string' ? `${process.env.BASE_PDF_URL}/${file}` : file}
