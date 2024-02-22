@@ -4,10 +4,10 @@ import { Button, Icon, Input, Select } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
 import useMediaQuery from '@hooks/useMediaQuery';
+import usePdf from '@hooks/usePdf';
 import { usePostResume } from '@apis/resumeApi';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
-import { PageMain, PdfViewerContainer, PdfViewerInfo } from '@styles/common';
-import { PDF_VIEWER_SCALE } from '@constants';
+import { PageMain } from '@styles/common';
 import {
   ResumeUploadContainer,
   IconButton,
@@ -25,12 +25,12 @@ import {
 const ResumeUpload = () => {
   const navigate = useNavigate();
 
-  const [file, setFile] = useState<File | undefined>();
-  const [numPages, setNumPages] = useState<number>(1);
-  const [scale, setScale] = useState<number>(PDF_VIEWER_SCALE.INIT_SCALE);
+  const PDF_BUTTON_ICON_SIZE = 24;
+  const { numPages, scale, zoomIn, zoomOut, setNumPages } = usePdf({});
 
   const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
+  const [file, setFile] = useState<File | undefined>();
   const [title, setTitle] = useState<string>('');
   const [selectedOccupation, setSelectedOccupation] = useState<Occupation | undefined>();
   const [selectedScope, setSelectedScope] = useState<Scope | undefined>();
@@ -86,38 +86,25 @@ const ResumeUpload = () => {
               />
             </Field>
           )}
-          <PdfViewerContainer $width={isMDevice ? '100%' : '55%'}>
-            <PdfViewerInfo>
-              <ButtonGroup height="2rem">
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (scale < PDF_VIEWER_SCALE.MAX_SCALE) {
-                      setScale((scale) => Math.round((scale + PDF_VIEWER_SCALE.SCALE_STEP) * 10) / 10);
-                    }
-                  }}
-                >
-                  <Icon iconName="plus" width={24} height={24} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button
-                  onClick={() => {
-                    if (scale > PDF_VIEWER_SCALE.MIN_SCALE) {
-                      setScale((scale) => Math.round((scale - PDF_VIEWER_SCALE.SCALE_STEP) * 10) / 10);
-                    }
-                  }}
-                >
-                  <Icon iconName="minus" width={24} height={24} />
-                </ButtonGroup.Button>
-              </ButtonGroup>
-            </PdfViewerInfo>
-            <PdfViewer
-              showAllPages={true}
-              file={file}
-              numPages={numPages}
-              scale={scale}
-              onLoadSuccess={setNumPages}
-              height="35rem"
-            />
-          </PdfViewerContainer>
+
+          <PdfViewer
+            showAllPages={true}
+            file={file}
+            numPages={numPages}
+            scale={scale}
+            onLoadSuccess={setNumPages}
+            width={isMDevice ? '100%' : '55%'}
+            height="35rem"
+          >
+            <ButtonGroup height="2rem">
+              <ButtonGroup.Button onClick={zoomIn}>
+                <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button onClick={zoomOut}>
+                <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+            </ButtonGroup>
+          </PdfViewer>
 
           <ResumeUploadForm onSubmit={handleSubmit}>
             <FieldContainer>

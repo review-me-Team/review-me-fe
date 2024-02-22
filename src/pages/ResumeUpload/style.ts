@@ -25,8 +25,9 @@ const ResumeUploadContainer = styled.div`
   background-color: ${theme.color.neutral.bg.default};
 `;
 
-const ResumeUploadFormContainer = styled.div`
+const ResumeUploadFormContainer = styled.div<{ $width?: string }>`
   display: flex;
+  width: ${({ $width }) => $width || '100%'};
 
   @media screen and (max-width: 768px) {
     flex-direction: column;
