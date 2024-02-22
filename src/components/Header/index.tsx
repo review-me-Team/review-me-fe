@@ -41,6 +41,14 @@ const Header = () => {
     manageBodyScroll(true);
   };
 
+  const CLIENT_ID = process.env.DEV_CLIENT_ID;
+  const REDIRECT_URI = process.env.DEV_REDIRECT_URI;
+  const GITHUB_OAUTH_URI = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
+
+  const handleLogin = () => {
+    window.location.assign(GITHUB_OAUTH_URI);
+  };
+
   return (
     <HeaderLayout>
       <NavContainer>
@@ -77,7 +85,7 @@ const Header = () => {
                 <Button variant="default" size="s">
                   회원 가입
                 </Button>
-                <Button variant="outline" size="s">
+                <Button variant="outline" size="s" onClick={handleLogin}>
                   github으로 로그인
                 </Button>
               </MobileMenuButtonContainer>
@@ -110,7 +118,7 @@ const Header = () => {
             <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
           </IconButton>
           {!isSMDevice && (
-            <Button variant="default" size="s">
+            <Button variant="default" size="s" onClick={handleLogin}>
               로그인
             </Button>
           )}
