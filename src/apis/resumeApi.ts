@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -44,6 +44,32 @@ export const useResumeList = () => {
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
   });
+};
+
+// GET 이력서 상세 조회
+interface GetResumeDetail {
+  resumeUrl: string;
+  title: string;
+  writerName: string;
+  writerProfileUrl: string;
+  occupation: string;
+  year: number;
+}
+
+export const getResumeDetail = async (resumeId: number) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetResumeDetail> = await response.json();
+
+  return data;
+};
+
+export const useResumeDetail = (resumeId: number) => {
+  return useQuery({ queryKey: ['resume', resumeId], queryFn: () => getResumeDetail(resumeId) });
 };
 
 // POST 이력서 업로드
