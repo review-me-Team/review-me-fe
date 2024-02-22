@@ -55,12 +55,7 @@ const PdfViewer = ({
                 />
               ))
             ) : (
-              <Page
-                pageNumber={pageNum}
-                scale={scale}
-                renderAnnotationLayer={false}
-                renderTextLayer={false}
-              />
+              <Page pageNumber={pageNum} scale={scale} renderAnnotationLayer={true} renderTextLayer={false} />
             )}
           </Document>
         </DocumentWrapper>
