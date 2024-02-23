@@ -26,7 +26,7 @@ const ResumeUpload = () => {
   const navigate = useNavigate();
 
   const PDF_BUTTON_ICON_SIZE = 24;
-  const { numPages, scale, zoomIn, zoomOut, setNumPages } = usePdf({});
+  const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
 
   const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
@@ -90,9 +90,9 @@ const ResumeUpload = () => {
           <PdfViewer
             showAllPages={true}
             file={file}
-            numPages={numPages}
+            totalPages={totalPages}
             scale={scale}
-            onLoadSuccess={setNumPages}
+            onLoadSuccess={setTotalPages}
             width={isMDevice ? '100%' : '55%'}
             height="35rem"
           >

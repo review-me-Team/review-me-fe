@@ -43,7 +43,9 @@ const ResumeDetail = () => {
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
-  const { numPages, currentPageNum, scale, setNumPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf({});
+  const { totalPages, currentPageNum, scale, setTotalPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf(
+    {},
+  );
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
@@ -156,15 +158,15 @@ const ResumeDetail = () => {
           <PdfViewer
             showAllPages={false}
             file={resumeDetail?.resumeUrl}
-            numPages={numPages}
+            totalPages={totalPages}
             scale={scale}
             pageNum={currentPageNum}
-            onLoadSuccess={setNumPages}
+            onLoadSuccess={setTotalPages}
             width="100%"
             height="100%"
           >
             <PdfViewer.PdfPagesInfo>
-              current: {currentPageNum} / {numPages}
+              current: {currentPageNum} / {totalPages}
             </PdfViewer.PdfPagesInfo>
             <ButtonGroup height="2rem">
               <ButtonGroup.Button onClick={prevPage}>

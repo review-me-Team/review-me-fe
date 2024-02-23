@@ -8,7 +8,7 @@ interface Props {
 const usePdf = ({ initPageNum = 1 }: Props) => {
   const { INIT_SCALE, MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
 
-  const [numPages, setNumPages] = useState<number>();
+  const [totalPages, setTotalPages] = useState<number>();
   const [currentPageNum, setCurrentPageNum] = useState<number>(initPageNum);
   const [scale, setScale] = useState<number>(INIT_SCALE);
 
@@ -17,8 +17,8 @@ const usePdf = ({ initPageNum = 1 }: Props) => {
   };
 
   const nextPage = () => {
-    if (!numPages) return;
-    if (currentPageNum < numPages) setCurrentPageNum(currentPageNum + 1);
+    if (!totalPages) return;
+    if (currentPageNum < totalPages) setCurrentPageNum(currentPageNum + 1);
   };
 
   const zoomIn = () => {
@@ -34,14 +34,14 @@ const usePdf = ({ initPageNum = 1 }: Props) => {
   };
 
   return {
-    numPages,
+    totalPages,
     currentPageNum,
     scale,
     prevPage,
     nextPage,
     zoomIn,
     zoomOut,
-    setNumPages,
+    setTotalPages,
   };
 };
 

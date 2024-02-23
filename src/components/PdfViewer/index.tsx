@@ -15,9 +15,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 interface Props {
   showAllPages: boolean;
   file?: File | string;
-  numPages?: number;
+  totalPages?: number;
   pageNum?: number;
-  onLoadSuccess: (numPages: number) => void;
+  onLoadSuccess: (totalPages: number) => void;
   scale?: number;
   width?: string;
   height?: string;
@@ -28,7 +28,7 @@ const PdfViewer = ({
   showAllPages,
   file,
   onLoadSuccess,
-  numPages,
+  totalPages,
   pageNum,
   scale = 1,
   width = '100%',
@@ -45,7 +45,7 @@ const PdfViewer = ({
             onLoadSuccess={({ numPages }) => onLoadSuccess(numPages)}
           >
             {showAllPages ? (
-              Array.from(new Array(numPages), (el, index) => (
+              Array.from(new Array(totalPages), (el, index) => (
                 <Page
                   key={`page_${index + 1}`}
                   pageNumber={index + 1}
