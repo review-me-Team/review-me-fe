@@ -13,6 +13,7 @@ const postAuthorizationCode = async (code: string) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ code }),
+    credentials: 'include',
   });
 
   if (!response.ok) {
