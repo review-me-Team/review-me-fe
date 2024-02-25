@@ -21,7 +21,8 @@
       "@utils": ["./utils/index.ts"],
       "@utils/*": ["./utils/*"],
       "@constants": ["./constants/index.ts"],
-      "@constants/*": ["./constants/*"]
+      "@constants/*": ["./constants/*"],
+      "@apis/*": ["./apis/*"]
     }
   },
   "include": ["src/**/*"],

@@ -110,10 +110,11 @@ const Tab = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
 `;
 
-const FeedbackForm = styled.form`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 0.75rem;
   padding: 0.75rem 1rem;
 
   box-shadow: rgba(0, 0, 0, 0.07) 0 0 1.25rem;
@@ -121,13 +122,12 @@ const FeedbackForm = styled.form`
 
 const LabelList = styled.div`
   display: flex;
-  margin-bottom: 0.75rem;
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
 `;
 
-const FeedbackFormContent = styled.div`
+const FormContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -151,7 +151,20 @@ const ReplyForm = styled.form`
   }
 `;
 
-const QuestionForm = styled.form``;
+const KeywordLabel = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 1.5rem;
+  padding: 0 1rem;
+
+  background: ${theme.color.accent.bg.strong};
+  border-radius: 1rem;
+
+  ${theme.font.label}
+  color: ${theme.color.neutral.text.weak}
+`;
 
 // * 댓글 관련
 const CommentList = styled.ul`
@@ -170,10 +183,6 @@ const ReplyList = styled.ul`
   background-color: ${theme.palette.green100};
 `;
 
-// * Main 하단: 댓글
-
-const CommentForm = styled.form``;
-
 export {
   Main,
   ResumeViewer,
@@ -188,11 +197,11 @@ export {
   FeedbackAndQuestion,
   TabList,
   Tab,
-  FeedbackForm,
-  FeedbackFormContent,
+  Form,
+  FormContent,
+  KeywordLabel,
   LabelList,
   CommentList,
   ReplyList,
   ReplyForm,
-  CommentForm,
 };
