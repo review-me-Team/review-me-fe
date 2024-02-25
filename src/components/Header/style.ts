@@ -21,7 +21,7 @@ const NavContainer = styled.nav`
   height: 100%;
 `;
 
-const RightContainer = styled.div`
+const LeftContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4.5rem;
@@ -57,7 +57,7 @@ const MenuItem = styled.li`
   }
 `;
 
-const LeftContainer = styled.div`
+const RightContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 0.75rem;

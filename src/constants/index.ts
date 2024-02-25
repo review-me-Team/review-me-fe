@@ -4,6 +4,7 @@ export const ROUTE_PATH = {
   RESUME: '/resume',
   MY_RESUME: '/my-resume',
   RESUME_UPLOAD: '/resume-upload',
+  SOCIAL_LOGIN: '/path',
 } as const;
 
 const BASE_URL = process.env.BASE_URL;
@@ -15,6 +16,7 @@ export const REQUEST_URL = {
   OCCUPATION: `${BASE_URL}/occupation`,
   EMOJI: `${BASE_URL}/emoji`,
   SCOPE: `${BASE_URL}/scope`,
+  OAUTH: `${BASE_URL}/login/oauth`,
 } as const;
 
 export const PDF_VIEWER_SCALE = {

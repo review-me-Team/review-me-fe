@@ -10,5 +10,9 @@ module.exports = merge(common, {
     open: true,
     historyApiFallback: true,
     hot: true,
+    https: {
+      key: './localhost+2-key.pem',
+      cert: './localhost+2.pem',
+    },
   },
 });
