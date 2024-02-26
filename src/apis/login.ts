@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { useUserContext } from '@contexts/userContext';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse } from './response.types';
 
@@ -26,7 +28,14 @@ const postAuthorizationCode = async (code: string) => {
 };
 
 export const usePostAuthorizationCode = () => {
+  const navigate = useNavigate();
+  const { login } = useUserContext();
+
   return useMutation({
     mutationFn: postAuthorizationCode,
+    onSuccess: ({ jwt }) => {
+      login(jwt);
+      navigate('/');
+    },
   });
 };
