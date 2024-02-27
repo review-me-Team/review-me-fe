@@ -59,9 +59,9 @@ export const useScopeList = () => {
 };
 
 // GET 이모지 목록 조회
-export interface Emoji {
+interface Emoji {
   id: number;
-  count: number;
+  emoji: string;
 }
 
 interface GetEmojiList {

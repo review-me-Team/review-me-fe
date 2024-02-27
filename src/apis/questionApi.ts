@@ -1,7 +1,11 @@
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
-import { Emoji } from './utilApi';
+
+interface Emoji {
+  id: number;
+  count: number;
+}
 
 export interface Question {
   id: number;
@@ -24,8 +28,18 @@ interface GetQuestionList extends PageNationData {
   questions: QuestionList;
 }
 
-export const getQuestionList = async ({ resumeId, pageParam }: { resumeId: number; pageParam: number }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}`);
+export const getQuestionList = async ({
+  resumeId,
+  pageParam,
+  resumePage,
+}: {
+  resumeId: number;
+  pageParam: number;
+  resumePage: number;
+}) => {
+  const response = await fetch(
+    `${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}&resumePage=${resumePage}`,
+  );
 
   if (!response.ok) {
     throw response;
@@ -38,13 +52,14 @@ export const getQuestionList = async ({ resumeId, pageParam }: { resumeId: numbe
 
 interface UseQuestionListProps {
   resumeId: number;
+  resumePage: number;
 }
 
-export const useQuestionList = ({ resumeId }: UseQuestionListProps) => {
+export const useQuestionList = ({ resumeId, resumePage }: UseQuestionListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionList', resumeId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam }),
+    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
