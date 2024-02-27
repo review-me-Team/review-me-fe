@@ -1,7 +1,11 @@
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
-import { Emoji } from './utilApi';
+
+interface Emoji {
+  id: number;
+  count: number;
+}
 
 export interface Comment {
   id: number;
@@ -20,8 +24,18 @@ interface GetCommentList extends PageNationData {
   comments: CommentList;
 }
 
-export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number; pageParam: number }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`);
+export const getCommentList = async ({
+  resumeId,
+  pageParam,
+  resumePage,
+}: {
+  resumeId: number;
+  pageParam: number;
+  resumePage: number;
+}) => {
+  const response = await fetch(
+    `${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}&resumePage=${resumePage}`,
+  );
 
   if (!response.ok) {
     throw response;
@@ -34,13 +48,14 @@ export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number
 
 interface UseCommentListProps {
   resumeId: number;
+  resumePage: number;
 }
 
-export const useCommentList = ({ resumeId }: UseCommentListProps) => {
+export const useCommentList = ({ resumeId, resumePage }: UseCommentListProps) => {
   return useInfiniteQuery({
     queryKey: ['commentList', resumeId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam }),
+    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam, resumePage }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

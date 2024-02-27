@@ -57,12 +57,15 @@ const ResumeDetail = () => {
 
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
+    resumePage: currentPageNum,
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
+    resumePage: currentPageNum,
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
+    resumePage: currentPageNum,
   });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
