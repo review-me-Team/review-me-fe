@@ -55,17 +55,20 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
+  // todo: tab 변경 시 변경된 tab에 해당하는 currentPageNum을 가져오기
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
+    enabled: currentTab === 'feedback',
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
+    enabled: currentTab === 'question',
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
-    resumePage: currentPageNum,
+    enabled: currentTab === 'comment',
   });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
