@@ -16,10 +16,10 @@ export interface Question {
   labelContent: string;
   createdAt: string;
   countOfReplies: number;
-  bookmarked: boolean;
+  bookmarked?: boolean;
   checked: boolean;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
 }
 
 type QuestionList = Question[];
@@ -53,9 +53,10 @@ export const getQuestionList = async ({
 interface UseQuestionListProps {
   resumeId: number;
   resumePage: number;
+  enabled: boolean;
 }
 
-export const useQuestionList = ({ resumeId, resumePage }: UseQuestionListProps) => {
+export const useQuestionList = ({ resumeId, resumePage, enabled }: UseQuestionListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionList', resumeId],
     initialPageParam: 0,
@@ -65,6 +66,7 @@ export const useQuestionList = ({ resumeId, resumePage }: UseQuestionListProps) 
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    enabled,
   });
 };
 
