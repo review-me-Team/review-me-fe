@@ -100,12 +100,22 @@ export const handlers = [
     const url = new URL(request.url);
     const pageNumber = Number(url.searchParams.get('page') || 0);
     const pageSize = Number(url.searchParams.get('size') || 10);
-    const totalCount = feedbacks.length;
-    const lastPage = Math.ceil(totalCount / pageSize);
+    const resumePage = url.searchParams.get('resumePage');
+
+    if (!resumePage) {
+      return new HttpResponse('Required data was not provided.', { status: 400 });
+    }
+
+    const totalCount = feedbacks[resumePage].length;
+    const lastPage = Math.ceil(totalCount / pageSize) - 1;
+
+    if (pageNumber > lastPage) {
+      return new HttpResponse('The provided page number is out of range.', { status: 400 });
+    }
 
     return HttpResponse.json({
       data: {
-        feedbacks: feedbacks.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
+        feedbacks: feedbacks[resumePage].slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
         pageNumber,
         lastPage,
         pageSize,
@@ -131,13 +141,23 @@ export const handlers = [
   http.get(`${REQUEST_URL.RESUME}/:resumeId/question`, ({ request }) => {
     const url = new URL(request.url);
     const pageNumber = Number(url.searchParams.get('page') || 0);
-    const pageSize = 10;
-    const totalCount = questions.length;
-    const lastPage = Math.ceil(totalCount / pageSize);
+    const pageSize = Number(url.searchParams.get('size') || 10);
+    const resumePage = url.searchParams.get('resumePage');
+
+    if (!resumePage) {
+      return new HttpResponse('Required data was not provided.', { status: 400 });
+    }
+
+    const totalCount = questions[resumePage].length;
+    const lastPage = Math.ceil(totalCount / pageSize) - 1;
+
+    if (pageNumber > lastPage) {
+      return new HttpResponse('The provided page number is out of range.', { status: 400 });
+    }
 
     return HttpResponse.json({
       data: {
-        questions: questions.slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
+        questions: questions[resumePage].slice(pageNumber * pageSize, (pageNumber + 1) * pageSize),
         pageNumber,
         lastPage,
         pageSize,
