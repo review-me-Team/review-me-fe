@@ -58,7 +58,7 @@ interface UseQuestionListProps {
 
 export const useQuestionList = ({ resumeId, resumePage, enabled }: UseQuestionListProps) => {
   return useInfiniteQuery({
-    queryKey: ['questionList', resumeId],
+    queryKey: ['questionList', resumeId, resumePage],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage }),
     getNextPageParam: (lastPage) => {
