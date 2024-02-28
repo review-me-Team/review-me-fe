@@ -58,7 +58,7 @@ interface UseFeedbackListProps {
 
 export const useFeedbackList = ({ resumeId, resumePage, enabled }: UseFeedbackListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackList', resumeId],
+    queryKey: ['feedbackList', resumeId, resumePage],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage }),
     getNextPageParam: (lastPage) => {
