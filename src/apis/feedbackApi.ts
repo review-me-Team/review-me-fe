@@ -19,7 +19,7 @@ export interface Feedback {
   countOfReplies: number;
   checked: boolean;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
 }
 
 type FeedbackList = Feedback[];
@@ -53,11 +53,12 @@ export const getFeedbackList = async ({
 interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
+  enabled: boolean;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage }: UseFeedbackListProps) => {
+export const useFeedbackList = ({ resumeId, resumePage, enabled }: UseFeedbackListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackList', resumeId],
+    queryKey: ['feedbackList', resumeId, resumePage],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage }),
     getNextPageParam: (lastPage) => {
@@ -65,6 +66,7 @@ export const useFeedbackList = ({ resumeId, resumePage }: UseFeedbackListProps) 
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    enabled,
   });
 };
 

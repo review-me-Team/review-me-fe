@@ -15,7 +15,7 @@ export interface Comment {
   commenterProfileUrl: string;
   createdAt: string;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
 }
 
 type CommentList = Comment[];
@@ -24,18 +24,8 @@ interface GetCommentList extends PageNationData {
   comments: CommentList;
 }
 
-export const getCommentList = async ({
-  resumeId,
-  pageParam,
-  resumePage,
-}: {
-  resumeId: number;
-  pageParam: number;
-  resumePage: number;
-}) => {
-  const response = await fetch(
-    `${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}&resumePage=${resumePage}`,
-  );
+export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number; pageParam: number }) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`);
 
   if (!response.ok) {
     throw response;
@@ -48,19 +38,20 @@ export const getCommentList = async ({
 
 interface UseCommentListProps {
   resumeId: number;
-  resumePage: number;
+  enabled: boolean;
 }
 
-export const useCommentList = ({ resumeId, resumePage }: UseCommentListProps) => {
+export const useCommentList = ({ resumeId, enabled }: UseCommentListProps) => {
   return useInfiniteQuery({
     queryKey: ['commentList', resumeId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam, resumePage }),
+    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    enabled,
   });
 };
 
