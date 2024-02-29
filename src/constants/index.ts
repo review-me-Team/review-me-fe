@@ -4,6 +4,7 @@ export const ROUTE_PATH = {
   RESUME: '/resume',
   MY_RESUME: '/my-resume',
   RESUME_UPLOAD: '/resume-upload',
+  RESUME_UPDATE: '/resume-update',
   SOCIAL_LOGIN: '/path',
 } as const;
 

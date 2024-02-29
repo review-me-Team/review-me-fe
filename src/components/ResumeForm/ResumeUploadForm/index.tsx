@@ -5,10 +5,9 @@ import PdfViewer from '@components/PdfViewer';
 import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
-import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from './style';
+import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from '../style';
 
 interface Props {
-  type: 'upload' | 'update';
   file?: File;
   title: string;
   year?: number;
@@ -34,8 +33,7 @@ interface Props {
   }) => void;
 }
 
-const ResumeForm = ({
-  type,
+const ResumeUploadForm = ({
   file,
   title,
   year,
@@ -189,11 +187,11 @@ const ResumeForm = ({
         </FieldContainer>
 
         <Button variant="default" size="m">
-          {type === 'upload' ? '올리기' : '수정하기'}
+          올리기
         </Button>
       </Form>
     </ResumeFormLayout>
   );
 };
 
-export default ResumeForm;
+export default ResumeUploadForm;
