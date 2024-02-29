@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from 'review-me-design-system';
-import ResumeForm from '@components/ResumeForm';
+import ResumeUploadForm from '@components/ResumeForm/ResumeUploadForm';
 import { usePostResume } from '@apis/resumeApi';
 import { Occupation, Scope } from '@apis/utilApi';
 import { PageMain } from '@styles/common';
@@ -30,8 +30,7 @@ const ResumeUpload = () => {
           <SubDescription>제출된 이력서 pdf 파일은 변경이 불가합니다.</SubDescription>
         </Description>
 
-        <ResumeForm
-          type="upload"
+        <ResumeUploadForm
           file={file}
           title={title}
           year={year}
