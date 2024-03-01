@@ -61,9 +61,12 @@ const Comment = ({
   writerId,
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
-  const hasReply = countOfReplies === undefined;
+
+  const ICON_SIZE = 24;
+
+  const hasReplyIcon = typeof countOfReplies === 'number';
   const hasCheckMarkIcon = typeof checked === 'boolean';
-  const hasBookMarkIcon = typeof bookmarked === 'boolean' && commenterId === writerId;
+  const hasBookMarkIcon = typeof bookmarked === 'boolean';
 
   const { data: emojiList } = useEmojiList();
 
@@ -84,12 +87,17 @@ const Comment = ({
               {bookmarked ? (
                 <Icon
                   iconName="filledBookMark"
-                  width={24}
-                  height={24}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
                   color={theme.color.accent.bg.default}
                 />
               ) : (
-                <Icon iconName="bookMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+                <Icon
+                  iconName="bookMark"
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                  color={theme.color.accent.bg.strong}
+                />
               )}
             </IconButton>
           )}
@@ -98,17 +106,22 @@ const Comment = ({
               {checked ? (
                 <Icon
                   iconName="filledCheckMark"
-                  width={24}
-                  height={24}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
                   color={theme.color.accent.bg.default}
                 />
               ) : (
-                <Icon iconName="checkMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+                <Icon
+                  iconName="checkMark"
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                  color={theme.color.accent.bg.strong}
+                />
               )}
             </IconButton>
           )}
           <IconButton>
-            <Icon iconName="more" width={24} height={24} color={theme.color.accent.bg.strong} />
+            <Icon iconName="more" width={ICON_SIZE} height={ICON_SIZE} color={theme.color.accent.bg.strong} />
           </IconButton>
         </div>
       </Top>
@@ -119,9 +132,9 @@ const Comment = ({
       </CommentContent>
 
       <Bottom>
-        {!hasReply && (
+        {hasReplyIcon && (
           <OpenReplyButton>
-            <Icon iconName="communication" width={24} height={24} />
+            <Icon iconName="communication" width={ICON_SIZE} height={ICON_SIZE} />
             <span>{countOfReplies}</span>
           </OpenReplyButton>
         )}
