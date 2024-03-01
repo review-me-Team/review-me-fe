@@ -10,11 +10,11 @@ interface Emoji {
 
 export interface Feedback {
   id: number;
-  content: string;
+  content: string | null;
   commenterId: number;
   commenterName: string;
   commenterProfileUrl: string;
-  labelContent: string;
+  labelContent: string | null;
   createdAt: string;
   countOfReplies: number;
   checked: boolean;

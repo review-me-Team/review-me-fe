@@ -7,19 +7,20 @@ interface Emoji {
   count: number;
 }
 
+// bookmarked는 이력서 글쓴이가 작성한 댓글일 경우에 오는 데이터
 export interface Question {
   id: number;
-  content: string;
+  content: string | null;
   commenterId: number;
   commenterName: string;
   commenterProfileUrl: string;
-  labelContent: string;
+  labelContent: string | null;
   createdAt: string;
   countOfReplies: number;
-  bookmarked?: boolean;
   checked: boolean;
   emojis: Emoji[];
   myEmojiId: number | null;
+  bookmarked?: boolean;
 }
 
 type QuestionList = Question[];
