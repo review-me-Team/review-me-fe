@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, Label as EmojiLabel, theme, Label } from 'review-me-design-system';
 import useHover from '@hooks/useHover';
+import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
   CommentLayout,
@@ -30,16 +31,16 @@ type Emoji = {
 
 interface Props {
   // id: number;
-  content: string;
+  content: string | null;
   commenterId: number;
   commenterName: string;
   commenterProfileUrl: string;
   createdAt: string;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
   checked?: boolean;
   bookmarked?: boolean;
-  labelContent?: string;
+  labelContent?: string | null;
   countOfReplies?: number;
   writerId?: number;
 }
@@ -63,6 +64,8 @@ const Comment = ({
   const hasReply = countOfReplies === undefined;
   const hasCheckMarkIcon = typeof checked === 'boolean';
   const hasBookMarkIcon = typeof bookmarked === 'boolean' && commenterId === writerId;
+
+  const { data: emojiList } = useEmojiList();
 
   return (
     <CommentLayout>
@@ -134,31 +137,28 @@ const Comment = ({
             onMouseEnter={() => changeHoverState(true)}
             onMouseLeave={() => changeHoverState(false)}
           >
-            {/* todo: 서버에서 받은 이모지 리스트로 수정 및 isActive를 emojiId === myEmojiId로 수정하기 */}
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              🤔
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              👍
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              👀
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              😎
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              🙏
-            </Label>
+            {emojiList?.map(({ id, emoji }) => {
+              return (
+                <Label key={id} isActive={id === myEmojiId} py="0.5rem" px="0.75rem">
+                  {emoji}
+                </Label>
+              );
+            })}
           </EmojiModal>
         </EmojiButtonContainer>
 
         <EmojiLabelList>
           {emojis.map(({ id, count }) => {
+            const hasEmoji = count > 0;
+
+            if (!hasEmoji) return;
+
+            const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
+
             return (
               <EmojiLabelItem key={id}>
                 <EmojiLabel isActive={id === myEmojiId} py="0" px="0.75rem">
-                  🤔 {count}
+                  {`${emoji} ${count}`}
                 </EmojiLabel>
               </EmojiLabelItem>
             );
