@@ -71,6 +71,63 @@ export const useQuestionList = ({ resumeId, resumePage, enabled }: UseQuestionLi
   });
 };
 
+// GET 예상질문에 달린 댓글 조회
+interface QuestionReply {
+  id: number;
+  parentQuestionId: number;
+  content: string;
+  commenterId: number;
+  commenterName: string;
+  commenterProfileUrl: string;
+  createdAt: string;
+  emojis: Emoji[];
+  myEmojiId: number | null;
+}
+
+interface GetQuestionReplyList extends PageNationData {
+  questionComments: QuestionReply[];
+}
+
+export const getQuestionReplyList = async ({
+  resumeId,
+  questionId,
+  pageParam,
+}: {
+  resumeId: number;
+  questionId: number;
+  pageParam: number;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}?page=${pageParam}`);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetQuestionReplyList> = await response.json();
+
+  return data;
+};
+
+interface UseQuestionReplyListProps {
+  resumeId: number;
+  questionId: number;
+  enabled: boolean;
+}
+
+export const useQuestionReplyList = ({ resumeId, questionId, enabled }: UseQuestionReplyListProps) => {
+  return useInfiniteQuery({
+    queryKey: ['questionReplyList', resumeId, questionId],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, questionId, pageParam }),
+    getNextPageParam: (lastPage) => {
+      const { pageNumber, lastPage: lastPageNum } = lastPage;
+
+      return pageNumber < lastPageNum ? pageNumber + 1 : null;
+    },
+    enabled,
+  });
+};
+
 // POST 예상 질문 추가
 export const postQuestion = async ({
   resumeId,
