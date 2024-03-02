@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon, Label as EmojiLabel, theme, Label } from 'review-me-design-system';
 import useHover from '@hooks/useHover';
+import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
   CommentLayout,
@@ -30,16 +31,16 @@ type Emoji = {
 
 interface Props {
   // id: number;
-  content: string;
+  content: string | null;
   commenterId: number;
   commenterName: string;
   commenterProfileUrl: string;
   createdAt: string;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
   checked?: boolean;
   bookmarked?: boolean;
-  labelContent?: string;
+  labelContent?: string | null;
   countOfReplies?: number;
   writerId?: number;
 }
@@ -60,9 +61,14 @@ const Comment = ({
   writerId,
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
-  const hasReply = countOfReplies === undefined;
+
+  const ICON_SIZE = 24;
+
+  const hasReplyIcon = typeof countOfReplies === 'number';
   const hasCheckMarkIcon = typeof checked === 'boolean';
-  const hasBookMarkIcon = typeof bookmarked === 'boolean' && commenterId === writerId;
+  const hasBookMarkIcon = typeof bookmarked === 'boolean';
+
+  const { data: emojiList } = useEmojiList();
 
   return (
     <CommentLayout>
@@ -81,12 +87,17 @@ const Comment = ({
               {bookmarked ? (
                 <Icon
                   iconName="filledBookMark"
-                  width={24}
-                  height={24}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
                   color={theme.color.accent.bg.default}
                 />
               ) : (
-                <Icon iconName="bookMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+                <Icon
+                  iconName="bookMark"
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                  color={theme.color.accent.bg.strong}
+                />
               )}
             </IconButton>
           )}
@@ -95,17 +106,22 @@ const Comment = ({
               {checked ? (
                 <Icon
                   iconName="filledCheckMark"
-                  width={24}
-                  height={24}
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
                   color={theme.color.accent.bg.default}
                 />
               ) : (
-                <Icon iconName="checkMark" width={24} height={24} color={theme.color.accent.bg.strong} />
+                <Icon
+                  iconName="checkMark"
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                  color={theme.color.accent.bg.strong}
+                />
               )}
             </IconButton>
           )}
           <IconButton>
-            <Icon iconName="more" width={24} height={24} color={theme.color.accent.bg.strong} />
+            <Icon iconName="more" width={ICON_SIZE} height={ICON_SIZE} color={theme.color.accent.bg.strong} />
           </IconButton>
         </div>
       </Top>
@@ -116,9 +132,9 @@ const Comment = ({
       </CommentContent>
 
       <Bottom>
-        {!hasReply && (
+        {hasReplyIcon && (
           <OpenReplyButton>
-            <Icon iconName="communication" width={24} height={24} />
+            <Icon iconName="communication" width={ICON_SIZE} height={ICON_SIZE} />
             <span>{countOfReplies}</span>
           </OpenReplyButton>
         )}
@@ -134,31 +150,28 @@ const Comment = ({
             onMouseEnter={() => changeHoverState(true)}
             onMouseLeave={() => changeHoverState(false)}
           >
-            {/* todo: 서버에서 받은 이모지 리스트로 수정 및 isActive를 emojiId === myEmojiId로 수정하기 */}
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              🤔
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              👍
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              👀
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              😎
-            </Label>
-            <Label isActive={false} py="0.5rem" px="0.75rem">
-              🙏
-            </Label>
+            {emojiList?.map(({ id, emoji }) => {
+              return (
+                <Label key={id} isActive={id === myEmojiId} py="0.5rem" px="0.75rem">
+                  {emoji}
+                </Label>
+              );
+            })}
           </EmojiModal>
         </EmojiButtonContainer>
 
         <EmojiLabelList>
           {emojis.map(({ id, count }) => {
+            const hasEmoji = count > 0;
+
+            if (!hasEmoji) return;
+
+            const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
+
             return (
               <EmojiLabelItem key={id}>
                 <EmojiLabel isActive={id === myEmojiId} py="0" px="0.75rem">
-                  🤔 {count}
+                  {`${emoji} ${count}`}
                 </EmojiLabel>
               </EmojiLabelItem>
             );
