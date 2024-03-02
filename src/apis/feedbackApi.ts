@@ -70,6 +70,63 @@ export const useFeedbackList = ({ resumeId, resumePage, enabled }: UseFeedbackLi
   });
 };
 
+// GET 피드백에 달린 댓글 조회
+export interface FeedbackReply {
+  id: number;
+  parentFeedbackId: number;
+  content: string;
+  commenterId: number;
+  commenterName: string;
+  commenterProfileUrl: string;
+  createdAt: string;
+  emojis: Emoji[];
+  myEmojiId: number | null;
+}
+
+interface GetFeedbackReplyList extends PageNationData {
+  feedbackComments: FeedbackReply[];
+}
+
+export const getFeedbackReplyList = async ({
+  resumeId,
+  feedbackId,
+  pageParam,
+}: {
+  resumeId: number;
+  feedbackId: number;
+  pageParam: number;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}?page=${pageParam}`);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetFeedbackReplyList> = await response.json();
+
+  return data;
+};
+
+interface UseFeedbackReplyListProps {
+  resumeId: number;
+  feedbackId: number;
+  enabled: boolean;
+}
+
+export const useFeedbackReplyList = ({ resumeId, feedbackId, enabled }: UseFeedbackReplyListProps) => {
+  return useInfiniteQuery({
+    queryKey: ['feedbackReplyList', resumeId, feedbackId],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, feedbackId, pageParam }),
+    getNextPageParam: (lastPage) => {
+      const { pageNumber, lastPage: lastPageNum } = lastPage;
+
+      return pageNumber < lastPageNum ? pageNumber + 1 : null;
+    },
+    enabled,
+  });
+};
+
 // POST 피드백 작성
 export const postFeedback = async ({
   resumeId,

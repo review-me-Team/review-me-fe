@@ -139,18 +139,6 @@ const FormContent = styled.div`
   }
 `;
 
-const ReplyForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-  gap: 0.5rem;
-
-  & > button {
-    flex-shrink: 0;
-  }
-`;
-
 const KeywordLabel = styled.span`
   display: flex;
   justify-content: center;
@@ -174,15 +162,6 @@ const CommentList = styled.ul`
   height: 100%;
 `;
 
-const ReplyList = styled.ul`
-  display: flex;
-  flex-direction: column;
-  padding: 0 1rem;
-  padding-bottom: 0.75rem;
-
-  background-color: ${theme.palette.green100};
-`;
-
 export {
   Main,
   ResumeViewer,
@@ -202,6 +181,4 @@ export {
   KeywordLabel,
   LabelList,
   CommentList,
-  ReplyList,
-  ReplyForm,
 };
