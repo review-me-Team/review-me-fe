@@ -209,34 +209,7 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment {...feedback} />
-                    {/* <ReplyList>
-                      <Comment
-                        content="프로젝트에서 react-query를 사용하셨는데 사용한 이유가 궁금합니다."
-                        commenterId={1}
-                        writerId={1}
-                        commenterName="aken-you"
-                        commenterProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-                        createdAt="2024-01-24 16:19:37"
-                        emojis={[
-                          {
-                            id: 1,
-                            count: 10,
-                          },
-                          {
-                            id: 2,
-                            count: 3,
-                          },
-                        ]}
-                        myEmojiId={1}
-                      />
-                      <ReplyForm>
-                        <Textarea placeholder="댓글" />
-                        <Button variant="default" size="s">
-                          작성
-                        </Button>
-                      </ReplyForm>
-                    </ReplyList> */}
+                    <Comment type="feedback" {...feedback} />
                   </li>
                 );
               })}
@@ -244,7 +217,7 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment {...question} />
+                    <Comment type="question" {...question} />
                   </li>
                 );
               })}
@@ -252,7 +225,7 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment {...comment} />
+                    <Comment type="comment" {...comment} />
                   </li>
                 );
               })}
