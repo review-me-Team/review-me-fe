@@ -28,8 +28,6 @@ import {
   WriterImg,
   WriterInfo,
   WriterInfoContainer,
-  ReplyList,
-  ReplyForm,
   ResumeViewer,
   KeywordLabel,
 } from './style';
