@@ -1,20 +1,17 @@
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
-import { useUserContext } from '@contexts/userContext';
+import { useQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse } from './response.types';
 
-interface PostAuthorizationCode {
+interface GetJwt {
   jwt: string;
 }
 
-const postAuthorizationCode = async (code: string) => {
-  const response = await fetch(REQUEST_URL.OAUTH, {
-    method: 'POST',
+const getJwt = async (code: string | null) => {
+  const response = await fetch(`${REQUEST_URL.OAUTH}?code=${code}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ code }),
     credentials: 'include',
   });
 
@@ -22,20 +19,15 @@ const postAuthorizationCode = async (code: string) => {
     throw response;
   }
 
-  const { data }: ApiResponse<PostAuthorizationCode> = await response.json();
+  const { data }: ApiResponse<GetJwt> = await response.json();
 
   return data;
 };
 
-export const usePostAuthorizationCode = () => {
-  const navigate = useNavigate();
-  const { login } = useUserContext();
-
-  return useMutation({
-    mutationFn: postAuthorizationCode,
-    onSuccess: ({ jwt }) => {
-      login(jwt);
-      navigate('/');
-    },
+export const useJwt = (code: string | null) => {
+  return useQuery({
+    queryKey: ['jwt'],
+    queryFn: () => getJwt(code),
+    enabled: !!code,
   });
 };
