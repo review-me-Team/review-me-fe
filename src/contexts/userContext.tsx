@@ -15,6 +15,7 @@ interface JwtPayload {
 interface UserContext {
   jwt?: string;
   user: User | null;
+  isLoggedIn: boolean;
   login: (jwt: string) => void;
   logout: () => void;
 }
@@ -51,8 +52,11 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const parsedJwt: JwtPayload = jwt ? parseJwt(jwt) : null;
 
   const user = parsedJwt ? parsedJwt.userProfile : null;
+  const isLoggedIn = !!user;
 
-  return <UserContext.Provider value={{ jwt, user, login, logout }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ jwt, user, login, logout, isLoggedIn }}>{children}</UserContext.Provider>
+  );
 };
 
 export { UserProvider, useUserContext };
