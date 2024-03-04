@@ -71,6 +71,7 @@ const Comment = ({
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
+  const REPLY_ICON_SIZE = 20;
 
   const hasReplyIcon = typeof countOfReplies === 'number' && type !== 'comment';
   const hasCheckMarkIcon = typeof checked === 'boolean';
@@ -182,7 +183,7 @@ const Comment = ({
         <Bottom>
           {hasReplyIcon && (
             <OpenReplyButton onClick={handleReplyButtonClick}>
-              <Icon iconName="communication" width={ICON_SIZE} height={ICON_SIZE} />
+              <Icon iconName="communication" width={REPLY_ICON_SIZE} height={REPLY_ICON_SIZE} />
               <span>{countOfReplies}</span>
             </OpenReplyButton>
           )}
