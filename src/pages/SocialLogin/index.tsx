@@ -8,23 +8,23 @@ const SocialLogin = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams.get('code');
 
-  const { refetch, data, status } = useJwt(code);
+  const { refetch, data, isError, isSuccess, isFetched } = useJwt(code);
 
   const navigate = useNavigate();
   const { login } = useUserContext();
 
   useEffect(() => {
-    refetch();
+    if (!isFetched) refetch();
 
-    if (status === 'success') {
+    if (isSuccess) {
       login(data.jwt);
       navigate(ROUTE_PATH.ROOT);
     }
-    if (status === 'error') {
+    if (isError) {
       alert('로그인에 실패했습니다.');
       navigate(ROUTE_PATH.ROOT);
     }
-  }, [code, status, data]);
+  }, [code, isSuccess, isError, isFetched]);
 
   return <></>;
 };
