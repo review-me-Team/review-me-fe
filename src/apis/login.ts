@@ -1,17 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse } from './response.types';
 
+// POST jwt 발급
 interface GetJwt {
   jwt: string;
 }
 
-const getJwt = async (code: string | null) => {
-  const response = await fetch(`${REQUEST_URL.OAUTH}?code=${code}`, {
-    method: 'GET',
+const getJwt = async (code: string) => {
+  const response = await fetch(`${REQUEST_URL.OAUTH}`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify({ code }),
     credentials: 'include',
   });
 
@@ -24,10 +26,8 @@ const getJwt = async (code: string | null) => {
   return data;
 };
 
-export const useJwt = (code: string | null) => {
-  return useQuery({
-    queryKey: ['jwt'],
-    queryFn: () => getJwt(code),
-    enabled: !!code,
+export const useJwt = () => {
+  return useMutation({
+    mutationFn: getJwt,
   });
 };
