@@ -2,6 +2,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 
 import Layout from '@components/Layout';
+import TokenRefresh from '@components/TokenRefresh';
 import { UserProvider } from '@contexts/userContext';
 import MainPage from '@pages/MainPage';
 import MyPage from '@pages/MyPage';
@@ -22,13 +23,62 @@ const router = createBrowserRouter([
       </UserProvider>
     ),
     children: [
-      { index: true, element: <MainPage /> },
-      { path: ROUTE_PATH.MY_PAGE, element: <MyPage /> },
-      { path: ROUTE_PATH.RESUME, element: <Resume /> },
-      { path: `${ROUTE_PATH.RESUME}/:resumeId`, element: <ResumeDetail /> },
-      { path: ROUTE_PATH.MY_RESUME, element: <MyResume /> },
-      { path: ROUTE_PATH.RESUME_UPLOAD, element: <ResumeUpload /> },
-      { path: ROUTE_PATH.RESUME_UPDATE, element: <ResumeUpdate /> },
+      {
+        index: true,
+        element: (
+          <TokenRefresh>
+            <MainPage />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: ROUTE_PATH.MY_PAGE,
+        element: (
+          <TokenRefresh>
+            <MyPage />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: ROUTE_PATH.RESUME,
+        element: (
+          <TokenRefresh>
+            <Resume />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: `${ROUTE_PATH.RESUME}/:resumeId`,
+        element: (
+          <TokenRefresh>
+            <ResumeDetail />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: ROUTE_PATH.MY_RESUME,
+        element: (
+          <TokenRefresh>
+            <MyResume />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: ROUTE_PATH.RESUME_UPLOAD,
+        element: (
+          <TokenRefresh>
+            <ResumeUpload />
+          </TokenRefresh>
+        ),
+      },
+      {
+        path: ROUTE_PATH.RESUME_UPDATE,
+        element: (
+          <TokenRefresh>
+            <ResumeUpdate />
+          </TokenRefresh>
+        ),
+      },
       { path: ROUTE_PATH.SOCIAL_LOGIN, element: <SocialLogin /> },
     ],
   },
