@@ -18,6 +18,7 @@ export const REQUEST_URL = {
   EMOJI: `${BASE_URL}/emoji`,
   SCOPE: `${BASE_URL}/scope`,
   OAUTH: `${BASE_URL}/login/oauth`,
+  RENEW_JWT: `${BASE_URL}/user/refresh`,
 } as const;
 
 export const PDF_VIEWER_SCALE = {
