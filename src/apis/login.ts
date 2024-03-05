@@ -62,5 +62,6 @@ export const useRenewJwt = () => {
     queryFn: getRenewedJwt,
     staleTime: JWT_EXPIRED_TIME,
     refetchInterval: JWT_REFRESH_INTERVAL,
+    retry: false,
   });
 };

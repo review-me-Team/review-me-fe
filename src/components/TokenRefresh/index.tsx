@@ -8,8 +8,8 @@ interface Props {
 
 const TokenRefresh = ({ children }: Props) => {
   const { getRenewedJwtQuery } = useAuth();
-  const { isSuccess, refetch, isFetched, data } = getRenewedJwtQuery;
-  const { login } = useUserContext();
+  const { isSuccess, refetch, isFetched, data, isError } = getRenewedJwtQuery;
+  const { login, logout } = useUserContext();
 
   useEffect(() => {
     if (!isFetched) {
@@ -17,6 +17,9 @@ const TokenRefresh = ({ children }: Props) => {
     }
     if (isSuccess) {
       login(data.jwt);
+    }
+    if (isError) {
+      logout();
     }
   }, [isSuccess, isFetched, data]);
 
