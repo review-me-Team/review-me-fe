@@ -108,9 +108,9 @@ const ResumeDetail = () => {
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (currentTab === 'feedback') {
-      if (!comment) return;
+    if (!comment) return;
 
+    if (currentTab === 'feedback') {
       addFeedback({
         resumeId: Number(resumeId),
         content: comment,
@@ -118,8 +118,6 @@ const ResumeDetail = () => {
         resumePage: currentPageNum,
       });
     } else if (currentTab === 'question') {
-      if (!comment) return;
-
       mutateAboutQuestion({
         resumeId: Number(resumeId),
         content: comment,
@@ -128,8 +126,6 @@ const ResumeDetail = () => {
         resumePage: currentPageNum,
       });
     } else if (currentTab === 'comment') {
-      if (!comment) return;
-
       mutateAboutComment({
         resumeId: Number(resumeId),
         content: comment,
