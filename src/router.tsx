@@ -1,5 +1,5 @@
 import React from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import Layout from '@components/Layout';
 import TokenRefresh from '@components/TokenRefresh';
@@ -19,57 +19,35 @@ const router = createBrowserRouter([
     path: ROUTE_PATH.ROOT,
     element: (
       <UserProvider>
-        <Layout />
+        <TokenRefresh>
+          <Layout />
+        </TokenRefresh>
       </UserProvider>
     ),
     children: [
       {
         index: true,
-        element: (
-          <TokenRefresh>
-            <MainPage />
-          </TokenRefresh>
-        ),
+        element: <MainPage />,
       },
       {
         path: ROUTE_PATH.MY_PAGE,
-        element: (
-          <TokenRefresh>
-            <MyPage />
-          </TokenRefresh>
-        ),
+        element: <MyPage />,
       },
       {
         path: ROUTE_PATH.RESUME,
-        element: (
-          <TokenRefresh>
-            <Resume />
-          </TokenRefresh>
-        ),
+        element: <Resume />,
       },
       {
         path: `${ROUTE_PATH.RESUME}/:resumeId`,
-        element: (
-          <TokenRefresh>
-            <ResumeDetail />
-          </TokenRefresh>
-        ),
+        element: <ResumeDetail />,
       },
       {
         path: ROUTE_PATH.MY_RESUME,
-        element: (
-          <TokenRefresh>
-            <MyResume />
-          </TokenRefresh>
-        ),
+        element: <MyResume />,
       },
       {
         path: ROUTE_PATH.RESUME_UPLOAD,
-        element: (
-          <TokenRefresh>
-            <ResumeUpload />
-          </TokenRefresh>
-        ),
+        element: <ResumeUpload />,
       },
       {
         path: ROUTE_PATH.RESUME_UPDATE,
@@ -79,8 +57,16 @@ const router = createBrowserRouter([
           </TokenRefresh>
         ),
       },
-      { path: ROUTE_PATH.SOCIAL_LOGIN, element: <SocialLogin /> },
     ],
+  },
+  {
+    path: ROUTE_PATH.ROOT,
+    element: (
+      <UserProvider>
+        <Outlet />
+      </UserProvider>
+    ),
+    children: [{ path: ROUTE_PATH.SOCIAL_LOGIN, element: <SocialLogin /> }],
   },
 ]);
 
