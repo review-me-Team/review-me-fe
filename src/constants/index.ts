@@ -27,3 +27,5 @@ export const PDF_VIEWER_SCALE = {
   MIN_SCALE: 0.6,
   SCALE_STEP: 0.2,
 } as const;
+
+export const IS_LOGGED_IN_KEY = 'isLoggedIn';

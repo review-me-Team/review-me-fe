@@ -9,12 +9,15 @@ const SocialLogin = () => {
   const code = searchParams.get('code');
 
   const { createJwtQuery } = useAuth();
-  const { logout } = useUserContext();
+  const { logout, login } = useUserContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (code)
       createJwtQuery.mutate(code, {
+        onSuccess: (data) => {
+          login(data.jwt);
+        },
         onError: () => {
           alert('로그인에 실패했습니다.');
           logout();

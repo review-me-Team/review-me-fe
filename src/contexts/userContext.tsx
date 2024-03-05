@@ -1,4 +1,5 @@
 import React, { ReactNode, createContext, useContext, useState } from 'react';
+import { IS_LOGGED_IN_KEY } from '@constants';
 import { parseJwt } from '@utils';
 
 interface User {
@@ -43,16 +44,18 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
   const login = (jwt: string) => {
     setJwt(jwt);
+    localStorage.setItem(IS_LOGGED_IN_KEY, 'true');
   };
 
   const logout = () => {
     setJwt(undefined);
+    localStorage.removeItem(IS_LOGGED_IN_KEY);
   };
 
   const parsedJwt: JwtPayload = jwt ? parseJwt(jwt) : null;
 
   const user = parsedJwt ? parsedJwt.userProfile : null;
-  const isLoggedIn = !!user;
+  const isLoggedIn = !!localStorage.getItem(IS_LOGGED_IN_KEY);
 
   return (
     <UserContext.Provider value={{ jwt, user, login, logout, isLoggedIn }}>{children}</UserContext.Provider>

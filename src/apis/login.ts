@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useUserContext } from '@contexts/userContext';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse } from './response.types';
 
@@ -56,6 +57,7 @@ export const useRenewJwt = () => {
   // jwt 갱신 주기: 10분
   const JWT_REFRESH_INTERVAL = 10 * 60 * 1000;
   const JWT_EXPIRED_TIME = 60 * 60 * 1000;
+  const { isLoggedIn } = useUserContext();
 
   return useQuery({
     queryKey: ['jwt'],
@@ -63,5 +65,6 @@ export const useRenewJwt = () => {
     staleTime: JWT_EXPIRED_TIME,
     refetchInterval: JWT_REFRESH_INTERVAL,
     retry: false,
+    enabled: !!isLoggedIn,
   });
 };

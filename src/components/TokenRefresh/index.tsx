@@ -9,19 +9,28 @@ interface Props {
 const TokenRefresh = ({ children }: Props) => {
   const { getRenewedJwtQuery } = useAuth();
   const { isSuccess, refetch, isFetched, data, isError } = getRenewedJwtQuery;
-  const { login, logout } = useUserContext();
+  const { login, logout, isLoggedIn } = useUserContext();
 
   useEffect(() => {
+    const shouldRefreshJwt = isLoggedIn;
+
+    if (!shouldRefreshJwt) return;
+
     if (!isFetched) {
       refetch();
+      return;
     }
-    if (isSuccess) {
+
+    const isJwtRenewalSuccessful = isSuccess && data;
+    const isJwtRenewalFailed = isError;
+
+    if (isJwtRenewalSuccessful) {
       login(data.jwt);
     }
-    if (isError) {
+    if (isJwtRenewalFailed) {
       logout();
     }
-  }, [isSuccess, isFetched, data]);
+  }, [isSuccess, isFetched, data, isLoggedIn]);
 
   return <>{children}</>;
 };
