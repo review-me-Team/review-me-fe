@@ -84,7 +84,7 @@ const ResumeDetail = () => {
     },
   });
 
-  const { mutate: mutateAboutFeedback } = usePostFeedback();
+  const { mutate: addFeedback } = usePostFeedback();
   const { mutate: mutateAboutQuestion } = usePostQuestion();
   const { mutate: mutateAboutComment } = usePostComment();
 
@@ -111,7 +111,7 @@ const ResumeDetail = () => {
     if (currentTab === 'feedback') {
       if (!comment) return;
 
-      mutateAboutFeedback({
+      addFeedback({
         resumeId: Number(resumeId),
         content: comment,
         labelId,
