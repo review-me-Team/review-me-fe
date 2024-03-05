@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Icon, theme } from 'review-me-design-system';
 import useMediaQuery from '@hooks/useMediaQuery';
+import { useUserContext } from '@contexts/userContext';
 import { ROUTE_PATH } from '@constants';
 import { manageBodyScroll } from '@utils';
 import {
@@ -25,6 +26,7 @@ import {
 const Header = () => {
   const navigate = useNavigate();
   const { matches: isSMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 600px)' });
+  const { isLoggedIn, logout } = useUserContext();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
   const handleOpenMobileMenu = () => {
@@ -42,7 +44,8 @@ const Header = () => {
   };
 
   const CLIENT_ID = process.env.DEV_CLIENT_ID;
-  const REDIRECT_URI = process.env.DEV_REDIRECT_URI;
+  const REDIRECT_URI =
+    process.env.NODE_ENV === 'development' ? process.env.DEV_REDIRECT_URI : process.env.PROD_REDIRECT_URI;
   const GITHUB_OAUTH_URI = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
 
   const handleLogin = () => {
@@ -76,18 +79,19 @@ const Header = () => {
                 </MobileMenuItem>
               </MobileMenuList>
 
-              <JoinUsMessage>
-                <span>review me에 가입하여</span>
-                <span>다른 사람들과 이력서를 공유해보세요.</span>
-              </JoinUsMessage>
+              {!isLoggedIn && (
+                <JoinUsMessage>
+                  <span>review me에 가입하여</span>
+                  <span>다른 사람들과 이력서를 공유해보세요.</span>
+                </JoinUsMessage>
+              )}
 
               <MobileMenuButtonContainer>
-                <Button variant="default" size="s">
-                  회원 가입
-                </Button>
-                <Button variant="outline" size="s" onClick={handleLogin}>
-                  github으로 로그인
-                </Button>
+                {!isLoggedIn && (
+                  <Button variant="outline" size="s" onClick={handleLogin}>
+                    github으로 시작
+                  </Button>
+                )}
               </MobileMenuButtonContainer>
             </MobileMenu>
             {isOpenMobileMenu && <BackDrop onClick={handleCloseMobileMenu} />}
@@ -118,8 +122,8 @@ const Header = () => {
             <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
           </IconButton>
           {!isSMDevice && (
-            <Button variant="default" size="s" onClick={handleLogin}>
-              로그인
+            <Button variant="default" size="s" onClick={isLoggedIn ? logout : handleLogin}>
+              {isLoggedIn ? '로그아웃' : '로그인'}
             </Button>
           )}
         </RightContainer>
