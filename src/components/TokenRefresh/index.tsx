@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
+import useAuth from '@hooks/useAuth';
 import { useUserContext } from '@contexts/userContext';
-import { useRenewJwt } from '@apis/login';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const TokenRefresh = ({ children }: Props) => {
-  const { isSuccess, refetch, isFetched, data } = useRenewJwt();
+  const { getRenewedJwtQuery } = useAuth();
+  const { isSuccess, refetch, isFetched, data } = getRenewedJwtQuery;
   const { login } = useUserContext();
 
   useEffect(() => {
