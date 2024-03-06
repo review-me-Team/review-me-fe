@@ -88,3 +88,37 @@ export const postComment = async ({
 export const usePostComment = () => {
   return useMutation({ mutationFn: postComment });
 };
+
+// PATCH 댓글 이모지 수정
+export const patchEmojiAboutComment = async ({
+  resumeId,
+  commentId,
+  emojiId,
+  jwt,
+}: {
+  resumeId: number;
+  commentId: number;
+  emojiId: number;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}/emoji`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ id: emojiId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchEmojiAboutComment = () => {
+  return useMutation({ mutationFn: patchEmojiAboutComment });
+};
