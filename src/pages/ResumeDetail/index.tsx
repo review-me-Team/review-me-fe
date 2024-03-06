@@ -139,13 +139,27 @@ const ResumeDetail = () => {
         },
       );
     } else if (currentTab === 'question') {
-      addQuestion({
-        resumeId: Number(resumeId),
-        content: comment,
-        labelId,
-        labelContent,
-        resumePage: currentPageNum,
-      });
+      addQuestion(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          labelContent: labelContent.trim(),
+          resumePage: currentPageNum,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), currentPageNum],
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), 'labelList'],
+              }),
+            ]);
+          },
+        },
+      );
     } else if (currentTab === 'comment') {
       mutateAboutComment({
         resumeId: Number(resumeId),

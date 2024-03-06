@@ -168,25 +168,33 @@ export const useQuestionLabelList = ({ resumeId, enabled }: UseQuestionLabelList
 export const postQuestion = async ({
   resumeId,
   content,
-  labelId,
   labelContent,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   content: string;
-  labelId?: number;
-  labelContent?: string;
+  labelContent: string;
   resumePage: number;
+  jwt: string;
 }) => {
-  const formData = new FormData();
-  formData.append('content', content);
-  formData.append('resumePage', String(resumePage));
-  if (labelId) formData.append('labelId', String(labelId));
-  if (labelContent) formData.append('labelContent', labelContent);
+  const newQuestion: {
+    content: string;
+    resumePage: number;
+    labelContent: string;
+  } = {
+    content,
+    resumePage,
+    labelContent,
+  };
 
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question`, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(newQuestion),
   });
 
   if (!response.ok) {
