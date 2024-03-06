@@ -56,21 +56,31 @@ export const useCommentList = ({ resumeId, enabled }: UseCommentListProps) => {
 };
 
 // POST 댓글 추가
-export const postComment = async ({ resumeId, content }: { resumeId: number; content: string }) => {
-  const formData = new FormData();
-  formData.append('content', content);
+export const postComment = async ({
+  resumeId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  content: string;
+  jwt: string;
+}) => {
+  const newComment: { content: string } = { content };
 
-  // todo: request headers에 authorization 추가하기
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment`, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(newComment),
   });
 
   if (!response.ok) {
     throw response;
   }
 
-  const { data } = await response.json();
+  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };

@@ -95,7 +95,7 @@ const ResumeDetail = () => {
 
   const { mutate: addFeedback } = usePostFeedback();
   const { mutate: addQuestion } = usePostQuestion();
-  const { mutate: mutateAboutComment } = usePostComment();
+  const { mutate: addComment } = usePostComment();
 
   const textareaPlaceholder = {
     feedback: '피드백',
@@ -161,10 +161,20 @@ const ResumeDetail = () => {
         },
       );
     } else if (currentTab === 'comment') {
-      mutateAboutComment({
-        resumeId: Number(resumeId),
-        content: comment,
-      });
+      addComment(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return queryClient.invalidateQueries({
+              queryKey: ['commentList', Number(resumeId)],
+            });
+          },
+        },
+      );
     }
 
     resetForm();
