@@ -1,11 +1,13 @@
 import React, { FormEvent, MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
+import { useUserContext } from '@contexts/userContext';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
 import { usePostQuestion, useQuestionList } from '@apis/questionApi';
@@ -35,6 +37,8 @@ import {
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
+  const queryClient = useQueryClient();
+  const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
 
   const { data: resumeDetail } = useResumeDetail(Number(resumeId));
@@ -105,18 +109,30 @@ const ResumeDetail = () => {
     resetForm();
   };
 
+  const isUnauthorized = !(jwt && isLoggedIn);
+
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!comment) return;
+    if (!resumeId || !comment || isUnauthorized) return;
 
     if (currentTab === 'feedback') {
-      addFeedback({
-        resumeId: Number(resumeId),
-        content: comment,
-        labelId,
-        resumePage: currentPageNum,
-      });
+      addFeedback(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          labelId,
+          resumePage: currentPageNum,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return queryClient.invalidateQueries({
+              queryKey: ['feedbackList', Number(resumeId), currentPageNum],
+            });
+          },
+        },
+      );
     } else if (currentTab === 'question') {
       mutateAboutQuestion({
         resumeId: Number(resumeId),
