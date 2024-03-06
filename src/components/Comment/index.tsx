@@ -35,6 +35,7 @@ type Emoji = {
 
 interface Props {
   type: 'feedback' | 'question' | 'comment';
+  resumeId: number;
   id: number;
   content: string | null;
   commenterId: number;
@@ -52,6 +53,7 @@ interface Props {
 
 const Comment = ({
   type,
+  resumeId,
   id,
   content,
   commenterId,
@@ -66,7 +68,6 @@ const Comment = ({
   myEmojiId,
   writerId,
 }: Props) => {
-  const { resumeId } = useParams();
   const { isHover, changeHoverState } = useHover();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
 
@@ -79,12 +80,12 @@ const Comment = ({
 
   const { data: emojiList } = useEmojiList();
   const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackList } = useFeedbackReplyList({
-    resumeId: Number(resumeId),
+    resumeId,
     feedbackId: id,
     enabled: type === 'feedback' && isOpenReplyList,
   });
   const { data: questionReplyList, fetchNextPage: fetchNextQuestionList } = useQuestionReplyList({
-    resumeId: Number(resumeId),
+    resumeId,
     questionId: id,
     enabled: type === 'question' && isOpenReplyList,
   });
@@ -228,7 +229,7 @@ const Comment = ({
           </EmojiLabelList>
         </Bottom>
       </CommentLayout>
-      {isOpenReplyList && <ReplyList type={type} replies={replies} />}
+      {isOpenReplyList && <ReplyList type={type} resumeId={resumeId} replies={replies} />}
     </>
   );
 };

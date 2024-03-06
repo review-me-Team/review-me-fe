@@ -22,15 +22,16 @@ export interface Reply {
 
 interface Props {
   type: 'feedback' | 'question' | 'comment';
+  resumeId: number;
   replies: Reply[];
 }
 
-const ReplyList = ({ type, replies }: Props) => {
+const ReplyList = ({ type, resumeId, replies }: Props) => {
   return (
     <ReplyListLayout>
       {replies.map((reply) => (
         <li key={reply.id}>
-          <Comment type={type} {...reply} />
+          <Comment type={type} resumeId={resumeId} {...reply} />
         </li>
       ))}
       <ReplyForm>

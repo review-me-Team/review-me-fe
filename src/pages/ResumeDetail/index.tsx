@@ -248,7 +248,7 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment type="feedback" {...feedback} />
+                    <Comment type="feedback" resumeId={Number(resumeId)} {...feedback} />
                   </li>
                 );
               })}
@@ -256,7 +256,7 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment type="question" {...question} />
+                    <Comment type="question" resumeId={Number(resumeId)} {...question} />
                   </li>
                 );
               })}
@@ -264,7 +264,7 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment type="comment" {...comment} />
+                    <Comment type="comment" resumeId={Number(resumeId)} {...comment} />
                   </li>
                 );
               })}
