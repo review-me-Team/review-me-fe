@@ -10,7 +10,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionList } from '@apis/questionApi';
+import { usePostQuestion, useQuestionLabelList, useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
 import {
@@ -88,8 +88,13 @@ const ResumeDetail = () => {
     },
   });
 
+  const { data: questionLabelList } = useQuestionLabelList({
+    resumeId: Number(resumeId),
+    enabled: currentTab === 'question',
+  });
+
   const { mutate: addFeedback } = usePostFeedback();
-  const { mutate: mutateAboutQuestion } = usePostQuestion();
+  const { mutate: addQuestion } = usePostQuestion();
   const { mutate: mutateAboutComment } = usePostComment();
 
   const textareaPlaceholder = {
@@ -134,13 +139,27 @@ const ResumeDetail = () => {
         },
       );
     } else if (currentTab === 'question') {
-      mutateAboutQuestion({
-        resumeId: Number(resumeId),
-        content: comment,
-        labelId,
-        labelContent,
-        resumePage: currentPageNum,
-      });
+      addQuestion(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          labelContent: labelContent.trim(),
+          resumePage: currentPageNum,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), currentPageNum],
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), 'labelList'],
+              }),
+            ]);
+          },
+        },
+      );
     } else if (currentTab === 'comment') {
       mutateAboutComment({
         resumeId: Number(resumeId),

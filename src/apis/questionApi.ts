@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -25,6 +25,7 @@ export interface Question {
 
 type QuestionList = Question[];
 
+// GET 예상질문 목록 조회
 interface GetQuestionList extends PageNationData {
   questions: QuestionList;
 }
@@ -128,29 +129,72 @@ export const useQuestionReplyList = ({ resumeId, questionId, enabled }: UseQuest
   });
 };
 
+// GET 예상 질문 라벨 목록 조회
+interface QuestionLabel {
+  id: number;
+  label: string;
+}
+
+interface GetQuestionLabelList {
+  labels: QuestionLabel[];
+}
+
+export const getQuestionLabelList = async ({ resumeId }: { resumeId: number }) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/label`);
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetQuestionLabelList> = await response.json();
+
+  return data;
+};
+
+interface UseQuestionLabelListProps {
+  resumeId: number;
+  enabled: boolean;
+}
+
+export const useQuestionLabelList = ({ resumeId, enabled }: UseQuestionLabelListProps) => {
+  return useQuery({
+    queryKey: ['questionList', resumeId, 'labelList'],
+    queryFn: () => getQuestionLabelList({ resumeId }),
+    enabled,
+  });
+};
+
 // POST 예상 질문 추가
 export const postQuestion = async ({
   resumeId,
   content,
-  labelId,
   labelContent,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   content: string;
-  labelId?: number;
-  labelContent?: string;
+  labelContent: string;
   resumePage: number;
+  jwt: string;
 }) => {
-  const formData = new FormData();
-  formData.append('content', content);
-  formData.append('resumePage', String(resumePage));
-  if (labelId) formData.append('labelId', String(labelId));
-  if (labelContent) formData.append('labelContent', labelContent);
+  const newQuestion: {
+    content: string;
+    resumePage: number;
+    labelContent: string;
+  } = {
+    content,
+    resumePage,
+    labelContent,
+  };
 
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question`, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(newQuestion),
   });
 
   if (!response.ok) {
