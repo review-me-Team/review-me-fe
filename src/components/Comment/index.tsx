@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { MouseEvent, useState } from 'react';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import ReplyList, { Reply } from '@components/ReplyList';
 import useHover from '@hooks/useHover';
-import { useFeedbackReplyList } from '@apis/feedbackApi';
-import { useQuestionReplyList } from '@apis/questionApi';
+import { useUserContext } from '@contexts/userContext';
+import { usePatchEmojiAboutComment } from '@apis/commentApi';
+import { useFeedbackReplyList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import { usePatchEmojiAboutQuestion, useQuestionReplyList } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -99,6 +100,29 @@ const Comment = ({
     }
 
     setIsOpenReplyList((prev) => !prev);
+  };
+
+  const { jwt, isLoggedIn } = useUserContext();
+  const isUnauthorized = !(jwt && isLoggedIn);
+
+  const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
+  const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
+  const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
+
+  const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, emojiId: number) => {
+    if (isUnauthorized) return;
+
+    switch (type) {
+      case 'feedback':
+        toggleEmojiAboutFeedback({ resumeId, feedbackId: id, emojiId, jwt });
+        break;
+      case 'question':
+        toggleEmojiAboutQuestion({ resumeId, questionId: id, emojiId, jwt });
+        break;
+      case 'comment':
+        toggleEmojiAboutComment({ resumeId, commentId: id, emojiId, jwt });
+        break;
+    }
   };
 
   let replies: Reply[] = [];
@@ -202,7 +226,13 @@ const Comment = ({
             >
               {emojiList?.map(({ id, emoji }) => {
                 return (
-                  <EmojiLabel key={id} isActive={id === myEmojiId} py="0.5rem" px="0.75rem">
+                  <EmojiLabel
+                    key={id}
+                    isActive={id === myEmojiId}
+                    py="0.5rem"
+                    px="0.75rem"
+                    onClick={(e) => handleEmojiLabelClick(e, id)}
+                  >
                     {emoji}
                   </EmojiLabel>
                 );
@@ -220,7 +250,12 @@ const Comment = ({
 
               return (
                 <EmojiLabelItem key={id}>
-                  <EmojiLabel isActive={id === myEmojiId} py="0" px="0.75rem">
+                  <EmojiLabel
+                    isActive={id === myEmojiId}
+                    py="0"
+                    px="0.75rem"
+                    onClick={(e) => handleEmojiLabelClick(e, id)}
+                  >
                     {`${emoji} ${count}`}
                   </EmojiLabel>
                 </EmojiLabelItem>
