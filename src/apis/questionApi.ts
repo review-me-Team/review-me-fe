@@ -209,3 +209,37 @@ export const postQuestion = async ({
 export const usePostQuestion = () => {
   return useMutation({ mutationFn: postQuestion });
 };
+
+// PATCH 예상 질문 이모지 수정
+export const patchEmojiAboutQuestion = async ({
+  resumeId,
+  questionId,
+  emojiId,
+  jwt,
+}: {
+  resumeId: number;
+  questionId: number;
+  emojiId: number;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/emoji`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ id: emojiId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchEmojiAboutQuestion = () => {
+  return useMutation({ mutationFn: patchEmojiAboutQuestion });
+};
