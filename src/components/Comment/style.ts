@@ -133,7 +133,7 @@ const EmojiModal = styled.div`
   padding: 0.5rem;
   gap: 0.25rem;
   position: absolute;
-  left: -1.5rem;
+  left: -0.75rem;
   top: auto;
   bottom: 100%;
   z-index: ${theme.zIndex.modal};
