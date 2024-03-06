@@ -94,7 +94,7 @@ const ResumeDetail = () => {
   });
 
   const { mutate: addFeedback } = usePostFeedback();
-  const { mutate: mutateAboutQuestion } = usePostQuestion();
+  const { mutate: addQuestion } = usePostQuestion();
   const { mutate: mutateAboutComment } = usePostComment();
 
   const textareaPlaceholder = {
@@ -139,7 +139,7 @@ const ResumeDetail = () => {
         },
       );
     } else if (currentTab === 'question') {
-      mutateAboutQuestion({
+      addQuestion({
         resumeId: Number(resumeId),
         content: comment,
         labelId,
