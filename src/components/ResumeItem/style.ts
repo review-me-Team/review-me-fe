@@ -1,8 +1,9 @@
+import { Link } from 'react-router-dom';
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 import { ellipsisStyles } from '@styles/common';
 
-const ResumeItemLayout = styled.li`
+const ResumeItemLayout = styled(Link)`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;

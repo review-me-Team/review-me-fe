@@ -1,4 +1,5 @@
 import React from 'react';
+import { ROUTE_PATH } from '@constants';
 import { formatDate } from '@utils';
 import { ResumeItemLayout, Title, User, UserImg, UserInfo } from './style';
 
@@ -14,7 +15,7 @@ interface Props {
 
 const ResumeItem = ({ id, title, writerName, writerProfileUrl, createdAt, occupation, year }: Props) => {
   return (
-    <ResumeItemLayout>
+    <ResumeItemLayout to={`${ROUTE_PATH.RESUME}/${id}`}>
       <Title>{title}</Title>
       <User>
         <UserImg src={writerProfileUrl} alt="user-image" />

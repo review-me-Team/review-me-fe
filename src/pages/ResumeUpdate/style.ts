@@ -37,9 +37,4 @@ const MainDescription = styled.span`
   color: ${theme.color.neutral.text.strong};
 `;
 
-const SubDescription = styled.span`
-  ${theme.font.body.default}
-  color: ${theme.color.neutral.text.strong}
-`;
-
-export { IconButton, ResumeUploadContainer, Description, MainDescription, SubDescription };
+export { IconButton, ResumeUploadContainer, Description, MainDescription };

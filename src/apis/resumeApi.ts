@@ -115,3 +115,35 @@ export const postResume = async ({
 export const usePostResume = () => {
   return useMutation({ mutationFn: postResume });
 };
+
+// PATCH 이력서 수정
+export const updateResume = async ({
+  resumeId,
+  title,
+  scopeId,
+  occupationId,
+  year,
+}: {
+  resumeId: number;
+  title: string;
+  scopeId: number;
+  occupationId: number;
+  year: number;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ title, scopeId, occupationId, year }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useUpdateResume = () => {
+  return useMutation({ mutationFn: updateResume });
+};

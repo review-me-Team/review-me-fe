@@ -1,24 +1,32 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import useAuth from '@hooks/useAuth';
 import { useUserContext } from '@contexts/userContext';
-import { usePostAuthorizationCode } from '@apis/login';
+import { ROUTE_PATH } from '@constants';
 
 const SocialLogin = () => {
+  const [searchParams] = useSearchParams();
+  const code = searchParams.get('code');
+
+  const { createJwtQuery } = useAuth();
+  const { logout, login } = useUserContext();
   const navigate = useNavigate();
-  const code = new URLSearchParams(window.location.search).get('code');
-  const { mutate, data } = usePostAuthorizationCode();
-  const { login } = useUserContext();
 
   useEffect(() => {
-    if (code) {
-      mutate(code);
-      // todo: 이전 페이지로 이동 (현재는 메인 페이지로 이동하도록 구현)
-      navigate('/');
-      if (data?.jwt) {
-        login(data.jwt);
-      }
-    }
-  }, []);
+    if (code)
+      createJwtQuery.mutate(code, {
+        onSuccess: (data) => {
+          login(data.jwt);
+        },
+        onError: () => {
+          alert('로그인에 실패했습니다.');
+          logout();
+        },
+        onSettled: () => {
+          navigate(ROUTE_PATH.ROOT);
+        },
+      });
+  }, [code]);
 
   return <></>;
 };

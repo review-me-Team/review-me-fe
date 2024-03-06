@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useModal } from 'review-me-design-system';
 import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
+import { ROUTE_PATH } from '@constants';
 import { formatDate } from '@utils';
 import {
   Button,
@@ -22,6 +24,7 @@ interface Props {
 
 const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) => {
   const { isOpen: isOpenDeleteModal, open: openDeleteModal, close: closeDeleteModal } = useModal();
+  const navigate = useNavigate();
 
   return (
     <MyResumeItemLayout>
@@ -33,7 +36,14 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <span>{formatDate(createdAt)}</span>
       </DescriptionContainer>
       <ButtonsContainer>
-        <Button $position="left">수정</Button>
+        <Button
+          $position="left"
+          onClick={() => {
+            navigate(ROUTE_PATH.RESUME_UPDATE, { state: { resumeId: id, title, year, occupation, scope } });
+          }}
+        >
+          수정
+        </Button>
         <Button $position="right" onClick={openDeleteModal}>
           삭제
         </Button>

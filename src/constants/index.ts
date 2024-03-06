@@ -4,6 +4,7 @@ export const ROUTE_PATH = {
   RESUME: '/resume',
   MY_RESUME: '/my-resume',
   RESUME_UPLOAD: '/resume-upload',
+  RESUME_UPDATE: '/resume-update',
   SOCIAL_LOGIN: '/path',
 } as const;
 
@@ -17,6 +18,7 @@ export const REQUEST_URL = {
   EMOJI: `${BASE_URL}/emoji`,
   SCOPE: `${BASE_URL}/scope`,
   OAUTH: `${BASE_URL}/login/oauth`,
+  RENEW_JWT: `${BASE_URL}/user/refresh`,
 } as const;
 
 export const PDF_VIEWER_SCALE = {
@@ -25,3 +27,5 @@ export const PDF_VIEWER_SCALE = {
   MIN_SCALE: 0.6,
   SCALE_STEP: 0.2,
 } as const;
+
+export const IS_LOGGED_IN_KEY = 'isLoggedIn';

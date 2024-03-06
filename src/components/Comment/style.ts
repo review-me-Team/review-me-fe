@@ -104,8 +104,8 @@ const EmojiButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
 
   background-color: ${theme.palette.grey300};

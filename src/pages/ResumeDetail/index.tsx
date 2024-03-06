@@ -1,14 +1,16 @@
 import React, { FormEvent, MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import PdfViewer from '@components/PdfViewer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
+import { useUserContext } from '@contexts/userContext';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionList } from '@apis/questionApi';
+import { usePostQuestion, useQuestionLabelList, useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
 import {
@@ -28,8 +30,6 @@ import {
   WriterImg,
   WriterInfo,
   WriterInfoContainer,
-  ReplyList,
-  ReplyForm,
   ResumeViewer,
   KeywordLabel,
 } from './style';
@@ -37,6 +37,8 @@ import {
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
+  const queryClient = useQueryClient();
+  const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
 
   const { data: resumeDetail } = useResumeDetail(Number(resumeId));
@@ -55,14 +57,20 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
+  // todo: tab 변경 시 변경된 tab에 해당하는 currentPageNum을 가져오기
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
+    resumePage: currentPageNum,
+    enabled: currentTab === 'feedback',
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
+    resumePage: currentPageNum,
+    enabled: currentTab === 'question',
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
+    enabled: currentTab === 'comment',
   });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
@@ -80,8 +88,13 @@ const ResumeDetail = () => {
     },
   });
 
-  const { mutate: mutateAboutFeedback } = usePostFeedback();
-  const { mutate: mutateAboutQuestion } = usePostQuestion();
+  const { data: questionLabelList } = useQuestionLabelList({
+    resumeId: Number(resumeId),
+    enabled: currentTab === 'question',
+  });
+
+  const { mutate: addFeedback } = usePostFeedback();
+  const { mutate: addQuestion } = usePostQuestion();
   const { mutate: mutateAboutComment } = usePostComment();
 
   const textareaPlaceholder = {
@@ -101,31 +114,53 @@ const ResumeDetail = () => {
     resetForm();
   };
 
+  const isUnauthorized = !(jwt && isLoggedIn);
+
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!resumeId || !comment || isUnauthorized) return;
+
     if (currentTab === 'feedback') {
-      if (!comment) return;
-
-      mutateAboutFeedback({
-        resumeId: Number(resumeId),
-        content: comment,
-        labelId,
-        resumePage: currentPageNum,
-      });
+      addFeedback(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          labelId,
+          resumePage: currentPageNum,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return queryClient.invalidateQueries({
+              queryKey: ['feedbackList', Number(resumeId), currentPageNum],
+            });
+          },
+        },
+      );
     } else if (currentTab === 'question') {
-      if (!comment) return;
-
-      mutateAboutQuestion({
-        resumeId: Number(resumeId),
-        content: comment,
-        labelId,
-        labelContent,
-        resumePage: currentPageNum,
-      });
+      addQuestion(
+        {
+          resumeId: Number(resumeId),
+          content: comment,
+          labelContent: labelContent.trim(),
+          resumePage: currentPageNum,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            return Promise.all([
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), currentPageNum],
+              }),
+              queryClient.invalidateQueries({
+                queryKey: ['questionList', Number(resumeId), 'labelList'],
+              }),
+            ]);
+          },
+        },
+      );
     } else if (currentTab === 'comment') {
-      if (!comment) return;
-
       mutateAboutComment({
         resumeId: Number(resumeId),
         content: comment,
@@ -203,34 +238,7 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment {...feedback} />
-                    {/* <ReplyList>
-                      <Comment
-                        content="프로젝트에서 react-query를 사용하셨는데 사용한 이유가 궁금합니다."
-                        commenterId={1}
-                        writerId={1}
-                        commenterName="aken-you"
-                        commenterProfileUrl="https://avatars.githubusercontent.com/u/96980857?v=4"
-                        createdAt="2024-01-24 16:19:37"
-                        emojis={[
-                          {
-                            id: 1,
-                            count: 10,
-                          },
-                          {
-                            id: 2,
-                            count: 3,
-                          },
-                        ]}
-                        myEmojiId={1}
-                      />
-                      <ReplyForm>
-                        <Textarea placeholder="댓글" />
-                        <Button variant="default" size="s">
-                          작성
-                        </Button>
-                      </ReplyForm>
-                    </ReplyList> */}
+                    <Comment type="feedback" {...feedback} />
                   </li>
                 );
               })}
@@ -238,7 +246,7 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment {...question} />
+                    <Comment type="question" {...question} />
                   </li>
                 );
               })}
@@ -246,7 +254,7 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment {...comment} />
+                    <Comment type="comment" {...comment} />
                   </li>
                 );
               })}

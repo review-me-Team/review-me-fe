@@ -77,7 +77,11 @@ const Resume = () => {
 
       <ResumeList>
         {resumeList?.map((resume) => {
-          return <ResumeItem key={resume.id} {...resume} />;
+          return (
+            <li key={resume.id}>
+              <ResumeItem {...resume} />;
+            </li>
+          );
         })}
       </ResumeList>
       <div ref={setTarget}></div>

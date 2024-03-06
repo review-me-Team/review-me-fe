@@ -1,7 +1,11 @@
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
-import { Emoji } from './utilApi';
+
+interface Emoji {
+  id: number;
+  count: number;
+}
 
 export interface Comment {
   id: number;
@@ -11,7 +15,7 @@ export interface Comment {
   commenterProfileUrl: string;
   createdAt: string;
   emojis: Emoji[];
-  myEmojiId: number;
+  myEmojiId: number | null;
 }
 
 type CommentList = Comment[];
@@ -34,9 +38,10 @@ export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number
 
 interface UseCommentListProps {
   resumeId: number;
+  enabled: boolean;
 }
 
-export const useCommentList = ({ resumeId }: UseCommentListProps) => {
+export const useCommentList = ({ resumeId, enabled }: UseCommentListProps) => {
   return useInfiniteQuery({
     queryKey: ['commentList', resumeId],
     initialPageParam: 0,
@@ -46,6 +51,7 @@ export const useCommentList = ({ resumeId }: UseCommentListProps) => {
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    enabled,
   });
 };
 
