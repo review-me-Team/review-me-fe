@@ -172,3 +172,37 @@ export const postFeedback = async ({
 export const usePostFeedback = () => {
   return useMutation({ mutationFn: postFeedback });
 };
+
+// PATCH 피드백 이모지 수정
+export const patchEmojiAboutFeedback = async ({
+  resumeId,
+  feedbackId,
+  emojiId,
+  jwt,
+}: {
+  resumeId: number;
+  feedbackId: number;
+  emojiId: number;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/emoji`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ id: emojiId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchEmojiAboutFeedback = () => {
+  return useMutation({ mutationFn: patchEmojiAboutFeedback });
+};
