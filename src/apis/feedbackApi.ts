@@ -133,28 +133,38 @@ export const postFeedback = async ({
   content,
   labelId,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   content: string;
   labelId?: number;
   resumePage: number;
+  jwt: string;
 }) => {
-  const formData = new FormData();
-  formData.append('content', content);
-  formData.append('resumePage', String(resumePage));
-  if (labelId) formData.append('labelId', String(labelId));
+  const newFeedback: {
+    content: string;
+    resumePage: number;
+    labelId?: number;
+  } = {
+    content,
+    resumePage,
+  };
+  if (labelId) newFeedback['labelId'] = labelId;
 
-  // todo: request headers에 authorization 추가하기
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback`, {
     method: 'POST',
-    body: formData,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(newFeedback),
   });
 
   if (!response.ok) {
     throw response;
   }
 
-  const { data } = await response.json();
+  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
