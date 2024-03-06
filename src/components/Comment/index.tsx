@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Icon, Label as EmojiLabel, theme, Label } from 'review-me-design-system';
+import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import ReplyList, { Reply } from '@components/ReplyList';
 import useHover from '@hooks/useHover';
 import { useFeedbackReplyList } from '@apis/feedbackApi';
@@ -201,9 +201,9 @@ const Comment = ({
             >
               {emojiList?.map(({ id, emoji }) => {
                 return (
-                  <Label key={id} isActive={id === myEmojiId} py="0.5rem" px="0.75rem">
+                  <EmojiLabel key={id} isActive={id === myEmojiId} py="0.5rem" px="0.75rem">
                     {emoji}
-                  </Label>
+                  </EmojiLabel>
                 );
               })}
             </EmojiModal>
