@@ -20,7 +20,7 @@ export interface Comment {
 
 type CommentList = Comment[];
 
-interface GetCommentList extends PageNationData {
+export interface GetCommentList extends PageNationData {
   comments: CommentList;
 }
 

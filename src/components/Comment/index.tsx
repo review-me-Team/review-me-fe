@@ -5,7 +5,7 @@ import ReplyList from '@components/ReplyList';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { usePatchEmojiAboutComment } from '@apis/commentApi';
+import { GetCommentList, usePatchEmojiAboutComment, Comment as CommentType } from '@apis/commentApi';
 import { Feedback, GetFeedbackList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
 import { GetQuestionList, Question, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
@@ -165,12 +165,31 @@ const Comment = ({
         );
         break;
       case 'comment':
-        toggleEmojiAboutComment({
-          resumeId,
-          commentId: id,
-          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
-          jwt,
-        });
+        toggleEmojiAboutComment(
+          {
+            resumeId,
+            commentId: id,
+            emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
+            jwt,
+          },
+          {
+            onSuccess: () => {
+              queryClient.setQueryData<InfiniteData<GetCommentList>>(['commentList', resumeId], (oldData) => {
+                if (!oldData) return;
+
+                return {
+                  ...oldData,
+                  pages: oldData.pages.map((page) => ({
+                    ...page,
+                    comments: page.comments.map((comment) =>
+                      updateEmojis<CommentType>({ data: comment, id, clickedEmojiId, myEmojiId }),
+                    ),
+                  })),
+                };
+              });
+            },
+          },
+        );
         break;
     }
   };
