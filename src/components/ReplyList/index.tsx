@@ -1,30 +1,13 @@
 import React from 'react';
 import { Button, Textarea } from 'review-me-design-system';
-import Comment from '@components/Comment';
+import Reply, { ReplyType } from '@components/Comment/Reply';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useFeedbackReplyList } from '@apis/feedbackApi';
 import { useQuestionReplyList } from '@apis/questionApi';
 import { ReplyForm, ReplyListLayout } from './style';
 
-type Emoji = {
-  id: number;
-  count: number;
-};
-
-export interface Reply {
-  id: number;
-  parentId: number;
-  content: string | null;
-  commenterId: number;
-  commenterName: string;
-  commenterProfileUrl: string;
-  createdAt: string;
-  emojis: Emoji[];
-  myEmojiId: number | null;
-}
-
 interface Props {
-  type: 'feedback' | 'question' | 'comment';
+  type: 'feedback' | 'question';
   parentId: number;
   resumeId: number;
 }
@@ -50,7 +33,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
     },
   });
 
-  let replies: Reply[] = [];
+  let replies: ReplyType[] = [];
 
   if (type === 'feedback' && feedbackReplyList)
     replies = feedbackReplyList.pages
@@ -68,7 +51,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
       <ul>
         {replies.map((reply) => (
           <li key={reply.id}>
-            <Comment type={type} resumeId={resumeId} {...reply} />
+            <Reply type={type} resumeId={resumeId} {...reply} />
           </li>
         ))}
         <div ref={setTarget}></div>
