@@ -1,4 +1,5 @@
 import React, { MouseEvent, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import ReplyList from '@components/ReplyList';
 import useHover from '@hooks/useHover';
@@ -50,7 +51,6 @@ interface Props {
   bookmarked?: boolean;
   labelContent?: string | null;
   countOfReplies?: number;
-  writerId?: number;
 }
 
 const Comment = ({
@@ -69,8 +69,9 @@ const Comment = ({
   bookmarked,
   emojis,
   myEmojiId,
-  writerId,
 }: Props) => {
+  const { jwt, isLoggedIn, user } = useUserContext();
+  const isAuthenticated = jwt && isLoggedIn;
   const { isHover, changeHoverState } = useHover();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
 
@@ -80,6 +81,7 @@ const Comment = ({
   const hasReplyIcon = typeof countOfReplies === 'number' && type !== 'comment';
   const hasCheckMarkIcon = typeof checked === 'boolean';
   const hasBookMarkIcon = typeof bookmarked === 'boolean';
+  const hasMoreIcon = commenterId === user?.id;
 
   const { data: emojiList } = useEmojiList();
 
@@ -88,9 +90,6 @@ const Comment = ({
 
     setIsOpenReplyList((prev) => !prev);
   };
-
-  const { jwt, isLoggedIn } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
 
   const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
   const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
@@ -180,14 +179,16 @@ const Comment = ({
                 )}
               </IconButton>
             )}
-            <IconButton>
-              <Icon
-                iconName="more"
-                width={ICON_SIZE}
-                height={ICON_SIZE}
-                color={theme.color.accent.bg.strong}
-              />
-            </IconButton>
+            {hasMoreIcon && (
+              <IconButton>
+                <Icon
+                  iconName="more"
+                  width={ICON_SIZE}
+                  height={ICON_SIZE}
+                  color={theme.color.accent.bg.strong}
+                />
+              </IconButton>
+            )}
           </div>
         </Top>
 
