@@ -1,11 +1,12 @@
 import React, { MouseEvent, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import ReplyList from '@components/ReplyList';
+import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchEmojiAboutComment } from '@apis/commentApi';
-import { usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import { Feedback, GetFeedbackList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
 import { usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
@@ -94,26 +95,50 @@ const Comment = ({
   const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
   const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
   const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
+  const { updateEmojis } = useEmojiUpdate();
+  const queryClient = useQueryClient();
 
-  const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, emojiId: number) => {
+  const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
     if (!isAuthenticated) return;
 
-    const shouldUnselectEmoji = typeof myEmojiId === 'number' && myEmojiId === emojiId;
+    const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 
     switch (type) {
       case 'feedback':
-        toggleEmojiAboutFeedback({
-          resumeId,
-          feedbackId: id,
-          emojiId: shouldUnselectEmoji ? null : emojiId,
-          jwt,
-        });
+        toggleEmojiAboutFeedback(
+          {
+            resumeId,
+            feedbackId: id,
+            emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
+            jwt,
+          },
+          {
+            onSuccess: () => {
+              queryClient.setQueryData<InfiniteData<GetFeedbackList>>(
+                ['feedbackList', resumeId, resumePage],
+                (oldData) => {
+                  if (!oldData) return;
+
+                  return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => ({
+                      ...page,
+                      feedbacks: page.feedbacks.map((feedback) =>
+                        updateEmojis<Feedback>({ data: feedback, id, clickedEmojiId, myEmojiId }),
+                      ),
+                    })),
+                  };
+                },
+              );
+            },
+          },
+        );
         break;
       case 'question':
         toggleEmojiAboutQuestion({
           resumeId,
           questionId: id,
-          emojiId: shouldUnselectEmoji ? null : emojiId,
+          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
           jwt,
         });
         break;
@@ -121,7 +146,7 @@ const Comment = ({
         toggleEmojiAboutComment({
           resumeId,
           commentId: id,
-          emojiId: shouldUnselectEmoji ? null : emojiId,
+          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
           jwt,
         });
         break;

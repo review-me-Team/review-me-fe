@@ -1,4 +1,4 @@
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -24,7 +24,7 @@ export interface Feedback {
 
 type FeedbackList = Feedback[];
 
-interface GetFeedbackList extends PageNationData {
+export interface GetFeedbackList extends PageNationData {
   feedbacks: FeedbackList;
 }
 
@@ -45,8 +45,6 @@ export const getFeedbackList = async ({
   const requestOptions: RequestInit = {
     headers,
   };
-
-  console.log(requestOptions);
 
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
