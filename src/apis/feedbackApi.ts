@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -32,13 +32,25 @@ export const getFeedbackList = async ({
   resumeId,
   pageParam,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
+  console.log(requestOptions);
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -54,13 +66,14 @@ interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage, enabled }: UseFeedbackListProps) => {
+export const useFeedbackList = ({ resumeId, resumePage, enabled, jwt }: UseFeedbackListProps) => {
   return useInfiniteQuery({
     queryKey: ['feedbackList', resumeId, resumePage],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage }),
+    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
