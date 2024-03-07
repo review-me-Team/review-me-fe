@@ -13,7 +13,7 @@ const ReplyForm = styled.form`
   }
 `;
 
-const ReplyListLayout = styled.ul`
+const ReplyListLayout = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0.5rem 1rem;

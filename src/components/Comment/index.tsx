@@ -1,11 +1,11 @@
 import React, { MouseEvent, useState } from 'react';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
-import ReplyList, { Reply } from '@components/ReplyList';
+import ReplyList from '@components/ReplyList';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchEmojiAboutComment } from '@apis/commentApi';
-import { useFeedbackReplyList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { usePatchEmojiAboutQuestion, useQuestionReplyList } from '@apis/questionApi';
+import { usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import { usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -80,24 +80,9 @@ const Comment = ({
   const hasBookMarkIcon = typeof bookmarked === 'boolean';
 
   const { data: emojiList } = useEmojiList();
-  const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackList } = useFeedbackReplyList({
-    resumeId,
-    feedbackId: id,
-    enabled: type === 'feedback' && isOpenReplyList,
-  });
-  const { data: questionReplyList, fetchNextPage: fetchNextQuestionList } = useQuestionReplyList({
-    resumeId,
-    questionId: id,
-    enabled: type === 'question' && isOpenReplyList,
-  });
 
   const handleReplyButtonClick = () => {
     if (!hasReplyIcon) return;
-
-    if (!isOpenReplyList) {
-      if (type === 'feedback') fetchNextFeedbackList();
-      if (type === 'question') fetchNextQuestionList();
-    }
 
     setIsOpenReplyList((prev) => !prev);
   };
@@ -141,19 +126,6 @@ const Comment = ({
         break;
     }
   };
-
-  let replies: Reply[] = [];
-
-  if (type === 'feedback' && feedbackReplyList)
-    replies = feedbackReplyList.pages
-      .map((page) => page.feedbackComments)
-      .flat()
-      .map((reply) => ({ ...reply, parentId: reply.parentFeedbackId }));
-  if (type === 'question' && questionReplyList)
-    replies = questionReplyList.pages
-      .map((page) => page.questionComments)
-      .flat()
-      .map((reply) => ({ ...reply, parentId: reply.parentQuestionId }));
 
   return (
     <>
@@ -281,7 +253,7 @@ const Comment = ({
           </EmojiLabelList>
         </Bottom>
       </CommentLayout>
-      {isOpenReplyList && <ReplyList type={type} resumeId={resumeId} replies={replies} />}
+      {isOpenReplyList && <ReplyList type={type} parentId={id} resumeId={resumeId} />}
     </>
   );
 };
