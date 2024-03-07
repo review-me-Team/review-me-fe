@@ -75,6 +75,7 @@ const ResumeDetail = () => {
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     enabled: currentTab === 'question',
+    jwt,
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),

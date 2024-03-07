@@ -34,13 +34,23 @@ export const getQuestionList = async ({
   resumeId,
   pageParam,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}&resumePage=${resumePage}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -56,13 +66,14 @@ interface UseQuestionListProps {
   resumeId: number;
   resumePage: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useQuestionList = ({ resumeId, resumePage, enabled }: UseQuestionListProps) => {
+export const useQuestionList = ({ resumeId, resumePage, enabled, jwt }: UseQuestionListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionList', resumeId, resumePage],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage }),
+    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
