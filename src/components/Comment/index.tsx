@@ -37,6 +37,7 @@ type Emoji = {
 interface Props {
   type: 'feedback' | 'question' | 'comment';
   resumeId: number;
+  resumePage: number;
   id: number;
   content: string | null;
   commenterId: number;
@@ -55,6 +56,7 @@ interface Props {
 const Comment = ({
   type,
   resumeId,
+  resumePage,
   id,
   content,
   commenterId,
@@ -253,7 +255,7 @@ const Comment = ({
           </EmojiLabelList>
         </Bottom>
       </CommentLayout>
-      {isOpenReplyList && <ReplyList type={type} parentId={id} resumeId={resumeId} />}
+      {hasReplyIcon && isOpenReplyList && <ReplyList type={type} parentId={id} resumeId={resumeId} />}
     </>
   );
 };
