@@ -98,7 +98,7 @@ export const patchEmojiAboutComment = async ({
 }: {
   resumeId: number;
   commentId: number;
-  emojiId: number;
+  emojiId: number | null;
   jwt: string;
 }) => {
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}/emoji`, {

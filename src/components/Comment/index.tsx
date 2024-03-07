@@ -112,15 +112,32 @@ const Comment = ({
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, emojiId: number) => {
     if (!isAuthenticated) return;
 
+    const shouldUnselectEmoji = typeof myEmojiId === 'number' && myEmojiId === emojiId;
+
     switch (type) {
       case 'feedback':
-        toggleEmojiAboutFeedback({ resumeId, feedbackId: id, emojiId, jwt });
+        toggleEmojiAboutFeedback({
+          resumeId,
+          feedbackId: id,
+          emojiId: shouldUnselectEmoji ? null : emojiId,
+          jwt,
+        });
         break;
       case 'question':
-        toggleEmojiAboutQuestion({ resumeId, questionId: id, emojiId, jwt });
+        toggleEmojiAboutQuestion({
+          resumeId,
+          questionId: id,
+          emojiId: shouldUnselectEmoji ? null : emojiId,
+          jwt,
+        });
         break;
       case 'comment':
-        toggleEmojiAboutComment({ resumeId, commentId: id, emojiId, jwt });
+        toggleEmojiAboutComment({
+          resumeId,
+          commentId: id,
+          emojiId: shouldUnselectEmoji ? null : emojiId,
+          jwt,
+        });
         break;
     }
   };
