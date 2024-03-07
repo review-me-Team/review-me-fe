@@ -26,7 +26,7 @@ export interface Question {
 type QuestionList = Question[];
 
 // GET 예상질문 목록 조회
-interface GetQuestionList extends PageNationData {
+export interface GetQuestionList extends PageNationData {
   questions: QuestionList;
 }
 

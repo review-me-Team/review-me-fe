@@ -7,7 +7,7 @@ import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchEmojiAboutComment } from '@apis/commentApi';
 import { Feedback, GetFeedbackList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import { GetQuestionList, Question, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -135,12 +135,34 @@ const Comment = ({
         );
         break;
       case 'question':
-        toggleEmojiAboutQuestion({
-          resumeId,
-          questionId: id,
-          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
-          jwt,
-        });
+        toggleEmojiAboutQuestion(
+          {
+            resumeId,
+            questionId: id,
+            emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
+            jwt,
+          },
+          {
+            onSuccess: () => {
+              queryClient.setQueryData<InfiniteData<GetQuestionList>>(
+                ['questionList', resumeId, resumePage],
+                (oldData) => {
+                  if (!oldData) return;
+
+                  return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => ({
+                      ...page,
+                      questions: page.questions.map((question) =>
+                        updateEmojis<Question>({ data: question, id, clickedEmojiId, myEmojiId }),
+                      ),
+                    })),
+                  };
+                },
+              );
+            },
+          },
+        );
         break;
       case 'comment':
         toggleEmojiAboutComment({
