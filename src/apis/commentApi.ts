@@ -24,8 +24,23 @@ interface GetCommentList extends PageNationData {
   comments: CommentList;
 }
 
-export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number; pageParam: number }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`);
+export const getCommentList = async ({
+  resumeId,
+  pageParam,
+  jwt,
+}: {
+  resumeId: number;
+  pageParam: number;
+  jwt?: string;
+}) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`, requestOptions);
 
   if (!response.ok) {
     throw response;
@@ -39,13 +54,14 @@ export const getCommentList = async ({ resumeId, pageParam }: { resumeId: number
 interface UseCommentListProps {
   resumeId: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useCommentList = ({ resumeId, enabled }: UseCommentListProps) => {
+export const useCommentList = ({ resumeId, enabled, jwt }: UseCommentListProps) => {
   return useInfiniteQuery({
     queryKey: ['commentList', resumeId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam }),
+    queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

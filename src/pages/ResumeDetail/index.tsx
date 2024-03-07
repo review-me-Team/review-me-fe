@@ -57,7 +57,6 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
-  // todo: tab 변경 시 변경된 tab에 해당하는 currentPageNum을 가져오기
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
@@ -71,6 +70,7 @@ const ResumeDetail = () => {
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
+    jwt,
   });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
@@ -249,7 +249,12 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment type="feedback" resumeId={Number(resumeId)} {...feedback} />
+                    <Comment
+                      type="feedback"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...feedback}
+                    />
                   </li>
                 );
               })}
@@ -257,7 +262,12 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment type="question" resumeId={Number(resumeId)} {...question} />
+                    <Comment
+                      type="question"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...question}
+                    />
                   </li>
                 );
               })}
@@ -265,7 +275,12 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment type="comment" resumeId={Number(resumeId)} {...comment} />
+                    <Comment
+                      type="comment"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...comment}
+                    />
                   </li>
                 );
               })}
