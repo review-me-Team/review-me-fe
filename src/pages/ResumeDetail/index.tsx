@@ -193,7 +193,8 @@ const ResumeDetail = () => {
                 <WriterInfo>
                   <span>{resumeDetail?.writerName}</span>
                   <Career>
-                    {resumeDetail?.occupation} | {resumeDetail?.year === 0 ? '신입' : resumeDetail?.year}
+                    {resumeDetail?.occupation} |{' '}
+                    {resumeDetail?.year === 0 ? '신입' : `${resumeDetail?.year}년차`}
                   </Career>
                 </WriterInfo>
               </WriterInfoContainer>
