@@ -114,12 +114,12 @@ const ResumeDetail = () => {
     resetForm();
   };
 
-  const isUnauthorized = !(jwt && isLoggedIn);
+  const isAuthenticated = jwt && isLoggedIn;
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!resumeId || !comment || isUnauthorized) return;
+    if (!resumeId || !comment || !isAuthenticated) return;
 
     if (currentTab === 'feedback') {
       addFeedback(

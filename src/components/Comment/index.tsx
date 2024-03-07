@@ -103,14 +103,14 @@ const Comment = ({
   };
 
   const { jwt, isLoggedIn } = useUserContext();
-  const isUnauthorized = !(jwt && isLoggedIn);
+  const isAuthenticated = jwt && isLoggedIn;
 
   const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
   const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
   const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, emojiId: number) => {
-    if (isUnauthorized) return;
+    if (!isAuthenticated) return;
 
     switch (type) {
       case 'feedback':
