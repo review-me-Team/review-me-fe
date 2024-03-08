@@ -20,7 +20,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
   });
   const { data: questionReplyList, fetchNextPage: fetchNextQuestionList } = useQuestionReplyList({
     resumeId,
-    questionId: parentId,
+    parentQuestionId: parentId,
     enabled: type === 'question',
   });
   const { setTarget } = useIntersectionObserver({

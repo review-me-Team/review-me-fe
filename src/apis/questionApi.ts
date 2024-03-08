@@ -102,14 +102,16 @@ interface GetQuestionReplyList extends PageNationData {
 
 export const getQuestionReplyList = async ({
   resumeId,
-  questionId,
+  parentQuestionId,
   pageParam,
 }: {
   resumeId: number;
-  questionId: number;
+  parentQuestionId: number;
   pageParam: number;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}?page=${pageParam}`);
+  const response = await fetch(
+    `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}`,
+  );
 
   if (!response.ok) {
     throw response;
@@ -122,15 +124,15 @@ export const getQuestionReplyList = async ({
 
 interface UseQuestionReplyListProps {
   resumeId: number;
-  questionId: number;
+  parentQuestionId: number;
   enabled: boolean;
 }
 
-export const useQuestionReplyList = ({ resumeId, questionId, enabled }: UseQuestionReplyListProps) => {
+export const useQuestionReplyList = ({ resumeId, parentQuestionId, enabled }: UseQuestionReplyListProps) => {
   return useInfiniteQuery({
-    queryKey: ['questionReplyList', resumeId, questionId],
+    queryKey: ['questionReplyList', resumeId, parentQuestionId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, questionId, pageParam }),
+    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, parentQuestionId, pageParam }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
