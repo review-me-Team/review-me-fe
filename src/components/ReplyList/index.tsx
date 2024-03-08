@@ -15,7 +15,7 @@ interface Props {
 const ReplyList = ({ type, parentId, resumeId }: Props) => {
   const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackList } = useFeedbackReplyList({
     resumeId,
-    feedbackId: parentId,
+    parentFeedbackId: parentId,
     enabled: type === 'feedback',
   });
   const { data: questionReplyList, fetchNextPage: fetchNextQuestionList } = useQuestionReplyList({

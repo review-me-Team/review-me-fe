@@ -100,14 +100,16 @@ export interface GetFeedbackReplyList extends PageNationData {
 
 export const getFeedbackReplyList = async ({
   resumeId,
-  feedbackId,
+  parentFeedbackId,
   pageParam,
 }: {
   resumeId: number;
-  feedbackId: number;
+  parentFeedbackId: number;
   pageParam: number;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}?page=${pageParam}`);
+  const response = await fetch(
+    `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}`,
+  );
 
   if (!response.ok) {
     throw response;
@@ -120,15 +122,15 @@ export const getFeedbackReplyList = async ({
 
 interface UseFeedbackReplyListProps {
   resumeId: number;
-  feedbackId: number;
+  parentFeedbackId: number;
   enabled: boolean;
 }
 
-export const useFeedbackReplyList = ({ resumeId, feedbackId, enabled }: UseFeedbackReplyListProps) => {
+export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, enabled }: UseFeedbackReplyListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackReplyList', resumeId, feedbackId],
+    queryKey: ['feedbackReplyList', resumeId, parentFeedbackId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, feedbackId, pageParam }),
+    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, parentFeedbackId, pageParam }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
