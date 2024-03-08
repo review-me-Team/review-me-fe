@@ -24,7 +24,7 @@ export interface Feedback {
 
 type FeedbackList = Feedback[];
 
-interface GetFeedbackList extends PageNationData {
+export interface GetFeedbackList extends PageNationData {
   feedbacks: FeedbackList;
 }
 
@@ -32,13 +32,23 @@ export const getFeedbackList = async ({
   resumeId,
   pageParam,
   resumePage,
+  jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -54,13 +64,14 @@ interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage, enabled }: UseFeedbackListProps) => {
+export const useFeedbackList = ({ resumeId, resumePage, enabled, jwt }: UseFeedbackListProps) => {
   return useInfiniteQuery({
     queryKey: ['feedbackList', resumeId, resumePage],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage }),
+    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
@@ -83,20 +94,22 @@ export interface FeedbackReply {
   myEmojiId: number | null;
 }
 
-interface GetFeedbackReplyList extends PageNationData {
+export interface GetFeedbackReplyList extends PageNationData {
   feedbackComments: FeedbackReply[];
 }
 
 export const getFeedbackReplyList = async ({
   resumeId,
-  feedbackId,
+  parentFeedbackId,
   pageParam,
 }: {
   resumeId: number;
-  feedbackId: number;
+  parentFeedbackId: number;
   pageParam: number;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}?page=${pageParam}`);
+  const response = await fetch(
+    `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}`,
+  );
 
   if (!response.ok) {
     throw response;
@@ -109,15 +122,15 @@ export const getFeedbackReplyList = async ({
 
 interface UseFeedbackReplyListProps {
   resumeId: number;
-  feedbackId: number;
+  parentFeedbackId: number;
   enabled: boolean;
 }
 
-export const useFeedbackReplyList = ({ resumeId, feedbackId, enabled }: UseFeedbackReplyListProps) => {
+export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, enabled }: UseFeedbackReplyListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackReplyList', resumeId, feedbackId],
+    queryKey: ['feedbackReplyList', resumeId, parentFeedbackId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, feedbackId, pageParam }),
+    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, parentFeedbackId, pageParam }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
@@ -171,4 +184,38 @@ export const postFeedback = async ({
 
 export const usePostFeedback = () => {
   return useMutation({ mutationFn: postFeedback });
+};
+
+// PATCH 피드백 이모지 수정
+export const patchEmojiAboutFeedback = async ({
+  resumeId,
+  feedbackId,
+  emojiId,
+  jwt,
+}: {
+  resumeId: number;
+  feedbackId: number;
+  emojiId: number | null;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/emoji`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ id: emojiId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchEmojiAboutFeedback = () => {
+  return useMutation({ mutationFn: patchEmojiAboutFeedback });
 };

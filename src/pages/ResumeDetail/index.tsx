@@ -1,4 +1,4 @@
-import React, { FormEvent, MouseEvent, useState } from 'react';
+import React, { FormEvent, MouseEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
@@ -57,21 +57,37 @@ const ResumeDetail = () => {
 
   const { data: labelList } = useLabelList();
 
-  // todo: tab 변경 시 변경된 tab에 해당하는 currentPageNum을 가져오기
-  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
+  const enabledAboutFeedbackList = isLoggedIn
+    ? currentTab === 'feedback' && !!jwt
+    : currentTab === 'feedback';
+
+  const {
+    data: feedbackListData,
+    refetch: refetchFeedbackList,
+    fetchNextPage: fetchNextPageAboutFeedback,
+  } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
-    enabled: currentTab === 'feedback',
+    enabled: enabledAboutFeedbackList,
+    jwt,
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     enabled: currentTab === 'question',
+    jwt,
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
+    jwt,
   });
+
+  useEffect(() => {
+    if (jwt && currentTab === 'feedback') {
+      refetchFeedbackList();
+    }
+  }, [jwt, currentTab]);
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
   const questionList = questionListData?.pages.map((page) => page.questions).flat();
@@ -114,12 +130,12 @@ const ResumeDetail = () => {
     resetForm();
   };
 
-  const isUnauthorized = !(jwt && isLoggedIn);
+  const isAuthenticated = jwt && isLoggedIn;
 
   const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!resumeId || !comment || isUnauthorized) return;
+    if (!resumeId || !comment || !isAuthenticated) return;
 
     if (currentTab === 'feedback') {
       addFeedback(
@@ -193,7 +209,8 @@ const ResumeDetail = () => {
                 <WriterInfo>
                   <span>{resumeDetail?.writerName}</span>
                   <Career>
-                    {resumeDetail?.occupation} | {resumeDetail?.year === 0 ? '신입' : resumeDetail?.year}
+                    {resumeDetail?.occupation} |{' '}
+                    {resumeDetail?.year === 0 ? '신입' : `${resumeDetail?.year}년차`}
                   </Career>
                 </WriterInfo>
               </WriterInfoContainer>
@@ -248,7 +265,12 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment type="feedback" {...feedback} />
+                    <Comment
+                      type="feedback"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...feedback}
+                    />
                   </li>
                 );
               })}
@@ -256,7 +278,12 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment type="question" {...question} />
+                    <Comment
+                      type="question"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...question}
+                    />
                   </li>
                 );
               })}
@@ -264,7 +291,12 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment type="comment" {...comment} />
+                    <Comment
+                      type="comment"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...comment}
+                    />
                   </li>
                 );
               })}

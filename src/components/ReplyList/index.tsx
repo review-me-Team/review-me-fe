@@ -1,38 +1,61 @@
 import React from 'react';
 import { Button, Textarea } from 'review-me-design-system';
-import Comment from '@components/Comment';
+import Reply, { ReplyType } from '@components/Comment/Reply';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useFeedbackReplyList } from '@apis/feedbackApi';
+import { useQuestionReplyList } from '@apis/questionApi';
 import { ReplyForm, ReplyListLayout } from './style';
 
-type Emoji = {
-  id: number;
-  count: number;
-};
-
-export interface Reply {
-  id: number;
-  parentId: number;
-  content: string | null;
-  commenterId: number;
-  commenterName: string;
-  commenterProfileUrl: string;
-  createdAt: string;
-  emojis: Emoji[];
-  myEmojiId: number | null;
-}
-
 interface Props {
-  type: 'feedback' | 'question' | 'comment';
-  replies: Reply[];
+  type: 'feedback' | 'question';
+  parentId: number;
+  resumeId: number;
 }
 
-const ReplyList = ({ type, replies }: Props) => {
+const ReplyList = ({ type, parentId, resumeId }: Props) => {
+  const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackReplyList } = useFeedbackReplyList({
+    resumeId,
+    parentFeedbackId: parentId,
+    enabled: type === 'feedback',
+  });
+  const { data: questionReplyList, fetchNextPage: fetchNextQuestionReplyList } = useQuestionReplyList({
+    resumeId,
+    parentQuestionId: parentId,
+    enabled: type === 'question',
+  });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      if (type === 'feedback') fetchNextFeedbackReplyList();
+      if (type === 'question') fetchNextQuestionReplyList();
+    },
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  let replies: ReplyType[] = [];
+
+  if (type === 'feedback' && feedbackReplyList)
+    replies = feedbackReplyList.pages
+      .map((page) => page.feedbackComments)
+      .flat()
+      .map((reply) => ({ ...reply, parentId: reply.parentFeedbackId }));
+  if (type === 'question' && questionReplyList)
+    replies = questionReplyList.pages
+      .map((page) => page.questionComments)
+      .flat()
+      .map((reply) => ({ ...reply, parentId: reply.parentQuestionId }));
+
   return (
     <ReplyListLayout>
-      {replies.map((reply) => (
-        <li key={reply.id}>
-          <Comment type={type} {...reply} />
-        </li>
-      ))}
+      <ul>
+        {replies.map((reply) => (
+          <li key={reply.id}>
+            <Reply type={type} resumeId={resumeId} {...reply} />
+          </li>
+        ))}
+        <div ref={setTarget}></div>
+      </ul>
       <ReplyForm>
         <Textarea placeholder="댓글" />
         <Button variant="default" size="s">
