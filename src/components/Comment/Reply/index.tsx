@@ -64,13 +64,14 @@ const Reply = ({
   myEmojiId,
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
+  const { jwt, isLoggedIn, user } = useUserContext();
+  const isAuthenticated = jwt && isLoggedIn;
 
   const ICON_SIZE = 24;
 
-  const { data: emojiList } = useEmojiList();
+  const hasMoreIcon = commenterId === user?.id;
 
-  const { jwt, isLoggedIn } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
+  const { data: emojiList } = useEmojiList();
 
   const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
   const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
@@ -132,9 +133,11 @@ const Reply = ({
           </CommentInfo>
         </Info>
 
-        <IconButton>
-          <Icon iconName="more" width={ICON_SIZE} height={ICON_SIZE} color={theme.color.accent.bg.strong} />
-        </IconButton>
+        {hasMoreIcon && (
+          <IconButton>
+            <Icon iconName="more" width={ICON_SIZE} height={ICON_SIZE} color={theme.color.accent.bg.strong} />
+          </IconButton>
+        )}
       </Top>
 
       <CommentContent>
