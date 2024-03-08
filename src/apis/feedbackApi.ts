@@ -94,7 +94,7 @@ export interface FeedbackReply {
   myEmojiId: number | null;
 }
 
-interface GetFeedbackReplyList extends PageNationData {
+export interface GetFeedbackReplyList extends PageNationData {
   feedbackComments: FeedbackReply[];
 }
 
