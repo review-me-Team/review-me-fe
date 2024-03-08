@@ -13,20 +13,20 @@ interface Props {
 }
 
 const ReplyList = ({ type, parentId, resumeId }: Props) => {
-  const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackList } = useFeedbackReplyList({
+  const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackReplyList } = useFeedbackReplyList({
     resumeId,
     parentFeedbackId: parentId,
     enabled: type === 'feedback',
   });
-  const { data: questionReplyList, fetchNextPage: fetchNextQuestionList } = useQuestionReplyList({
+  const { data: questionReplyList, fetchNextPage: fetchNextQuestionReplyList } = useQuestionReplyList({
     resumeId,
     parentQuestionId: parentId,
     enabled: type === 'question',
   });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
-      if (type === 'feedback') fetchNextFeedbackList();
-      if (type === 'question') fetchNextQuestionList();
+      if (type === 'feedback') fetchNextFeedbackReplyList();
+      if (type === 'question') fetchNextQuestionReplyList();
     },
     options: {
       threshold: 0.5,
