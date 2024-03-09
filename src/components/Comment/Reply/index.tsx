@@ -5,7 +5,7 @@ import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { FeedbackReply, GetFeedbackReplyList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import { GetQuestionReplyList, QuestionReply, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 // * Comment와 동일한 스타일을 공유하기 때문에 styled-components로 만든 공통 컴포넌트를 사용
@@ -114,12 +114,34 @@ const Reply = ({
       );
 
     if (type === 'question')
-      toggleEmojiAboutQuestion({
-        resumeId,
-        questionId: id,
-        emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
-        jwt,
-      });
+      toggleEmojiAboutQuestion(
+        {
+          resumeId,
+          questionId: id,
+          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
+          jwt,
+        },
+        {
+          onSuccess: () => {
+            queryClient.setQueryData<InfiniteData<GetQuestionReplyList>>(
+              ['questionReplyList', resumeId, parentId],
+              (oldData) => {
+                if (!oldData) return;
+
+                return {
+                  ...oldData,
+                  pages: oldData.pages.map((page) => ({
+                    ...page,
+                    questionComments: page.questionComments.map((comment) =>
+                      updateEmojis<QuestionReply>({ data: comment, id, clickedEmojiId, myEmojiId }),
+                    ),
+                  })),
+                };
+              },
+            );
+          },
+        },
+      );
   };
 
   return (

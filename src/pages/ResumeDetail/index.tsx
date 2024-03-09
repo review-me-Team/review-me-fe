@@ -10,7 +10,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionLabelList, useQuestionList } from '@apis/questionApi';
+import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
 import {
@@ -61,11 +61,7 @@ const ResumeDetail = () => {
     ? currentTab === 'feedback' && !!jwt
     : currentTab === 'feedback';
 
-  const {
-    data: feedbackListData,
-    refetch: refetchFeedbackList,
-    fetchNextPage: fetchNextPageAboutFeedback,
-  } = useFeedbackList({
+  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     enabled: enabledAboutFeedbackList,
@@ -83,12 +79,6 @@ const ResumeDetail = () => {
     jwt,
   });
 
-  useEffect(() => {
-    if (jwt && currentTab === 'feedback') {
-      refetchFeedbackList();
-    }
-  }, [jwt, currentTab]);
-
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
   const questionList = questionListData?.pages.map((page) => page.questions).flat();
   const commentList = commentListData?.pages.map((page) => page.comments).flat();
@@ -102,11 +92,6 @@ const ResumeDetail = () => {
     options: {
       threshold: 0.5,
     },
-  });
-
-  const { data: questionLabelList } = useQuestionLabelList({
-    resumeId: Number(resumeId),
-    enabled: currentTab === 'question',
   });
 
   const { mutate: addFeedback } = usePostFeedback();

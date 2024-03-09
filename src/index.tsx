@@ -7,15 +7,18 @@ import { ReviewMeProvider } from 'review-me-design-system';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import router from './router';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+    },
+    mutations: {
+      retry: 1,
+    },
+  },
+});
 
 const main = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    const { worker } = await import('./mocks/browser');
-
-    await worker.start();
-  }
-
   createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>

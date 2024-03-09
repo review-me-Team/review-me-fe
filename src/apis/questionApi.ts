@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -84,7 +84,7 @@ export const useQuestionList = ({ resumeId, resumePage, enabled, jwt }: UseQuest
 };
 
 // GET 예상질문에 달린 댓글 조회
-interface QuestionReply {
+export interface QuestionReply {
   id: number;
   parentQuestionId: number;
   content: string;
@@ -96,7 +96,7 @@ interface QuestionReply {
   myEmojiId: number | null;
 }
 
-interface GetQuestionReplyList extends PageNationData {
+export interface GetQuestionReplyList extends PageNationData {
   questionComments: QuestionReply[];
 }
 
@@ -104,13 +104,23 @@ export const getQuestionReplyList = async ({
   resumeId,
   parentQuestionId,
   pageParam,
+  jwt,
 }: {
   resumeId: number;
   parentQuestionId: number;
   pageParam: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -126,53 +136,24 @@ interface UseQuestionReplyListProps {
   resumeId: number;
   parentQuestionId: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useQuestionReplyList = ({ resumeId, parentQuestionId, enabled }: UseQuestionReplyListProps) => {
+export const useQuestionReplyList = ({
+  resumeId,
+  parentQuestionId,
+  enabled,
+  jwt,
+}: UseQuestionReplyListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionReplyList', resumeId, parentQuestionId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, parentQuestionId, pageParam }),
+    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, parentQuestionId, pageParam, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
-    enabled,
-  });
-};
-
-// GET 예상 질문 라벨 목록 조회
-interface QuestionLabel {
-  id: number;
-  label: string;
-}
-
-interface GetQuestionLabelList {
-  labels: QuestionLabel[];
-}
-
-export const getQuestionLabelList = async ({ resumeId }: { resumeId: number }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/label`);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetQuestionLabelList> = await response.json();
-
-  return data;
-};
-
-interface UseQuestionLabelListProps {
-  resumeId: number;
-  enabled: boolean;
-}
-
-export const useQuestionLabelList = ({ resumeId, enabled }: UseQuestionLabelListProps) => {
-  return useQuery({
-    queryKey: ['questionList', resumeId, 'labelList'],
-    queryFn: () => getQuestionLabelList({ resumeId }),
     enabled,
   });
 };
@@ -255,4 +236,57 @@ export const patchEmojiAboutQuestion = async ({
 
 export const usePatchEmojiAboutQuestion = () => {
   return useMutation({ mutationFn: patchEmojiAboutQuestion });
+};
+
+// POST 예상 질문 대댓글 작성
+export const postQuestionReply = async ({
+  resumeId,
+  parentQuestionId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  parentQuestionId: number;
+  content: string;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+interface UsePostQuestionReplyProps {
+  resumeId: number;
+  parentId: number;
+}
+
+export const usePostQuestionReply = ({ resumeId, parentId }: UsePostQuestionReplyProps) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: postQuestionReply,
+    onSuccess: () => {
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['questionList', resumeId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['questionReplyList', resumeId, parentId],
+        }),
+      ]);
+    },
+  });
 };
