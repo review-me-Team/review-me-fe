@@ -96,7 +96,7 @@ interface QuestionReply {
   myEmojiId: number | null;
 }
 
-interface GetQuestionReplyList extends PageNationData {
+export interface GetQuestionReplyList extends PageNationData {
   questionComments: QuestionReply[];
 }
 
@@ -104,13 +104,23 @@ export const getQuestionReplyList = async ({
   resumeId,
   parentQuestionId,
   pageParam,
+  jwt,
 }: {
   resumeId: number;
   parentQuestionId: number;
   pageParam: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -126,13 +136,19 @@ interface UseQuestionReplyListProps {
   resumeId: number;
   parentQuestionId: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useQuestionReplyList = ({ resumeId, parentQuestionId, enabled }: UseQuestionReplyListProps) => {
+export const useQuestionReplyList = ({
+  resumeId,
+  parentQuestionId,
+  enabled,
+  jwt,
+}: UseQuestionReplyListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionReplyList', resumeId, parentQuestionId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, parentQuestionId, pageParam }),
+    queryFn: ({ pageParam }) => getQuestionReplyList({ resumeId, parentQuestionId, pageParam, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

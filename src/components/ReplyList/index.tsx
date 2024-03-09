@@ -27,6 +27,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
     resumeId,
     parentQuestionId: parentId,
     enabled: type === 'question',
+    jwt,
   });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
