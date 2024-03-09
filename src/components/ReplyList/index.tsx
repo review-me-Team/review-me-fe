@@ -4,7 +4,7 @@ import Reply, { ReplyType } from '@components/Comment/Reply';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useFeedbackReplyList, usePostFeedbackReply } from '@apis/feedbackApi';
-import { useQuestionReplyList } from '@apis/questionApi';
+import { usePostQuestionReply, useQuestionReplyList } from '@apis/questionApi';
 import { ReplyForm, ReplyListLayout } from './style';
 
 interface Props {
@@ -40,6 +40,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
 
   const [content, setContent] = useState<string>('');
   const { mutate: addFeedbackReply } = usePostFeedbackReply({ resumeId, parentId });
+  const { mutate: addQuestionReply } = usePostQuestionReply({ resumeId, parentId });
 
   let replies: ReplyType[] = [];
 
@@ -65,6 +66,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
     if (content.length === 0) return;
 
     if (type === 'feedback') addFeedbackReply({ resumeId, parentFeedbackId: parentId, content, jwt });
+    else if (type === 'question') addQuestionReply({ resumeId, parentQuestionId: parentId, content, jwt });
 
     resetForm();
   };

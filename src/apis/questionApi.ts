@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -255,4 +255,57 @@ export const patchEmojiAboutQuestion = async ({
 
 export const usePatchEmojiAboutQuestion = () => {
   return useMutation({ mutationFn: patchEmojiAboutQuestion });
+};
+
+// POST 예상 질문 대댓글 작성
+export const postQuestionReply = async ({
+  resumeId,
+  parentQuestionId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  parentQuestionId: number;
+  content: string;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+interface UsePostQuestionReplyProps {
+  resumeId: number;
+  parentId: number;
+}
+
+export const usePostQuestionReply = ({ resumeId, parentId }: UsePostQuestionReplyProps) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: postQuestionReply,
+    onSuccess: () => {
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['questionList', resumeId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['questionReplyList', resumeId, parentId],
+        }),
+      ]);
+    },
+  });
 };
