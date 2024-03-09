@@ -84,7 +84,7 @@ export const useQuestionList = ({ resumeId, resumePage, enabled, jwt }: UseQuest
 };
 
 // GET 예상질문에 달린 댓글 조회
-interface QuestionReply {
+export interface QuestionReply {
   id: number;
   parentQuestionId: number;
   content: string;
