@@ -10,7 +10,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList, usePostComment } from '@apis/commentApi';
 import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionLabelList, useQuestionList } from '@apis/questionApi';
+import { usePostQuestion, useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useLabelList } from '@apis/utilApi';
 import {
@@ -102,11 +102,6 @@ const ResumeDetail = () => {
     options: {
       threshold: 0.5,
     },
-  });
-
-  const { data: questionLabelList } = useQuestionLabelList({
-    resumeId: Number(resumeId),
-    enabled: currentTab === 'question',
   });
 
   const { mutate: addFeedback } = usePostFeedback();

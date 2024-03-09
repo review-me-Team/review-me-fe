@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -154,41 +154,6 @@ export const useQuestionReplyList = ({
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
-    enabled,
-  });
-};
-
-// GET 예상 질문 라벨 목록 조회
-interface QuestionLabel {
-  id: number;
-  label: string;
-}
-
-interface GetQuestionLabelList {
-  labels: QuestionLabel[];
-}
-
-export const getQuestionLabelList = async ({ resumeId }: { resumeId: number }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/label`);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetQuestionLabelList> = await response.json();
-
-  return data;
-};
-
-interface UseQuestionLabelListProps {
-  resumeId: number;
-  enabled: boolean;
-}
-
-export const useQuestionLabelList = ({ resumeId, enabled }: UseQuestionLabelListProps) => {
-  return useQuery({
-    queryKey: ['questionList', resumeId, 'labelList'],
-    queryFn: () => getQuestionLabelList({ resumeId }),
     enabled,
   });
 };
