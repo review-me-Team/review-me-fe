@@ -102,13 +102,23 @@ export const getFeedbackReplyList = async ({
   resumeId,
   parentFeedbackId,
   pageParam,
+  jwt,
 }: {
   resumeId: number;
   parentFeedbackId: number;
   pageParam: number;
+  jwt?: string;
 }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
   const response = await fetch(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}`,
+    requestOptions,
   );
 
   if (!response.ok) {
@@ -124,13 +134,19 @@ interface UseFeedbackReplyListProps {
   resumeId: number;
   parentFeedbackId: number;
   enabled: boolean;
+  jwt?: string;
 }
 
-export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, enabled }: UseFeedbackReplyListProps) => {
+export const useFeedbackReplyList = ({
+  resumeId,
+  parentFeedbackId,
+  enabled,
+  jwt,
+}: UseFeedbackReplyListProps) => {
   return useInfiniteQuery({
     queryKey: ['feedbackReplyList', resumeId, parentFeedbackId],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, parentFeedbackId, pageParam }),
+    queryFn: ({ pageParam }) => getFeedbackReplyList({ resumeId, parentFeedbackId, pageParam, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

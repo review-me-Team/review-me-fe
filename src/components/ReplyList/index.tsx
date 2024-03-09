@@ -14,10 +14,14 @@ interface Props {
 }
 
 const ReplyList = ({ type, parentId, resumeId }: Props) => {
+  const { jwt, isLoggedIn } = useUserContext();
+  const isAuthenticated = jwt && isLoggedIn;
+
   const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackReplyList } = useFeedbackReplyList({
     resumeId,
     parentFeedbackId: parentId,
     enabled: type === 'feedback',
+    jwt,
   });
   const { data: questionReplyList, fetchNextPage: fetchNextQuestionReplyList } = useQuestionReplyList({
     resumeId,
@@ -33,9 +37,6 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
       threshold: 0.5,
     },
   });
-
-  const { jwt, isLoggedIn } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
 
   const [content, setContent] = useState<string>('');
   const { mutate: addFeedbackReply } = usePostFeedbackReply({ resumeId, parentId });
