@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Button, Select } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { Occupation, useOccupationList } from '@apis/utilApi';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
+  const { isLoggedIn } = useUserContext();
+
   const yearOptions = [
     { value: 0, label: '신입' },
     { value: 1, label: '1 ~ 3년차' },
@@ -70,9 +73,11 @@ const Resume = () => {
           </Filter>
         </FilterContainer>
 
-        <Button variant="default" size="m">
-          내 이력서 보러가기
-        </Button>
+        {isLoggedIn && (
+          <Button variant="default" size="m">
+            내 이력서 보러가기
+          </Button>
+        )}
       </MainHeader>
 
       <ResumeList>
