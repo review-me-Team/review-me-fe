@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Button, Textarea } from 'review-me-design-system';
 import Reply, { ReplyType } from '@components/Comment/Reply';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { useFeedbackReplyList } from '@apis/feedbackApi';
+import { useUserContext } from '@contexts/userContext';
+import { useFeedbackReplyList, usePostFeedbackReply } from '@apis/feedbackApi';
 import { useQuestionReplyList } from '@apis/questionApi';
 import { ReplyForm, ReplyListLayout } from './style';
 
@@ -33,6 +34,12 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
     },
   });
 
+  const { jwt, isLoggedIn } = useUserContext();
+  const isAuthenticated = jwt && isLoggedIn;
+
+  const [content, setContent] = useState<string>('');
+  const { mutate: addFeedbackReply } = usePostFeedbackReply({ resumeId, parentId });
+
   let replies: ReplyType[] = [];
 
   if (type === 'feedback' && feedbackReplyList)
@@ -46,6 +53,21 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
       .flat()
       .map((reply) => ({ ...reply, parentId: reply.parentQuestionId }));
 
+  const resetForm = () => {
+    setContent('');
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!isAuthenticated) return;
+    if (content.length === 0) return;
+
+    if (type === 'feedback') addFeedbackReply({ resumeId, parentFeedbackId: parentId, content, jwt });
+
+    resetForm();
+  };
+
   return (
     <ReplyListLayout>
       <ul>
@@ -56,8 +78,8 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
         ))}
         <div ref={setTarget}></div>
       </ul>
-      <ReplyForm>
-        <Textarea placeholder="댓글" />
+      <ReplyForm onSubmit={handleSubmit}>
+        <Textarea value={content} onChange={(e) => setContent(e.target.value)} />
         <Button variant="default" size="s">
           작성
         </Button>

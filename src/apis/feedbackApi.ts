@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -218,4 +218,57 @@ export const patchEmojiAboutFeedback = async ({
 
 export const usePatchEmojiAboutFeedback = () => {
   return useMutation({ mutationFn: patchEmojiAboutFeedback });
+};
+
+// POST 피드백 대댓글 작성
+export const postFeedbackReply = async ({
+  resumeId,
+  parentFeedbackId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  parentFeedbackId: number;
+  content: string;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+interface UsePostFeedbackReplyProps {
+  resumeId: number;
+  parentId: number;
+}
+
+export const usePostFeedbackReply = ({ resumeId, parentId }: UsePostFeedbackReplyProps) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: postFeedbackReply,
+    onSuccess: () => {
+      return Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['feedbackList', resumeId],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['feedbackReplyList', resumeId, parentId],
+        }),
+      ]);
+    },
+  });
 };
