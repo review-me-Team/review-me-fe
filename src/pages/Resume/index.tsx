@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Select } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { Occupation, useOccupationList } from '@apis/utilApi';
+import { ROUTE_PATH } from '@constants';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
   const { isLoggedIn } = useUserContext();
+  const navigate = useNavigate();
 
   const yearOptions = [
     { value: 0, label: '신입' },
@@ -74,7 +77,13 @@ const Resume = () => {
         </FilterContainer>
 
         {isLoggedIn && (
-          <Button variant="default" size="m">
+          <Button
+            variant="default"
+            size="m"
+            onClick={() => {
+              if (isLoggedIn) navigate(ROUTE_PATH.MY_RESUME);
+            }}
+          >
             내 이력서 보러가기
           </Button>
         )}
