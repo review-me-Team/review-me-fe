@@ -61,11 +61,7 @@ const ResumeDetail = () => {
     ? currentTab === 'feedback' && !!jwt
     : currentTab === 'feedback';
 
-  const {
-    data: feedbackListData,
-    refetch: refetchFeedbackList,
-    fetchNextPage: fetchNextPageAboutFeedback,
-  } = useFeedbackList({
+  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     enabled: enabledAboutFeedbackList,
@@ -82,12 +78,6 @@ const ResumeDetail = () => {
     enabled: currentTab === 'comment',
     jwt,
   });
-
-  useEffect(() => {
-    if (jwt && currentTab === 'feedback') {
-      refetchFeedbackList();
-    }
-  }, [jwt, currentTab]);
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
   const questionList = questionListData?.pages.map((page) => page.questions).flat();
