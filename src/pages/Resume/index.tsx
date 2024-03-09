@@ -79,7 +79,7 @@ const Resume = () => {
         {resumeList?.map((resume) => {
           return (
             <li key={resume.id}>
-              <ResumeItem {...resume} />;
+              <ResumeItem {...resume} />
             </li>
           );
         })}
