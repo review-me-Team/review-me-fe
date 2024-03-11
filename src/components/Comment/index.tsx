@@ -1,7 +1,10 @@
 import React, { MouseEvent, useState } from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
+import { css } from 'styled-components';
+import Dropdown from '@components/Dropdown';
 import ReplyList from '@components/ReplyList';
+import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
@@ -29,6 +32,8 @@ import {
   EmojiLabelItem,
   CommentContent,
   CommentInfo,
+  MoreIconContainer,
+  ButtonsContainer,
 } from './style';
 
 type Emoji = {
@@ -74,6 +79,7 @@ const Comment = ({
   const { jwt, isLoggedIn, user } = useUserContext();
   const isAuthenticated = jwt && isLoggedIn;
   const { isHover, changeHoverState } = useHover();
+  const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
@@ -206,7 +212,7 @@ const Comment = ({
             </CommentInfo>
           </Info>
 
-          <div>
+          <ButtonsContainer>
             {hasBookMarkIcon && (
               <IconButton>
                 {bookmarked ? (
@@ -246,16 +252,36 @@ const Comment = ({
               </IconButton>
             )}
             {hasMoreIcon && (
-              <IconButton>
-                <Icon
-                  iconName="more"
-                  width={ICON_SIZE}
-                  height={ICON_SIZE}
-                  color={theme.color.accent.bg.strong}
-                />
-              </IconButton>
+              <MoreIconContainer>
+                <IconButton onClick={openDropdown}>
+                  <Icon
+                    iconName="more"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.strong}
+                  />
+                </IconButton>
+                <Dropdown
+                  isOpen={isDropdownOpen}
+                  onClose={closeDropdown}
+                  css={css`
+                    width: 4rem;
+                    top: 1.5rem;
+                    right: 0;
+                  `}
+                >
+                  <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
+                  <Dropdown.DropdownItem
+                    $css={css`
+                      color: ${theme.palette.red};
+                    `}
+                  >
+                    삭제
+                  </Dropdown.DropdownItem>
+                </Dropdown>
+              </MoreIconContainer>
             )}
-          </div>
+          </ButtonsContainer>
         </Top>
 
         <CommentContent>

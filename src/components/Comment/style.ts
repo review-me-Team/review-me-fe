@@ -22,6 +22,14 @@ const Info = styled.div`
   gap: 0.5rem;
 `;
 
+const ButtonsContainer = styled.div`
+  display: flex;
+`;
+
+const MoreIconContainer = styled.div`
+  position: relative;
+`;
+
 const IconButton = styled.button`
   height: 1.5rem;
   background-color: transparent;
@@ -152,6 +160,8 @@ export {
   Top,
   Info,
   IconButton,
+  ButtonsContainer,
+  MoreIconContainer,
   CommentInfo,
   UserImg,
   UserName,
