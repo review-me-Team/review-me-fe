@@ -99,6 +99,11 @@ const Header = () => {
                       github으로 시작
                     </Button>
                   )}
+                  {isLoggedIn && (
+                    <Button variant="outline" size="s" onClick={logout}>
+                      로그아웃
+                    </Button>
+                  )}
                 </MobileMenuButtonContainer>
               </MobileMenu>
               {isOpenMobileMenu && <BackDrop onClick={handleCloseMobileMenu} />}
