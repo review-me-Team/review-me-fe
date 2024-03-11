@@ -118,6 +118,8 @@ const MobileMenuItem = styled.li`
 
   ${theme.font.title.default}
   color: ${theme.color.neutral.text.default};
+
+  cursor: pointer;
 `;
 
 const JoinUsMessage = styled.div`
