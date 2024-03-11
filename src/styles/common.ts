@@ -1,4 +1,4 @@
-import { theme } from 'review-me-design-system';
+import type { CSSProp } from 'styled-components';
 import styled, { css } from 'styled-components';
 
 export const ellipsisStyles = css`
@@ -8,7 +8,7 @@ export const ellipsisStyles = css`
   word-break: break-all;
 `;
 
-export const PageMain = styled.main`
+export const PageMain = styled.main<{ css?: CSSProp }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -23,4 +23,6 @@ export const PageMain = styled.main`
     width: 90%;
     margin: 0.5rem auto;
   }
+
+  ${({ css }) => css}
 `;
