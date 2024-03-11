@@ -84,6 +84,17 @@ const Header = () => {
                     <span>이력서 보러가기</span>
                     <Icon iconName="rightArrow" width={28} height={28} />
                   </MobileMenuItem>
+                  {isLoggedIn && (
+                    <MobileMenuItem
+                      onClick={() => {
+                        handleCloseMobileMenu();
+                        navigate(ROUTE_PATH.MY_RESUME);
+                      }}
+                    >
+                      <span>내 이력서 보러가기</span>
+                      <Icon iconName="rightArrow" width={28} height={28} />
+                    </MobileMenuItem>
+                  )}
                 </MobileMenuList>
 
                 {!isLoggedIn && (
@@ -97,6 +108,11 @@ const Header = () => {
                   {!isLoggedIn && (
                     <Button variant="outline" size="s" onClick={handleLogin}>
                       github으로 시작
+                    </Button>
+                  )}
+                  {isLoggedIn && (
+                    <Button variant="outline" size="s" onClick={logout}>
+                      로그아웃
                     </Button>
                   )}
                 </MobileMenuButtonContainer>
