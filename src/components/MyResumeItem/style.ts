@@ -12,7 +12,7 @@ const MyResumeItemLayout = styled.div`
   border-radius: 1rem;
   box-shadow: 0 0 1.5rem -0.25rem rgba(16, 24, 40, 0.08);
 
-  color: ${theme.color.accent.text.strong};
+  color: ${theme.color.neutral.text.default};
   ${theme.font.body.default};
 
   cursor: pointer;
@@ -39,12 +39,12 @@ const ButtonsContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  border: 1px solid ${theme.color.accent.bd.strong};
+  border: 1px solid ${theme.color.accent.bd.weak};
   border-radius: 1rem;
 `;
 
 const leftButtonStyles = css`
-  border-right: 1px solid ${theme.color.accent.bd.strong};
+  border-right: 1px solid ${theme.color.accent.bd.weak};
   border-radius: 1rem 0 0 1rem;
 `;
 
