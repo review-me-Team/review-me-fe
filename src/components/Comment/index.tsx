@@ -10,7 +10,7 @@ import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { GetCommentList, usePatchEmojiAboutComment, Comment as CommentType } from '@apis/commentApi';
 import { Feedback, GetFeedbackList, useDeleteFeedback, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { GetQuestionList, Question, usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import { GetQuestionList, Question, useDeleteQuestion, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -202,6 +202,7 @@ const Comment = ({
 
   // 삭제
   const { mutate: deleteFeedback } = useDeleteFeedback();
+  const { mutate: deleteQuestion } = useDeleteQuestion();
 
   const handleDeleteBtnClick = () => {
     if (!jwt) return;
@@ -212,6 +213,16 @@ const Comment = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+          },
+        },
+      );
+    }
+    if (type === 'question') {
+      deleteQuestion(
+        { resumeId, questionId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
           },
         },
       );

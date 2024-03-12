@@ -204,6 +204,36 @@ export const usePostQuestion = () => {
   return useMutation({ mutationFn: postQuestion });
 };
 
+// DELETE 예상 질문 삭제
+export const deleteQuestion = async ({
+  resumeId,
+  questionId,
+  jwt,
+}: {
+  resumeId: number;
+  questionId: number;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useDeleteQuestion = () => {
+  return useMutation({ mutationFn: deleteQuestion });
+};
+
 // PATCH 예상 질문 이모지 수정
 export const patchEmojiAboutQuestion = async ({
   resumeId,
