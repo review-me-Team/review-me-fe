@@ -52,4 +52,8 @@ const UserInfo = styled.div`
   }
 `;
 
-export { ResumeItemLayout, Title, User, UserImg, UserInfo };
+const CreatedAt = styled.span`
+  color: ${theme.palette.grey500};
+`;
+
+export { ResumeItemLayout, Title, User, UserImg, UserInfo, CreatedAt };
