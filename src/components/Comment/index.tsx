@@ -1,13 +1,21 @@
 import React, { MouseEvent, useState } from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
+import { css } from 'styled-components';
+import Dropdown from '@components/Dropdown';
 import ReplyList from '@components/ReplyList';
+import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { GetCommentList, usePatchEmojiAboutComment, Comment as CommentType } from '@apis/commentApi';
-import { Feedback, GetFeedbackList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { GetQuestionList, Question, usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import {
+  GetCommentList,
+  usePatchEmojiAboutComment,
+  Comment as CommentType,
+  useDeleteComment,
+} from '@apis/commentApi';
+import { Feedback, GetFeedbackList, useDeleteFeedback, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import { GetQuestionList, Question, useDeleteQuestion, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -29,6 +37,8 @@ import {
   EmojiLabelItem,
   CommentContent,
   CommentInfo,
+  MoreIconContainer,
+  ButtonsContainer,
 } from './style';
 
 type Emoji = {
@@ -74,6 +84,7 @@ const Comment = ({
   const { jwt, isLoggedIn, user } = useUserContext();
   const isAuthenticated = jwt && isLoggedIn;
   const { isHover, changeHoverState } = useHover();
+  const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
@@ -194,6 +205,46 @@ const Comment = ({
     }
   };
 
+  // 삭제
+  const { mutate: deleteFeedback } = useDeleteFeedback();
+  const { mutate: deleteQuestion } = useDeleteQuestion();
+  const { mutate: deleteComment } = useDeleteComment();
+
+  const handleDeleteBtnClick = () => {
+    if (!jwt) return;
+
+    if (type === 'feedback') {
+      deleteFeedback(
+        { resumeId, feedbackId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+          },
+        },
+      );
+    }
+    if (type === 'question') {
+      deleteQuestion(
+        { resumeId, questionId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+          },
+        },
+      );
+    }
+    if (type === 'comment') {
+      deleteComment(
+        { resumeId, commentId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+          },
+        },
+      );
+    }
+  };
+
   return (
     <>
       <CommentLayout>
@@ -206,7 +257,7 @@ const Comment = ({
             </CommentInfo>
           </Info>
 
-          <div>
+          <ButtonsContainer>
             {hasBookMarkIcon && (
               <IconButton>
                 {bookmarked ? (
@@ -246,21 +297,42 @@ const Comment = ({
               </IconButton>
             )}
             {hasMoreIcon && (
-              <IconButton>
-                <Icon
-                  iconName="more"
-                  width={ICON_SIZE}
-                  height={ICON_SIZE}
-                  color={theme.color.accent.bg.strong}
-                />
-              </IconButton>
+              <MoreIconContainer>
+                <IconButton onClick={openDropdown}>
+                  <Icon
+                    iconName="more"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.strong}
+                  />
+                </IconButton>
+                <Dropdown
+                  isOpen={isDropdownOpen}
+                  onClose={closeDropdown}
+                  css={css`
+                    width: 4rem;
+                    top: 1.5rem;
+                    right: 0;
+                  `}
+                >
+                  <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
+                  <Dropdown.DropdownItem
+                    onClick={handleDeleteBtnClick}
+                    $css={css`
+                      color: ${theme.palette.red};
+                    `}
+                  >
+                    삭제
+                  </Dropdown.DropdownItem>
+                </Dropdown>
+              </MoreIconContainer>
             )}
-          </div>
+          </ButtonsContainer>
         </Top>
 
         <CommentContent>
           {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
-          <Content>{content}</Content>
+          <Content>{content ?? '삭제된 댓글입니다.'}</Content>
         </CommentContent>
 
         <Bottom>

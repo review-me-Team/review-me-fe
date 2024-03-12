@@ -1,11 +1,24 @@
 import React, { MouseEvent } from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
+import { css } from 'styled-components';
+import Dropdown from '@components/Dropdown';
+import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { FeedbackReply, GetFeedbackReplyList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { GetQuestionReplyList, QuestionReply, usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import {
+  FeedbackReply,
+  GetFeedbackReplyList,
+  useDeleteFeedback,
+  usePatchEmojiAboutFeedback,
+} from '@apis/feedbackApi';
+import {
+  GetQuestionReplyList,
+  QuestionReply,
+  useDeleteQuestion,
+  usePatchEmojiAboutQuestion,
+} from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 // * Comment와 동일한 스타일을 공유하기 때문에 styled-components로 만든 공통 컴포넌트를 사용
@@ -26,6 +39,7 @@ import {
   EmojiLabelItem,
   CommentContent,
   CommentInfo,
+  MoreIconContainer,
 } from '../style';
 
 type Emoji = {
@@ -64,6 +78,7 @@ const Reply = ({
   myEmojiId,
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
+  const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const { jwt, isLoggedIn, user } = useUserContext();
   const isAuthenticated = jwt && isLoggedIn;
 
@@ -144,6 +159,35 @@ const Reply = ({
       );
   };
 
+  // 삭제
+  const { mutate: deleteFeedback } = useDeleteFeedback();
+  const { mutate: deleteQuestion } = useDeleteQuestion();
+
+  const handleDeleteBtnClick = () => {
+    if (!jwt) return;
+
+    if (type === 'feedback') {
+      deleteFeedback(
+        { resumeId, feedbackId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentId] });
+          },
+        },
+      );
+    }
+    if (type === 'question') {
+      deleteQuestion(
+        { resumeId, questionId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questionReplyList', resumeId, parentId] });
+          },
+        },
+      );
+    }
+  };
+
   return (
     <CommentLayout>
       <Top>
@@ -156,9 +200,35 @@ const Reply = ({
         </Info>
 
         {hasMoreIcon && (
-          <IconButton>
-            <Icon iconName="more" width={ICON_SIZE} height={ICON_SIZE} color={theme.color.accent.bg.strong} />
-          </IconButton>
+          <MoreIconContainer>
+            <IconButton onClick={openDropdown}>
+              <Icon
+                iconName="more"
+                width={ICON_SIZE}
+                height={ICON_SIZE}
+                color={theme.color.accent.bg.strong}
+              />
+            </IconButton>
+            <Dropdown
+              isOpen={isDropdownOpen}
+              onClose={closeDropdown}
+              css={css`
+                width: 4rem;
+                top: 1.5rem;
+                right: 0;
+              `}
+            >
+              <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
+              <Dropdown.DropdownItem
+                onClick={handleDeleteBtnClick}
+                $css={css`
+                  color: ${theme.palette.red};
+                `}
+              >
+                삭제
+              </Dropdown.DropdownItem>
+            </Dropdown>
+          </MoreIconContainer>
         )}
       </Top>
 
