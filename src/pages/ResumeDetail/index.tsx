@@ -41,7 +41,7 @@ const ResumeDetail = () => {
   const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
 
-  const { data: resumeDetail } = useResumeDetail(Number(resumeId));
+  const { data: resumeDetail } = useResumeDetail({ resumeId: Number(resumeId), jwt });
 
   const PDF_BUTTON_ICON_SIZE = 24;
 

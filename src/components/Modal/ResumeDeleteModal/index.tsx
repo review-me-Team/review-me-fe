@@ -1,5 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'review-me-design-system';
+import { useUserContext } from '@contexts/userContext';
+import { useDeleteResume } from '@apis/resumeApi';
 import { ButtonsContainer, Description } from './style';
 
 interface Props {
@@ -9,6 +11,9 @@ interface Props {
 }
 
 const ResumeDeleteModal = ({ resumeId, isOpen, onClose }: Props) => {
+  const { jwt } = useUserContext();
+  const { mutate: deleteResume } = useDeleteResume();
+
   return (
     <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="18.75rem">
       <Description>
@@ -24,7 +29,7 @@ const ResumeDeleteModal = ({ resumeId, isOpen, onClose }: Props) => {
           size="m"
           width="100%"
           onClick={() => {
-            console.log(resumeId); // * test
+            if (jwt) deleteResume({ resumeId, jwt });
             onClose();
           }}
         >

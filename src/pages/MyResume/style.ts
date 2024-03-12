@@ -23,6 +23,10 @@ const MyResumeList = styled.ul`
   gap: 1.5rem;
   width: 100%;
 
+  @media screen and (max-width: 1280px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
   @media screen and (max-width: 768px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 0.625rem;
