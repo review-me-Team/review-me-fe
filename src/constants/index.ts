@@ -13,6 +13,7 @@ const BASE_URL = process.env.BASE_URL;
 export const REQUEST_URL = {
   FRIEND: `${BASE_URL}/friend`,
   RESUME: `${BASE_URL}/resume`,
+  MY_RESUME: `${BASE_URL}/resume/my`,
   LABEL: `${BASE_URL}/label`,
   OCCUPATION: `${BASE_URL}/occupation`,
   EMOJI: `${BASE_URL}/emoji`,
