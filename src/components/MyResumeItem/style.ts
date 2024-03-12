@@ -1,7 +1,7 @@
 import { theme } from 'review-me-design-system';
 import styled, { css } from 'styled-components';
 
-const MyResumeItemLayout = styled.li`
+const MyResumeItemLayout = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -20,7 +20,7 @@ const MyResumeItemLayout = styled.li`
 const DescriptionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  margin-top: 0.5rem;
 `;
 
 const ellipsisStyles = css`

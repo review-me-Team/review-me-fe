@@ -23,7 +23,11 @@ const MyResume = () => {
 
       <MyResumeList>
         {myResumeList.map((resume) => {
-          return <MyResumeItem key={resume.id} {...resume} />;
+          return (
+            <li key={resume.id}>
+              <MyResumeItem {...resume} />
+            </li>
+          );
         })}
       </MyResumeList>
     </Main>
