@@ -4,6 +4,7 @@ import { Button } from 'review-me-design-system';
 import MyResumeItem from '@components/MyResumeItem';
 import { useUserContext } from '@contexts/userContext';
 import { useMyResumeList } from '@apis/resumeApi';
+import { PageMain } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { Main, MyResumeList } from './style';
 
@@ -16,7 +17,7 @@ const MyResume = () => {
   const myResumeList = myResumeListData?.pages.map((page) => page.resumes).flat() ?? [];
 
   return (
-    <Main>
+    <PageMain>
       <Button variant="default" size="m" onClick={() => navigate(ROUTE_PATH.RESUME_UPLOAD)}>
         이력서 pdf 올리기
       </Button>
@@ -30,7 +31,7 @@ const MyResume = () => {
           );
         })}
       </MyResumeList>
-    </Main>
+    </PageMain>
   );
 };
 
