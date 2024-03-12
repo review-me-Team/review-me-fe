@@ -1,5 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled, { css } from 'styled-components';
+import { ellipsisStyles } from '@styles/common';
 
 const MyResumeItemLayout = styled.div`
   display: flex;
@@ -23,14 +24,8 @@ const DescriptionContainer = styled.div`
   margin-top: 0.5rem;
 `;
 
-const ellipsisStyles = css`
-  overflow-x: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  word-break: break-all;
-`;
-
 const Title = styled.span`
+  display: block;
   ${theme.font.title.default}
   ${ellipsisStyles}
 `;
