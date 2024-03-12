@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -170,6 +170,35 @@ export const postResume = async ({
 
 export const usePostResume = () => {
   return useMutation({ mutationFn: postResume });
+};
+
+// DELETE 이력서 삭제
+export const deleteResume = async ({ resumeId, jwt }: { resumeId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useDeleteResume = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteResume,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myResumeList'] });
+    },
+  });
 };
 
 // PATCH 이력서 수정
