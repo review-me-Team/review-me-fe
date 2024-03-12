@@ -161,6 +161,7 @@ const Reply = ({
 
   // 삭제
   const { mutate: deleteFeedback } = useDeleteFeedback();
+  const { mutate: deleteQuestion } = useDeleteQuestion();
 
   const handleDeleteBtnClick = () => {
     if (!jwt) return;
@@ -171,6 +172,16 @@ const Reply = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentId] });
+          },
+        },
+      );
+    }
+    if (type === 'question') {
+      deleteQuestion(
+        { resumeId, questionId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['questionReplyList', resumeId, parentId] });
           },
         },
       );
