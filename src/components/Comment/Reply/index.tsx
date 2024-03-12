@@ -7,8 +7,18 @@ import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { FeedbackReply, GetFeedbackReplyList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
-import { GetQuestionReplyList, QuestionReply, usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import {
+  FeedbackReply,
+  GetFeedbackReplyList,
+  useDeleteFeedback,
+  usePatchEmojiAboutFeedback,
+} from '@apis/feedbackApi';
+import {
+  GetQuestionReplyList,
+  QuestionReply,
+  useDeleteQuestion,
+  usePatchEmojiAboutQuestion,
+} from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 // * Comment와 동일한 스타일을 공유하기 때문에 styled-components로 만든 공통 컴포넌트를 사용
@@ -149,6 +159,24 @@ const Reply = ({
       );
   };
 
+  // 삭제
+  const { mutate: deleteFeedback } = useDeleteFeedback();
+
+  const handleDeleteBtnClick = () => {
+    if (!jwt) return;
+
+    if (type === 'feedback') {
+      deleteFeedback(
+        { resumeId, feedbackId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentId] });
+          },
+        },
+      );
+    }
+  };
+
   return (
     <CommentLayout>
       <Top>
@@ -181,6 +209,7 @@ const Reply = ({
             >
               <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
               <Dropdown.DropdownItem
+                onClick={handleDeleteBtnClick}
                 $css={css`
                   color: ${theme.palette.red};
                 `}
