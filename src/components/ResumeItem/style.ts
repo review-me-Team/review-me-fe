@@ -13,7 +13,7 @@ const ResumeItemLayout = styled(Link)`
   border-radius: 1rem;
   box-shadow: 0 0 1.5rem -0.25rem rgba(16, 24, 40, 0.08);
 
-  color: ${theme.color.accent.text.strong};
+  color: ${theme.color.neutral.text.default};
   ${theme.font.body.default};
 
   cursor: pointer;
