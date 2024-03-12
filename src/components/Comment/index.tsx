@@ -332,7 +332,7 @@ const Comment = ({
 
         <CommentContent>
           {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
-          <Content>{content}</Content>
+          <Content>{content ?? '삭제된 댓글입니다.'}</Content>
         </CommentContent>
 
         <Bottom>
