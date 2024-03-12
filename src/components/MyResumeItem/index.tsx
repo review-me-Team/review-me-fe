@@ -11,6 +11,7 @@ import {
   DescriptionContainer,
   MyResumeItemLayout,
   Title,
+  Scope,
 } from './style';
 
 interface Props {
@@ -31,9 +32,9 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
       <Link to={`${ROUTE_PATH.RESUME}/${id}`}>
         <Title>{title}</Title>
         <DescriptionContainer>
+          <Scope>{scope}</Scope>
           <Occupation>직군: {occupation}</Occupation>
           <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
-          <span>{scope}</span>
           <span>{formatDate(createdAt)}</span>
         </DescriptionContainer>
       </Link>

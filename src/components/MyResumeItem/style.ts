@@ -34,6 +34,15 @@ const Occupation = styled.span`
   ${ellipsisStyles}
 `;
 
+const Scope = styled.div`
+  width: fit-content;
+  padding: 0 0.5rem;
+  margin-bottom: 0.5rem;
+
+  background-color: ${theme.palette.green200};
+  border-radius: 0.5rem;
+`;
+
 const ButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -71,4 +80,4 @@ const Button = styled.button<{ $position: 'left' | 'right' }>`
   }
 `;
 
-export { MyResumeItemLayout, DescriptionContainer, Title, Occupation, ButtonsContainer, Button };
+export { MyResumeItemLayout, DescriptionContainer, Title, Occupation, Scope, ButtonsContainer, Button };
