@@ -8,7 +8,8 @@ const MyResumeItemLayout = styled.li`
   padding: 1rem;
 
   background-color: ${theme.color.neutral.bg.default};
-  border: 1px solid ${theme.color.accent.bd.strong};
+  border-radius: 1rem;
+  box-shadow: 0 0 1.5rem -0.25rem rgba(16, 24, 40, 0.08);
 
   color: ${theme.color.accent.text.strong};
   ${theme.font.body.default};
@@ -44,10 +45,16 @@ const ButtonsContainer = styled.div`
   align-items: center;
 
   border: 1px solid ${theme.color.accent.bd.strong};
+  border-radius: 1rem;
 `;
 
 const leftButtonStyles = css`
   border-right: 1px solid ${theme.color.accent.bd.strong};
+  border-radius: 1rem 0 0 1rem;
+`;
+
+const rightButtonStyles = css`
+  border-radius: 0 1rem 1rem 0;
 `;
 
 const Button = styled.button<{ $position: 'left' | 'right' }>`
@@ -56,13 +63,17 @@ const Button = styled.button<{ $position: 'left' | 'right' }>`
   align-items: center;
   width: 100%;
   height: 2.75rem;
-  ${({ $position }) => $position === 'left' && leftButtonStyles}
+  ${({ $position }) => ($position === 'left' ? leftButtonStyles : rightButtonStyles)}
 
-  background-color: ${theme.color.neutral.bg.default};
+  background-color: transparent;
 
   color: ${theme.color.accent.text.strong};
 
   cursor: pointer;
+
+  &:hover {
+    background-color: ${theme.palette.green100};
+  }
 `;
 
 export { MyResumeItemLayout, DescriptionContainer, Title, Occupation, ButtonsContainer, Button };
