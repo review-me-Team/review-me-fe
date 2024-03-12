@@ -202,6 +202,36 @@ export const usePostFeedback = () => {
   return useMutation({ mutationFn: postFeedback });
 };
 
+// DELETE 피드백 삭제
+export const deleteFeedback = async ({
+  resumeId,
+  feedbackId,
+  jwt,
+}: {
+  resumeId: number;
+  feedbackId: number;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useDeleteFeedback = () => {
+  return useMutation({ mutationFn: deleteFeedback });
+};
+
 // PATCH 피드백 이모지 수정
 export const patchEmojiAboutFeedback = async ({
   resumeId,

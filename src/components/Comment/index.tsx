@@ -9,7 +9,7 @@ import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import { GetCommentList, usePatchEmojiAboutComment, Comment as CommentType } from '@apis/commentApi';
-import { Feedback, GetFeedbackList, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import { Feedback, GetFeedbackList, useDeleteFeedback, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
 import { GetQuestionList, Question, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
@@ -200,6 +200,24 @@ const Comment = ({
     }
   };
 
+  // 삭제
+  const { mutate: deleteFeedback } = useDeleteFeedback();
+
+  const handleDeleteBtnClick = () => {
+    if (!jwt) return;
+
+    if (type === 'feedback') {
+      deleteFeedback(
+        { resumeId, feedbackId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+          },
+        },
+      );
+    }
+  };
+
   return (
     <>
       <CommentLayout>
@@ -272,6 +290,7 @@ const Comment = ({
                 >
                   <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
                   <Dropdown.DropdownItem
+                    onClick={handleDeleteBtnClick}
                     $css={css`
                       color: ${theme.palette.red};
                     `}
