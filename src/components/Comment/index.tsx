@@ -8,7 +8,12 @@ import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { GetCommentList, usePatchEmojiAboutComment, Comment as CommentType } from '@apis/commentApi';
+import {
+  GetCommentList,
+  usePatchEmojiAboutComment,
+  Comment as CommentType,
+  useDeleteComment,
+} from '@apis/commentApi';
 import { Feedback, GetFeedbackList, useDeleteFeedback, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
 import { GetQuestionList, Question, useDeleteQuestion, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
@@ -203,6 +208,7 @@ const Comment = ({
   // 삭제
   const { mutate: deleteFeedback } = useDeleteFeedback();
   const { mutate: deleteQuestion } = useDeleteQuestion();
+  const { mutate: deleteComment } = useDeleteComment();
 
   const handleDeleteBtnClick = () => {
     if (!jwt) return;
@@ -223,6 +229,16 @@ const Comment = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+          },
+        },
+      );
+    }
+    if (type === 'comment') {
+      deleteComment(
+        { resumeId, commentId: id, jwt },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
           },
         },
       );
