@@ -2,23 +2,25 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from 'review-me-design-system';
 import ResumeUpdateForm from '@components/ResumeForm/ResumeUpdateForm';
+import { useUserContext } from '@contexts/userContext';
 import { useResumeDetail, useUpdateResume } from '@apis/resumeApi';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
 import { PageMain } from '@styles/common';
 import { ResumeUploadContainer, IconButton, Description, MainDescription } from './style';
 
 interface Location {
-  state: { id: number; title: string; year: number; occupation: string; scope: string };
+  state: { resumeId: number; title: string; year: number; occupation: string; scope: string };
 }
 
 const ResumeUpdate = () => {
   const {
-    state: { id: resumeId, title: prevTitle, year: prevYear, occupation: prevOccupation, scope: prevScope },
+    state: { resumeId, title: prevTitle, year: prevYear, occupation: prevOccupation, scope: prevScope },
   } = useLocation() as Location;
+  const { jwt } = useUserContext();
 
   const navigate = useNavigate();
 
-  const { data: resumeDetail } = useResumeDetail(resumeId);
+  const { data: resumeDetail } = useResumeDetail({ resumeId, jwt });
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
 

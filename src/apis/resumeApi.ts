@@ -105,8 +105,15 @@ interface GetResumeDetail {
   year: number;
 }
 
-export const getResumeDetail = async (resumeId: number) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`);
+export const getResumeDetail = async ({ resumeId, jwt }: { resumeId: number; jwt?: string }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, requestOptions);
 
   if (!response.ok) {
     throw response;
@@ -117,8 +124,8 @@ export const getResumeDetail = async (resumeId: number) => {
   return data;
 };
 
-export const useResumeDetail = (resumeId: number) => {
-  return useQuery({ queryKey: ['resume', resumeId], queryFn: () => getResumeDetail(resumeId) });
+export const useResumeDetail = ({ resumeId, jwt }: { resumeId: number; jwt?: string }) => {
+  return useQuery({ queryKey: ['resume', resumeId], queryFn: () => getResumeDetail({ resumeId, jwt }) });
 };
 
 // POST 이력서 업로드
