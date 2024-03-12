@@ -43,6 +43,10 @@ const Scope = styled.div`
   border-radius: 0.5rem;
 `;
 
+const CreatedAt = styled.span`
+  color: ${theme.palette.grey500};
+`;
+
 const ButtonsContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -80,4 +84,13 @@ const Button = styled.button<{ $position: 'left' | 'right' }>`
   }
 `;
 
-export { MyResumeItemLayout, DescriptionContainer, Title, Occupation, Scope, ButtonsContainer, Button };
+export {
+  MyResumeItemLayout,
+  DescriptionContainer,
+  Title,
+  Occupation,
+  Scope,
+  CreatedAt,
+  ButtonsContainer,
+  Button,
+};

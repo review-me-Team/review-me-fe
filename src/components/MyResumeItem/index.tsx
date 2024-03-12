@@ -12,6 +12,7 @@ import {
   MyResumeItemLayout,
   Title,
   Scope,
+  CreatedAt,
 } from './style';
 
 interface Props {
@@ -35,7 +36,7 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
           <Scope>{scope}</Scope>
           <Occupation>직군: {occupation}</Occupation>
           <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
-          <span>{formatDate(createdAt)}</span>
+          <CreatedAt>{formatDate(createdAt)}</CreatedAt>
         </DescriptionContainer>
       </Link>
       <ButtonsContainer>
