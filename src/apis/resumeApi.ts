@@ -46,6 +46,55 @@ export const useResumeList = () => {
   });
 };
 
+// GET 내 이력서 목록 조회
+export interface MyResume {
+  id: number;
+  title: string;
+  createdAt: string;
+  scope: string;
+  occupation: string;
+  year: number;
+}
+
+interface GetMyResumeList extends PageNationData {
+  resumes: MyResume[];
+}
+
+// ! jwt가 없을 경우 401 에러 발생 (custom hook을 최상단에서 호출해야 하기 때문에 undefined도 허용)
+export const getMyResumeList = async ({ pageParam, jwt }: { pageParam: number; jwt?: string }) => {
+  const response = await fetch(`${REQUEST_URL.MY_RESUME}?page=${pageParam}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetMyResumeList> = await response.json();
+
+  return data;
+};
+
+interface UseMyResumeListProps {
+  jwt?: string;
+}
+
+export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
+  return useInfiniteQuery({
+    queryKey: ['myResumeList'],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => getMyResumeList({ pageParam, jwt }),
+    getNextPageParam: (lastPage) => {
+      const { pageNumber, lastPage: lastPageNum } = lastPage;
+
+      return pageNumber < lastPageNum ? pageNumber + 1 : null;
+    },
+  });
+};
+
 // GET 이력서 상세 조회
 interface GetResumeDetail {
   resumeUrl: string;
