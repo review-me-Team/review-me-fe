@@ -139,12 +139,14 @@ export const postResume = async ({
   scopeId,
   occupationId,
   year,
+  jwt,
 }: {
   title: string;
   pdf: File;
   scopeId: number;
   occupationId: number;
   year: number;
+  jwt: string;
 }) => {
   const formData = new FormData();
   formData.append('title', title);
@@ -155,7 +157,9 @@ export const postResume = async ({
 
   const response = await fetch(REQUEST_URL.RESUME, {
     method: 'POST',
-    cache: 'no-cache',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
     body: formData,
   });
 
