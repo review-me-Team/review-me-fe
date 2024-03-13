@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -232,6 +232,90 @@ export const deleteQuestion = async ({
 
 export const useDeleteQuestion = () => {
   return useMutation({ mutationFn: deleteQuestion });
+};
+
+// PATCH 예상질문 체크 상태 수정
+export const patchQuestionCheck = async ({
+  resumeId,
+  questionId,
+  checked,
+  jwt,
+}: {
+  resumeId: number;
+  questionId: number;
+  checked: boolean;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/check`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ checked }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+interface UsePatchQuestionCheckProps {
+  resumePage: number;
+}
+
+export const usePatchQuestionCheck = ({ resumePage }: UsePatchQuestionCheckProps) => {
+  const queryClient = useQueryClient();
+
+  // * optimistic update
+  return useMutation({
+    mutationFn: patchQuestionCheck,
+    onMutate: async (newData) => {
+      const { resumeId, questionId } = newData;
+      await queryClient.cancelQueries({ queryKey: ['questionList', resumeId, resumePage] });
+
+      const previousQuestionListData = queryClient.getQueryData<InfiniteData<GetQuestionList>>([
+        'feedbackList',
+        resumeId,
+        resumePage,
+      ]);
+
+      queryClient.setQueryData<InfiniteData<GetQuestionList>>(
+        ['questionList', resumeId, resumePage],
+        (oldData) => {
+          if (!oldData) return previousQuestionListData;
+
+          const newPages = oldData.pages.map((page) => ({
+            ...page,
+            questions: page.questions.map((question) => {
+              if (question.id === questionId) return { ...question, checked: newData.checked };
+
+              return { ...question };
+            }),
+          }));
+
+          return { ...oldData, pages: newPages };
+        },
+      );
+
+      return { previousQuestionListData: previousQuestionListData };
+    },
+    onError: (err, newData, context) => {
+      if (!context) return;
+
+      queryClient.setQueryData(
+        ['questionList', newData.resumeId, resumePage],
+        context.previousQuestionListData,
+      );
+    },
+    onSettled: (_, _error, newData) => {
+      queryClient.invalidateQueries({ queryKey: ['questionList', newData.resumeId, resumePage] });
+    },
+  });
 };
 
 // PATCH 예상 질문 이모지 수정
