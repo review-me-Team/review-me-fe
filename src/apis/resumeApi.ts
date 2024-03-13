@@ -102,7 +102,6 @@ export const postResume = async ({
   const response = await fetch(REQUEST_URL.RESUME, {
     method: 'POST',
     headers: {
-      'Content-Type': 'multipart/form-data',
       Authorization: `Bearer ${jwt}`,
     },
     body: formData,
