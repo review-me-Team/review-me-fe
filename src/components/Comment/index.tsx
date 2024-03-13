@@ -21,7 +21,13 @@ import {
   usePatchEmojiAboutFeedback,
   usePatchFeedbackCheck,
 } from '@apis/feedbackApi';
-import { GetQuestionList, Question, useDeleteQuestion, usePatchEmojiAboutQuestion } from '@apis/questionApi';
+import {
+  GetQuestionList,
+  Question,
+  useDeleteQuestion,
+  usePatchEmojiAboutQuestion,
+  usePatchQuestionCheck,
+} from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
 import {
@@ -253,6 +259,7 @@ const Comment = ({
 
   // Check 수정
   const { mutate: toggleCheckAboutFeedback } = usePatchFeedbackCheck({ resumePage });
+  const { mutate: toggleCheckAboutQuestion } = usePatchQuestionCheck({ resumePage });
 
   const handleCheckMarkClick = () => {
     if (!jwt) return;
@@ -261,6 +268,14 @@ const Comment = ({
       toggleCheckAboutFeedback({
         resumeId,
         feedbackId: id,
+        checked: !checked,
+        jwt,
+      });
+    }
+    if (type === 'question') {
+      toggleCheckAboutQuestion({
+        resumeId,
+        questionId: id,
         checked: !checked,
         jwt,
       });
