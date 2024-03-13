@@ -318,6 +318,90 @@ export const usePatchQuestionCheck = ({ resumePage }: UsePatchQuestionCheckProps
   });
 };
 
+// PATCH 예상질문 북마크 상태 수정
+export const patchBookMark = async ({
+  resumeId,
+  questionId,
+  bookmarked,
+  jwt,
+}: {
+  resumeId: number;
+  questionId: number;
+  bookmarked: boolean;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/bookmark`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ bookmarked }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+interface UsePatchBookMarkProps {
+  resumePage: number;
+}
+
+export const usePatchBookMark = ({ resumePage }: UsePatchBookMarkProps) => {
+  const queryClient = useQueryClient();
+
+  // * optimistic update
+  return useMutation({
+    mutationFn: patchBookMark,
+    onMutate: async (newData) => {
+      const { resumeId, questionId } = newData;
+      await queryClient.cancelQueries({ queryKey: ['questionList', resumeId, resumePage] });
+
+      const previousQuestionListData = queryClient.getQueryData<InfiniteData<GetQuestionList>>([
+        'feedbackList',
+        resumeId,
+        resumePage,
+      ]);
+
+      queryClient.setQueryData<InfiniteData<GetQuestionList>>(
+        ['questionList', resumeId, resumePage],
+        (oldData) => {
+          if (!oldData) return previousQuestionListData;
+
+          const newPages = oldData.pages.map((page) => ({
+            ...page,
+            questions: page.questions.map((question) => {
+              if (question.id === questionId) return { ...question, bookmarked: newData.bookmarked };
+
+              return { ...question };
+            }),
+          }));
+
+          return { ...oldData, pages: newPages };
+        },
+      );
+
+      return { previousQuestionListData: previousQuestionListData };
+    },
+    onError: (err, newData, context) => {
+      if (!context) return;
+
+      queryClient.setQueryData(
+        ['questionList', newData.resumeId, resumePage],
+        context.previousQuestionListData,
+      );
+    },
+    onSettled: (_, _error, newData) => {
+      queryClient.invalidateQueries({ queryKey: ['questionList', newData.resumeId, resumePage] });
+    },
+  });
+};
+
 // PATCH 예상 질문 이모지 수정
 export const patchEmojiAboutQuestion = async ({
   resumeId,
