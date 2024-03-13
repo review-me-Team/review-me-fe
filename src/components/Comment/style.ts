@@ -95,12 +95,12 @@ const OpenReplyButton = styled.button`
   background-color: transparent;
 
   ${theme.font.label}
-  color: ${theme.palette.grey600};
+  color: ${theme.palette.gray600};
 
   cursor: pointer;
 
   & > svg {
-    fill: ${theme.palette.grey600};
+    fill: ${theme.palette.gray600};
   }
 `;
 
@@ -116,11 +116,11 @@ const EmojiButton = styled.button`
   height: 1.5rem;
   flex-shrink: 0;
 
-  background-color: ${theme.palette.grey300};
+  background-color: ${theme.palette.gray300};
   border-radius: 50%;
 
   & > svg {
-    fill: ${theme.palette.grey600};
+    fill: ${theme.palette.gray600};
   }
 
   cursor: pointer;

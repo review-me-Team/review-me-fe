@@ -44,7 +44,7 @@ const Scope = styled.div`
 `;
 
 const CreatedAt = styled.span`
-  color: ${theme.palette.grey500};
+  color: ${theme.palette.gray500};
 `;
 
 const ButtonsContainer = styled.div`
