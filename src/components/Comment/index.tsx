@@ -25,6 +25,7 @@ import {
   GetQuestionList,
   Question,
   useDeleteQuestion,
+  usePatchBookMark,
   usePatchEmojiAboutQuestion,
   usePatchQuestionCheck,
 } from '@apis/questionApi';
@@ -282,6 +283,20 @@ const Comment = ({
     }
   };
 
+  // bookmark 수정
+  const { mutate: toggleBookMark } = usePatchBookMark({ resumePage });
+
+  const handleBookMarkClick = () => {
+    if (type !== 'question' || !jwt) return;
+
+    toggleBookMark({
+      resumeId,
+      questionId: id,
+      bookmarked: !bookmarked,
+      jwt,
+    });
+  };
+
   return (
     <>
       <CommentLayout>
@@ -296,7 +311,7 @@ const Comment = ({
 
           <ButtonsContainer>
             {hasBookMarkIcon && (
-              <IconButton>
+              <IconButton onClick={handleBookMarkClick}>
                 {bookmarked ? (
                   <Icon
                     iconName="filledBookMark"
