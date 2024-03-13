@@ -14,7 +14,13 @@ import {
   Comment as CommentType,
   useDeleteComment,
 } from '@apis/commentApi';
-import { Feedback, GetFeedbackList, useDeleteFeedback, usePatchEmojiAboutFeedback } from '@apis/feedbackApi';
+import {
+  Feedback,
+  GetFeedbackList,
+  useDeleteFeedback,
+  usePatchEmojiAboutFeedback,
+  usePatchFeedbackCheck,
+} from '@apis/feedbackApi';
 import { GetQuestionList, Question, useDeleteQuestion, usePatchEmojiAboutQuestion } from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import { formatDate } from '@utils';
@@ -245,6 +251,22 @@ const Comment = ({
     }
   };
 
+  // Check 수정
+  const { mutate: toggleCheckAboutFeedback } = usePatchFeedbackCheck({ resumePage });
+
+  const handleCheckMarkClick = () => {
+    if (!jwt) return;
+
+    if (type === 'feedback') {
+      toggleCheckAboutFeedback({
+        resumeId,
+        feedbackId: id,
+        checked: !checked,
+        jwt,
+      });
+    }
+  };
+
   return (
     <>
       <CommentLayout>
@@ -278,7 +300,7 @@ const Comment = ({
               </IconButton>
             )}
             {hasCheckMarkIcon && (
-              <IconButton>
+              <IconButton onClick={handleCheckMarkClick}>
                 {checked ? (
                   <Icon
                     iconName="filledCheckMark"
