@@ -1,4 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Icon, Input, Select } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
@@ -7,9 +8,11 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { usePostResume } from '@apis/resumeApi';
 import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
+import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from '../style';
 
 const ResumeUploadForm = () => {
+  const navigate = useNavigate();
   const PDF_BUTTON_ICON_SIZE = 24;
   const { jwt } = useUserContext();
 
@@ -37,14 +40,22 @@ const ResumeUploadForm = () => {
 
     if (!jwt || !file || !selectedOccupation || !selectedScope || title.length === 0 || !year) return;
 
-    addResume({
-      title,
-      pdf: file,
-      scopeId: selectedScope.id,
-      occupationId: selectedOccupation.id,
-      year,
-      jwt,
-    });
+    addResume(
+      {
+        title,
+        pdf: file,
+        scopeId: selectedScope.id,
+        occupationId: selectedOccupation.id,
+        year,
+        jwt,
+      },
+      {
+        onSuccess: (data) => {
+          const { id } = data;
+          navigate(`${ROUTE_PATH.RESUME}/${id}`);
+        },
+      },
+    );
   };
 
   return (
