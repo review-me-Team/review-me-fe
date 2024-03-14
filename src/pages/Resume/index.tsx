@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Select } from 'review-me-design-system';
+import { Button } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
+import Select from '@components/Select';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
-import { Occupation, useOccupationList } from '@apis/utilApi';
+import { useOccupationList } from '@apis/utilApi';
 import { ROUTE_PATH } from '@constants';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
@@ -13,14 +14,7 @@ const Resume = () => {
   const { isLoggedIn } = useUserContext();
   const navigate = useNavigate();
 
-  const yearOptions = [
-    { value: 0, label: '신입' },
-    { value: 1, label: '1 ~ 3년차' },
-    { value: 2, label: '4 ~ 6년차' },
-    { value: 3, label: '7 ~ 9년차' },
-    { value: 4, label: '10년차 이상' },
-  ];
-  const [, setSelectedOccupation] = useState<Occupation | undefined>();
+  const [occupationId, setOccupationId] = useState<number | undefined>();
 
   const { data: occupationList } = useOccupationList();
   const { data: resumeListData, fetchNextPage } = useResumeList();
@@ -41,38 +35,29 @@ const Resume = () => {
           <Filter>
             <span>직군</span>
             <Select
-              width="12.5rem"
-              onSelectOption={(option) => {
-                if (option && typeof option.name === 'number' && typeof option.value === 'string')
-                  setSelectedOccupation({ id: option.name, occupation: option.value });
+              value={occupationId}
+              defaultValue={'all'}
+              onChange={(e) => {
+                if (e.target.value === 'all') {
+                  setOccupationId(undefined);
+                  return;
+                }
+
+                setOccupationId(Number(e.target.value));
               }}
             >
-              <Select.TriggerButton />
-              <Select.OptionList maxHeight="12.5rem">
-                {occupationList?.map(({ id, occupation }) => {
-                  return (
-                    <Select.OptionItem key={id} value={id} name={occupation}>
-                      {occupation}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
+              <option value="all">전체</option>
+              {occupationList?.map(({ id, occupation }) => {
+                return (
+                  <option key={id} value={id}>
+                    {occupation}
+                  </option>
+                );
+              })}
             </Select>
           </Filter>
           <Filter>
             <span>경력</span>
-            <Select width="12.5rem">
-              <Select.TriggerButton />
-              <Select.OptionList>
-                {yearOptions.map((option) => {
-                  return (
-                    <Select.OptionItem key={option.value} value={option.value} name={option.label}>
-                      {option.label}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
-            </Select>
           </Filter>
         </FilterContainer>
 
