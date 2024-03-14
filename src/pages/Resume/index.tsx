@@ -11,13 +11,14 @@ import { ROUTE_PATH } from '@constants';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
-  const { isLoggedIn, jwt } = useUserContext();
   const navigate = useNavigate();
+
+  const { isLoggedIn, jwt } = useUserContext();
 
   const [occupationId, setOccupationId] = useState<number | undefined>();
 
   const { data: occupationList } = useOccupationList();
-  const { data: resumeListData, fetchNextPage } = useResumeList({ jwt });
+  const { data: resumeListData, fetchNextPage } = useResumeList({ jwt, occupationId });
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
@@ -45,6 +46,7 @@ const Resume = () => {
 
                 setOccupationId(Number(e.target.value));
               }}
+              width="10.25rem"
             >
               <option value="all">전체</option>
               {occupationList?.map(({ id, occupation }) => {
