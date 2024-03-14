@@ -21,8 +21,15 @@ interface GetResumeList extends PageNationData {
   resumes: ResumeList;
 }
 
-export const getResumeList = async (pageParam: number) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}?page=${pageParam}`);
+export const getResumeList = async ({ pageParam, jwt }: { pageParam: number; jwt?: string }) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
+  const response = await fetch(`${REQUEST_URL.RESUME}?page=${pageParam}`, requestOptions);
 
   if (!response.ok) {
     throw response;
@@ -33,11 +40,15 @@ export const getResumeList = async (pageParam: number) => {
   return data;
 };
 
-export const useResumeList = () => {
+interface UseResumeListProps {
+  jwt?: string;
+}
+
+export const useResumeList = ({ jwt }: UseResumeListProps) => {
   return useInfiniteQuery({
     queryKey: ['resumeList'],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getResumeList(pageParam),
+    queryFn: ({ pageParam }) => getResumeList({ pageParam, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

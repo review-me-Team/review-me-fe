@@ -11,13 +11,13 @@ import { ROUTE_PATH } from '@constants';
 import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
-  const { isLoggedIn } = useUserContext();
+  const { isLoggedIn, jwt } = useUserContext();
   const navigate = useNavigate();
 
   const [occupationId, setOccupationId] = useState<number | undefined>();
 
   const { data: occupationList } = useOccupationList();
-  const { data: resumeListData, fetchNextPage } = useResumeList();
+  const { data: resumeListData, fetchNextPage } = useResumeList({ jwt });
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
