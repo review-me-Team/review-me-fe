@@ -15,6 +15,11 @@ const SelectLayout = styled.select<{ $width: string }>`
 
   ${({ theme }) => theme.font.body.default}
   color: ${({ theme }) => theme.color.neutral.text.default};
+
+  &:focus {
+    outline: none;
+    border-color: ${theme.color.accent.bd.strong};
+  }
 `;
 
 export { SelectLayout };
