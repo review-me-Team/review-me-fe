@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
 import ResumeItem from '@components/ResumeItem';
@@ -12,6 +12,7 @@ import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
 
 const Resume = () => {
   const navigate = useNavigate();
+  const occupationFilterRef = useRef<HTMLSelectElement>(null);
 
   const { isLoggedIn, jwt } = useUserContext();
 
@@ -34,8 +35,15 @@ const Resume = () => {
       <MainHeader>
         <FilterContainer>
           <Filter>
-            <span>직군</span>
+            <span
+              onClick={() => {
+                occupationFilterRef.current?.focus();
+              }}
+            >
+              직군
+            </span>
             <Select
+              ref={occupationFilterRef}
               value={occupationId}
               defaultValue={'all'}
               onChange={(e) => {
