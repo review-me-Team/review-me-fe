@@ -7,7 +7,7 @@ const HeaderLayout = styled.header`
   padding: 0 2rem;
 
   background: ${theme.color.neutral.bg.default};
-  border-bottom: 1px solid ${theme.palette.grey300};
+  border-bottom: 1px solid ${theme.palette.gray300};
 
   @media screen and (max-width: 600px) {
     padding: 0 0.5rem;
