@@ -233,8 +233,9 @@ const Comment = ({
       deleteFeedback(
         { resumeId, feedbackId: id, jwt },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+          onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+            closeDropdown();
           },
         },
       );
@@ -243,8 +244,9 @@ const Comment = ({
       deleteQuestion(
         { resumeId, questionId: id, jwt },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+          onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+            closeDropdown();
           },
         },
       );
