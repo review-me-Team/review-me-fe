@@ -3,6 +3,7 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
+import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
 import ReplyList from '@components/ReplyList';
 import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
@@ -99,6 +100,7 @@ const Comment = ({
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
+  const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
   const REPLY_ICON_SIZE = 20;
@@ -258,6 +260,12 @@ const Comment = ({
     }
   };
 
+  // 수정
+  const handleEditBtnClick = () => {
+    setIsEdited(true);
+    closeDropdown();
+  };
+
   // Check 수정
   const { mutate: toggleCheckAboutFeedback } = usePatchFeedbackCheck({ resumePage });
   const { mutate: toggleCheckAboutQuestion } = usePatchQuestionCheck({ resumePage });
@@ -309,142 +317,158 @@ const Comment = ({
             </CommentInfo>
           </Info>
 
-          <ButtonsContainer>
-            {hasBookMarkIcon && (
-              <IconButton onClick={handleBookMarkClick}>
-                {bookmarked ? (
-                  <Icon
-                    iconName="filledBookMark"
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={theme.color.accent.bg.default}
-                  />
-                ) : (
-                  <Icon
-                    iconName="bookMark"
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={theme.color.accent.bg.strong}
-                  />
-                )}
-              </IconButton>
-            )}
-            {hasCheckMarkIcon && (
-              <IconButton onClick={handleCheckMarkClick}>
-                {checked ? (
-                  <Icon
-                    iconName="filledCheckMark"
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={theme.color.accent.bg.default}
-                  />
-                ) : (
-                  <Icon
-                    iconName="checkMark"
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={theme.color.accent.bg.strong}
-                  />
-                )}
-              </IconButton>
-            )}
-            {hasMoreIcon && (
-              <MoreIconContainer>
-                <IconButton onClick={openDropdown}>
-                  <Icon
-                    iconName="more"
-                    width={ICON_SIZE}
-                    height={ICON_SIZE}
-                    color={theme.color.accent.bg.strong}
-                  />
+          {!isEdited && (
+            <ButtonsContainer>
+              {hasBookMarkIcon && (
+                <IconButton onClick={handleBookMarkClick}>
+                  {bookmarked ? (
+                    <Icon
+                      iconName="filledBookMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.default}
+                    />
+                  ) : (
+                    <Icon
+                      iconName="bookMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.strong}
+                    />
+                  )}
                 </IconButton>
-                <Dropdown
-                  isOpen={isDropdownOpen}
-                  onClose={closeDropdown}
-                  css={css`
-                    width: 4rem;
-                    top: 1.5rem;
-                    right: 0;
-                  `}
-                >
-                  <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
-                  <Dropdown.DropdownItem
-                    onClick={handleDeleteBtnClick}
-                    $css={css`
-                      color: ${theme.palette.red};
+              )}
+              {hasCheckMarkIcon && (
+                <IconButton onClick={handleCheckMarkClick}>
+                  {checked ? (
+                    <Icon
+                      iconName="filledCheckMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.default}
+                    />
+                  ) : (
+                    <Icon
+                      iconName="checkMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.strong}
+                    />
+                  )}
+                </IconButton>
+              )}
+              {hasMoreIcon && (
+                <MoreIconContainer>
+                  <IconButton onClick={openDropdown}>
+                    <Icon
+                      iconName="more"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.strong}
+                    />
+                  </IconButton>
+                  <Dropdown
+                    isOpen={isDropdownOpen}
+                    onClose={closeDropdown}
+                    css={css`
+                      width: 4rem;
+                      top: 1.5rem;
+                      right: 0;
                     `}
                   >
-                    삭제
-                  </Dropdown.DropdownItem>
-                </Dropdown>
-              </MoreIconContainer>
-            )}
-          </ButtonsContainer>
+                    <Dropdown.DropdownItem onClick={handleEditBtnClick}>수정</Dropdown.DropdownItem>
+                    <Dropdown.DropdownItem
+                      onClick={handleDeleteBtnClick}
+                      $css={css`
+                        color: ${theme.palette.red};
+                      `}
+                    >
+                      삭제
+                    </Dropdown.DropdownItem>
+                  </Dropdown>
+                </MoreIconContainer>
+              )}
+            </ButtonsContainer>
+          )}
         </Top>
 
-        <CommentContent>
-          {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
-          <Content>{content ?? '삭제된 댓글입니다.'}</Content>
-        </CommentContent>
+        {isEdited && type === 'question' && (
+          <QuestionEditForm
+            resumeId={resumeId}
+            currentPageNum={resumePage}
+            questionId={id}
+            initLabelContent={labelContent}
+            initContent={content}
+            onCancelEdit={() => setIsEdited(false)}
+          />
+        )}
+        {!isEdited && (
+          <>
+            <CommentContent>
+              {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
+              <Content>{content ?? '삭제된 댓글입니다.'}</Content>
+            </CommentContent>
 
-        <Bottom>
-          {hasReplyIcon && (
-            <OpenReplyButton onClick={handleReplyButtonClick}>
-              <Icon iconName="communication" width={REPLY_ICON_SIZE} height={REPLY_ICON_SIZE} />
-              <span>{countOfReplies}</span>
-            </OpenReplyButton>
-          )}
-          <EmojiButtonContainer>
-            <EmojiButton
-              onMouseEnter={() => changeHoverState(true)}
-              onMouseLeave={() => changeHoverState(false)}
-            >
-              <Icon iconName="emoji" />
-            </EmojiButton>
-            <EmojiModal
-              className={isHover ? 'active' : ''}
-              onMouseEnter={() => changeHoverState(true)}
-              onMouseLeave={() => changeHoverState(false)}
-            >
-              {emojiList?.map(({ id, emoji }) => {
-                return (
-                  <EmojiLabel
-                    key={id}
-                    isActive={id === myEmojiId}
-                    py="0.5rem"
-                    px="0.75rem"
-                    onClick={(e) => handleEmojiLabelClick(e, id)}
-                  >
-                    {emoji}
-                  </EmojiLabel>
-                );
-              })}
-            </EmojiModal>
-          </EmojiButtonContainer>
+            <Bottom>
+              {hasReplyIcon && (
+                <OpenReplyButton onClick={handleReplyButtonClick}>
+                  <Icon iconName="communication" width={REPLY_ICON_SIZE} height={REPLY_ICON_SIZE} />
+                  <span>{countOfReplies}</span>
+                </OpenReplyButton>
+              )}
+              <EmojiButtonContainer>
+                <EmojiButton
+                  onMouseEnter={() => changeHoverState(true)}
+                  onMouseLeave={() => changeHoverState(false)}
+                >
+                  <Icon iconName="emoji" />
+                </EmojiButton>
+                <EmojiModal
+                  className={isHover ? 'active' : ''}
+                  onMouseEnter={() => changeHoverState(true)}
+                  onMouseLeave={() => changeHoverState(false)}
+                >
+                  {emojiList?.map(({ id, emoji }) => {
+                    return (
+                      <EmojiLabel
+                        key={id}
+                        isActive={id === myEmojiId}
+                        py="0.5rem"
+                        px="0.75rem"
+                        onClick={(e) => handleEmojiLabelClick(e, id)}
+                      >
+                        {emoji}
+                      </EmojiLabel>
+                    );
+                  })}
+                </EmojiModal>
+              </EmojiButtonContainer>
 
-          <EmojiLabelList>
-            {emojis.map(({ id, count }) => {
-              const hasEmoji = count > 0;
+              <EmojiLabelList>
+                {emojis.map(({ id, count }) => {
+                  const hasEmoji = count > 0;
 
-              if (!hasEmoji) return;
+                  if (!hasEmoji) return;
 
-              const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
+                  const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
 
-              return (
-                <EmojiLabelItem key={id}>
-                  <EmojiLabel
-                    isActive={id === myEmojiId}
-                    py="0"
-                    px="0.75rem"
-                    onClick={(e) => handleEmojiLabelClick(e, id)}
-                  >
-                    {`${emoji} ${count}`}
-                  </EmojiLabel>
-                </EmojiLabelItem>
-              );
-            })}
-          </EmojiLabelList>
-        </Bottom>
+                  return (
+                    <EmojiLabelItem key={id}>
+                      <EmojiLabel
+                        isActive={id === myEmojiId}
+                        py="0"
+                        px="0.75rem"
+                        onClick={(e) => handleEmojiLabelClick(e, id)}
+                      >
+                        {`${emoji} ${count}`}
+                      </EmojiLabel>
+                    </EmojiLabelItem>
+                  );
+                })}
+              </EmojiLabelList>
+            </Bottom>
+          </>
+        )}
       </CommentLayout>
       {hasReplyIcon && isOpenReplyList && <ReplyList type={type} parentId={id} resumeId={resumeId} />}
     </>

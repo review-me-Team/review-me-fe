@@ -13,7 +13,7 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const Info = styled.div`
@@ -59,7 +59,7 @@ const Time = styled.span`
 const CommentContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 `;
 
 const SelectedLabel = styled.div`
@@ -67,13 +67,13 @@ const SelectedLabel = styled.div`
   justify-content: center;
   align-items: center;
   width: fit-content;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 
-  background: ${theme.color.accent.bg.strong};
+  background: ${theme.palette.green300};
   border-radius: 1rem;
 
-  ${theme.font.label}
-  color: ${theme.color.neutral.text.weak}
+  ${theme.font.body.weak}
+  color: ${theme.color.neutral.text.default}
 `;
 
 const Content = styled.span`
