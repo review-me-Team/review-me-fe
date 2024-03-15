@@ -3,6 +3,7 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
+import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
 import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
 import ReplyList from '@components/ReplyList';
 import useDropdown from '@hooks/useDropdown';
@@ -395,6 +396,16 @@ const Comment = ({
           )}
         </Top>
 
+        {isEdited && type === 'feedback' && (
+          <FeedbackEditForm
+            resumeId={resumeId}
+            resumePage={resumePage}
+            feedbackId={id}
+            initLabelContent={labelContent || null}
+            initContent={content}
+            onCancelEdit={() => setIsEdited(false)}
+          />
+        )}
         {isEdited && type === 'question' && (
           <QuestionEditForm
             resumeId={resumeId}
