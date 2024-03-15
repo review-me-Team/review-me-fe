@@ -6,7 +6,7 @@ import Comment from '@components/Comment';
 import CommentForm from '@components/CommentForm';
 import FeedbackForm from '@components/FeedbackForm';
 import PdfViewer from '@components/PdfViewer';
-import QuestionForm from '@components/QuestionForm';
+import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
@@ -199,7 +199,7 @@ const ResumeDetail = () => {
             <FeedbackForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
           )}
           {currentTab === 'question' && resumeId && (
-            <QuestionForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
+            <QuestionAddForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
           )}
           {currentTab === 'comment' && resumeId && <CommentForm resumeId={Number(resumeId)} />}
         </FeedbackAndQuestion>
