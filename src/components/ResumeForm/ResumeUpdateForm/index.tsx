@@ -1,12 +1,15 @@
 import React, { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Icon, Input } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
 import Select from '@components/Select';
 import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
+import { useUserContext } from '@contexts/userContext';
 import { useUpdateResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
+import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, Form, ResumeFormLayout, Label } from '../style';
 
 interface Props {
@@ -19,8 +22,12 @@ interface Props {
 }
 
 const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope, initYear }: Props) => {
+  const navigate = useNavigate();
+
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
+
+  const { jwt } = useUserContext();
 
   const initOccupationId = occupationList?.find(({ occupation }) => occupation === initOccupation)?.id;
   const initScopeId = scopeList?.find(({ scope }) => scope === initScope)?.id;
@@ -39,15 +46,23 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!occupationId || !scopeId || title.length === 0 || !year) return;
+    if (!jwt || !occupationId || !scopeId || title.length === 0 || !year) return;
 
-    updateResume({
-      resumeId,
-      title,
-      scopeId,
-      occupationId,
-      year,
-    });
+    updateResume(
+      {
+        resumeId,
+        title,
+        scopeId,
+        occupationId,
+        year,
+        jwt,
+      },
+      {
+        onSuccess: () => {
+          navigate(`${ROUTE_PATH.RESUME}/${resumeId}`);
+        },
+      },
+    );
   };
 
   return (
