@@ -1,14 +1,19 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
+import { css } from 'styled-components';
+import Dropdown from '@components/Dropdown';
 import ResumeItem from '@components/ResumeItem';
 import Select from '@components/Select';
+import YearRangeFilter from '@components/YearRangeFilter';
+import useDropdown from '@hooks/useDropdown';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { useOccupationList } from '@apis/utilApi';
 import { ROUTE_PATH } from '@constants';
-import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
+import { getRangeText } from '@utils';
+import { Filter, FilterContainer, Main, MainHeader, ResumeList, YearRange } from './style';
 
 const Resume = () => {
   const navigate = useNavigate();
@@ -17,9 +22,22 @@ const Resume = () => {
   const { isLoggedIn, jwt } = useUserContext();
 
   const [occupationId, setOccupationId] = useState<number | undefined>();
+  const [yearRange, setYearRange] = useState<{ startYear: number; endYear: number }>({
+    startYear: 0,
+    endYear: 10,
+  });
+
+  const rangeText = getRangeText({ min: yearRange.startYear, max: yearRange.endYear });
+
+  const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
 
   const { data: occupationList } = useOccupationList();
-  const { data: resumeListData, fetchNextPage } = useResumeList({ jwt, occupationId });
+  const { data: resumeListData, fetchNextPage } = useResumeList({
+    jwt,
+    occupationId,
+    startYear: yearRange.startYear,
+    endYear: yearRange.endYear,
+  });
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
@@ -68,6 +86,37 @@ const Resume = () => {
           </Filter>
           <Filter>
             <span>경력</span>
+            <YearRange
+              onClick={() => {
+                if (isDropdownOpen) {
+                  closeDropdown();
+                  return;
+                }
+                openDropdown();
+              }}
+            >
+              <span>{rangeText}</span>
+            </YearRange>
+            <Dropdown
+              isOpen={isDropdownOpen}
+              onClose={closeDropdown}
+              css={css`
+                top: 2.875rem;
+                left: 0;
+              `}
+            >
+              <YearRangeFilter
+                min={0}
+                max={10}
+                startYear={yearRange.startYear}
+                endYear={yearRange.endYear}
+                onCancelRangeChange={closeDropdown}
+                onApplyRangeChange={(range) => {
+                  setYearRange({ startYear: range.min, endYear: range.max });
+                  closeDropdown();
+                }}
+              />
+            </Dropdown>
           </Filter>
         </FilterContainer>
 
