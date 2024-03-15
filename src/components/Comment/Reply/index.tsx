@@ -79,8 +79,7 @@ const Reply = ({
 }: Props) => {
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
-  const { jwt, isLoggedIn, user } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
+  const { jwt, user } = useUserContext();
 
   const ICON_SIZE = 24;
 
@@ -94,7 +93,7 @@ const Reply = ({
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
-    if (!isAuthenticated) return;
+    if (!jwt) return;
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 

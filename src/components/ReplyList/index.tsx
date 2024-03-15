@@ -14,8 +14,7 @@ interface Props {
 }
 
 const ReplyList = ({ type, parentId, resumeId }: Props) => {
-  const { jwt, isLoggedIn } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
+  const { jwt } = useUserContext();
 
   const { data: feedbackReplyList, fetchNextPage: fetchNextFeedbackReplyList } = useFeedbackReplyList({
     resumeId,
@@ -63,7 +62,7 @@ const ReplyList = ({ type, parentId, resumeId }: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isAuthenticated) return;
+    if (!jwt) return;
     if (content.length === 0) return;
 
     if (type === 'feedback') addFeedbackReply({ resumeId, parentFeedbackId: parentId, content, jwt });
