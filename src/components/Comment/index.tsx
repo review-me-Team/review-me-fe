@@ -323,7 +323,7 @@ const Comment = ({
           {!isEdited && (
             <ButtonsContainer>
               {hasBookMarkIcon && (
-                <IconButton onClick={handleBookMarkClick}>
+                <IconButton onClick={handleBookMarkClick} disabled={content === null}>
                   {bookmarked ? (
                     <Icon
                       iconName="filledBookMark"
@@ -342,7 +342,7 @@ const Comment = ({
                 </IconButton>
               )}
               {hasCheckMarkIcon && (
-                <IconButton onClick={handleCheckMarkClick}>
+                <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
                   {checked ? (
                     <Icon
                       iconName="filledCheckMark"
@@ -362,7 +362,7 @@ const Comment = ({
               )}
               {hasMoreIcon && (
                 <MoreIconContainer>
-                  <IconButton onClick={openDropdown}>
+                  <IconButton onClick={openDropdown} disabled={content === null}>
                     <Icon
                       iconName="more"
                       width={ICON_SIZE}
@@ -379,15 +379,12 @@ const Comment = ({
                       right: 0;
                     `}
                   >
-                    <Dropdown.DropdownItem onClick={handleEditBtnClick} disabled={content === null}>
-                      수정
-                    </Dropdown.DropdownItem>
+                    <Dropdown.DropdownItem onClick={handleEditBtnClick}>수정</Dropdown.DropdownItem>
                     <Dropdown.DropdownItem
                       onClick={handleDeleteBtnClick}
                       $css={css`
                         color: ${theme.palette.red};
                       `}
-                      disabled={content === null}
                     >
                       삭제
                     </Dropdown.DropdownItem>
@@ -436,6 +433,7 @@ const Comment = ({
                 <EmojiButton
                   onMouseEnter={() => changeHoverState(true)}
                   onMouseLeave={() => changeHoverState(false)}
+                  disabled={content === null}
                 >
                   <Icon iconName="emoji" />
                 </EmojiButton>
