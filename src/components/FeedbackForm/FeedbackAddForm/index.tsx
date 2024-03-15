@@ -4,14 +4,14 @@ import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedback } from '@apis/feedbackApi';
 import { useLabelList } from '@apis/utilApi';
-import { ButtonWrapper, FeedbackFormLayout, LabelList } from './style';
+import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 
 interface Props {
   resumeId: number;
-  currentPageNum: number;
+  resumePage: number;
 }
 
-const FeedbackForm = ({ resumeId, currentPageNum }: Props) => {
+const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
@@ -36,13 +36,13 @@ const FeedbackForm = ({ resumeId, currentPageNum }: Props) => {
         resumeId,
         content: content,
         labelId,
-        resumePage: currentPageNum,
+        resumePage,
         jwt,
       },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
-            queryKey: ['feedbackList', resumeId, currentPageNum],
+            queryKey: ['feedbackList', resumeId, resumePage],
           });
 
           resetForm();
@@ -52,7 +52,7 @@ const FeedbackForm = ({ resumeId, currentPageNum }: Props) => {
   };
 
   return (
-    <FeedbackFormLayout onSubmit={handleSubmit}>
+    <FeedbackFormLayout $type="add" onSubmit={handleSubmit}>
       <LabelList>
         {labelList?.map(({ id, label }) => {
           return (
@@ -69,7 +69,7 @@ const FeedbackForm = ({ resumeId, currentPageNum }: Props) => {
         })}
       </LabelList>
       <Textarea placeholder="피드백" value={content} onChange={(e) => setContent(e.target.value)} />
-      <ButtonWrapper>
+      <ButtonWrapper $type="add">
         <Button variant="default" size="s">
           작성
         </Button>
@@ -78,4 +78,4 @@ const FeedbackForm = ({ resumeId, currentPageNum }: Props) => {
   );
 };
 
-export default FeedbackForm;
+export default FeedbackAddForm;
