@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'review-me-design-system';
+import { Button, Modal, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import ResumeItem from '@components/ResumeItem';
@@ -8,6 +8,7 @@ import Select from '@components/Select';
 import YearRangeFilter from '@components/YearRangeFilter';
 import useDropdown from '@hooks/useDropdown';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { useOccupationList } from '@apis/utilApi';
@@ -27,9 +28,12 @@ const Resume = () => {
     endYear: 10,
   });
 
+  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+
   const rangeText = getRangeText({ min: yearRange.startYear, max: yearRange.endYear });
 
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
+  const { isOpen: isModalOpen, open: openModal, close: closeModal } = useModal();
 
   const { data: occupationList } = useOccupationList();
   const { data: resumeListData, fetchNextPage } = useResumeList({
@@ -51,7 +55,7 @@ const Resume = () => {
   return (
     <Main>
       <MainHeader>
-        <FilterContainer>
+        <FilterContainer $isMDevice={isMDevice}>
           <Filter>
             <span
               onClick={() => {
@@ -101,6 +105,7 @@ const Resume = () => {
               isOpen={isDropdownOpen}
               onClose={closeDropdown}
               css={css`
+                width: ${isMDevice ? '16rem' : '17.5rem'};
                 top: 2.875rem;
                 left: 0;
               `}

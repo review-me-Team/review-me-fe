@@ -31,14 +31,7 @@ const YearRangeFilter = ({
   return (
     <YearRangeFilterLayout>
       <span>{rangeText}</span>
-      <MultiRangeSlider
-        hasGreaterCheck={true}
-        min={min}
-        max={max}
-        range={range}
-        onRangeChange={setRange}
-        width="17.5rem"
-      />
+      <MultiRangeSlider hasGreaterCheck={true} min={min} max={max} range={range} onRangeChange={setRange} />
       <ButtonsContainer>
         <Button variant="outline" size="s" onClick={onCancelRangeChange}>
           취소

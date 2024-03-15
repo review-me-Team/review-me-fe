@@ -31,8 +31,9 @@ const MainHeader = styled.header`
   }
 `;
 
-const FilterContainer = styled.div`
+const FilterContainer = styled.div<{ $isMDevice: boolean }>`
   display: flex;
+  flex-direction: ${({ $isMDevice }) => ($isMDevice ? 'column' : 'row')};
   align-items: center;
   gap: 0.75rem;
 `;
