@@ -400,7 +400,7 @@ const Comment = ({
             resumeId={resumeId}
             resumePage={resumePage}
             questionId={id}
-            initLabelContent={labelContent}
+            initLabelContent={labelContent || null}
             initContent={content}
             onCancelEdit={() => setIsEdited(false)}
           />

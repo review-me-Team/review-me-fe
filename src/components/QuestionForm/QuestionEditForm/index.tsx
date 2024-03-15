@@ -9,7 +9,7 @@ interface Props {
   resumeId: number;
   resumePage: number;
   questionId: number;
-  initLabelContent?: string | null;
+  initLabelContent: string | null;
   initContent: string | null;
   onCancelEdit: () => void;
 }
