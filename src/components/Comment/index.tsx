@@ -258,6 +258,7 @@ const Comment = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+            closeDropdown();
           },
         },
       );
