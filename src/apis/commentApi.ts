@@ -135,6 +135,40 @@ export const useDeleteComment = () => {
   return useMutation({ mutationFn: deleteComment });
 };
 
+// PATCH 댓글 수정
+export const patchComment = async ({
+  resumeId,
+  commentId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  commentId: number;
+  content: string;
+  jwt: string;
+}) => {
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ content }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchComment = () => {
+  return useMutation({ mutationFn: patchComment });
+};
+
 // PATCH 댓글 이모지 수정
 export const patchEmojiAboutComment = async ({
   resumeId,

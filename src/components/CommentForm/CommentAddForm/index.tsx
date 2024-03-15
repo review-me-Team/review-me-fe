@@ -3,13 +3,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostComment } from '@apis/commentApi';
-import { ButtonWrapper, CommentFormLayout } from './style';
+import { ButtonWrapper, CommentFormLayout } from '../style';
 
 interface Props {
   resumeId: number;
 }
 
-const CommentForm = ({ resumeId }: Props) => {
+const CommentAddForm = ({ resumeId }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
@@ -45,9 +45,9 @@ const CommentForm = ({ resumeId }: Props) => {
   };
 
   return (
-    <CommentFormLayout onSubmit={handleSubmit}>
+    <CommentFormLayout $type="add" onSubmit={handleSubmit}>
       <Textarea placeholder="댓글" value={content} onChange={(e) => setContent(e.target.value)} />
-      <ButtonWrapper>
+      <ButtonWrapper $type="add">
         <Button variant="default" size="s">
           작성
         </Button>
@@ -56,4 +56,4 @@ const CommentForm = ({ resumeId }: Props) => {
   );
 };
 
-export default CommentForm;
+export default CommentAddForm;

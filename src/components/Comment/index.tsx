@@ -2,6 +2,7 @@ import React, { MouseEvent, useState } from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
+import CommentEditForm from '@components/CommentForm/CommentEditForm';
 import Dropdown from '@components/Dropdown';
 import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
 import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
@@ -257,6 +258,7 @@ const Comment = ({
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+            closeDropdown();
           },
         },
       );
@@ -412,6 +414,14 @@ const Comment = ({
             questionId={id}
             initLabelContent={labelContent || null}
             initContent={content}
+            onCancelEdit={() => setIsEdited(false)}
+          />
+        )}
+        {isEdited && type === 'comment' && (
+          <CommentEditForm
+            resumeId={resumeId}
+            commentId={id}
+            initContent={content || ''}
             onCancelEdit={() => setIsEdited(false)}
           />
         )}
