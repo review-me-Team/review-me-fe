@@ -21,8 +21,32 @@ interface GetResumeList extends PageNationData {
   resumes: ResumeList;
 }
 
-export const getResumeList = async (pageParam: number) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}?page=${pageParam}`);
+export const getResumeList = async ({
+  pageParam,
+  jwt,
+  occupationId,
+  startYear,
+  endYear,
+}: {
+  pageParam: number;
+  jwt?: string;
+  occupationId?: number;
+  startYear: number;
+  endYear: number;
+}) => {
+  const headers = new Headers();
+  if (jwt) headers.append('Authorization', `Bearer ${jwt}`);
+
+  const requestOptions: RequestInit = {
+    headers,
+  };
+
+  let queryString = `page=${pageParam}`;
+  if (occupationId) queryString += `&occupationId=${occupationId}`;
+  queryString += `&startYear=${startYear}`;
+  if (endYear < 10) queryString += `&endYear=${endYear}`;
+
+  const response = await fetch(`${REQUEST_URL.RESUME}?${queryString}`, requestOptions);
 
   if (!response.ok) {
     throw response;
@@ -33,11 +57,20 @@ export const getResumeList = async (pageParam: number) => {
   return data;
 };
 
-export const useResumeList = () => {
+interface UseResumeListProps {
+  jwt?: string;
+  occupationId?: number;
+  startYear: number;
+  endYear: number;
+}
+
+export const useResumeList = ({ jwt, occupationId, startYear, endYear }: UseResumeListProps) => {
+  const yearFilter = { startYear, endYear };
+
   return useInfiniteQuery({
-    queryKey: ['resumeList'],
+    queryKey: ['resumeList', occupationId, yearFilter],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getResumeList(pageParam),
+    queryFn: ({ pageParam }) => getResumeList({ pageParam, jwt, occupationId, startYear, endYear }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

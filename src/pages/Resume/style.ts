@@ -31,19 +31,35 @@ const MainHeader = styled.header`
   }
 `;
 
-const FilterContainer = styled.div`
+const FilterContainer = styled.div<{ $isMDevice: boolean }>`
   display: flex;
+  flex-direction: ${({ $isMDevice }) => ($isMDevice ? 'column' : 'row')};
   align-items: center;
   gap: 0.75rem;
 `;
 
 const Filter = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 
   ${theme.font.body.default}
   color: ${theme.color.neutral.text.default};
+`;
+
+const YearRange = styled.button`
+  display: flex;
+  position: relative;
+  width: 10.25rem;
+  padding: 0.5rem 0.75rem;
+
+  background-color: ${theme.color.neutral.bg.default};
+  border-radius: 0.25rem;
+  border: 0.0625rem solid ${theme.color.accent.bd.weak};
+
+  ${({ theme }) => theme.font.body.default}
+  color: ${({ theme }) => theme.color.neutral.text.default};
 `;
 
 const ResumeList = styled.ul`
@@ -62,4 +78,4 @@ const ResumeList = styled.ul`
   }
 `;
 
-export { Main, MainHeader, FilterContainer, Filter, ResumeList };
+export { Main, MainHeader, FilterContainer, Filter, YearRange, ResumeList };
