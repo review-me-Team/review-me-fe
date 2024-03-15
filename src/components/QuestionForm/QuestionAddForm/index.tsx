@@ -3,14 +3,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostQuestion } from '@apis/questionApi';
-import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from './style';
+import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
   resumeId: number;
-  currentPageNum: number;
+  resumePage: number;
 }
 
-const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
+const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
@@ -34,13 +34,13 @@ const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
         resumeId,
         content,
         labelContent: labelContent.trim(),
-        resumePage: currentPageNum,
+        resumePage,
         jwt,
       },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
-            queryKey: ['questionList', resumeId, currentPageNum],
+            queryKey: ['questionList', resumeId, resumePage],
           });
 
           resetForm();
@@ -50,7 +50,7 @@ const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
   };
 
   return (
-    <QuestionFormLayout onSubmit={handleSubmit}>
+    <QuestionFormLayout $type="add" onSubmit={handleSubmit}>
       <KeywordLabel>{labelContent}</KeywordLabel>
       <Input
         placeholder="예상질문 키워드"
@@ -58,7 +58,7 @@ const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
         onChange={(e) => setLabelContent(e.target.value)}
       />
       <Textarea placeholder="예상질문" value={content} onChange={(e) => setContent(e.target.value)} />
-      <ButtonWrapper>
+      <ButtonWrapper $type="add">
         <Button variant="default" size="s">
           작성
         </Button>
@@ -67,4 +67,4 @@ const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
   );
 };
 
-export default QuestionForm;
+export default QuestionAddForm;
