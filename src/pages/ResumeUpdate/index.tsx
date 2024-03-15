@@ -5,7 +5,7 @@ import ResumeUpdateForm from '@components/ResumeForm/ResumeUpdateForm';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeDetail } from '@apis/resumeApi';
 import { PageMain } from '@styles/common';
-import { ResumeUploadContainer, IconButton, Description, MainDescription } from './style';
+import { ResumeUploadContainer, IconButton, Description, MainDescription, SubDescription } from './style';
 
 interface Location {
   state: { resumeId: number; title: string; year: number; occupation: string; scope: string };
@@ -33,6 +33,7 @@ const ResumeUpdate = () => {
       <ResumeUploadContainer>
         <Description>
           <MainDescription>이력서 수정</MainDescription>
+          <SubDescription>아래의 양식을 작성하고 수정하기 버튼을 눌러주세요.</SubDescription>
         </Description>
 
         <ResumeUpdateForm
