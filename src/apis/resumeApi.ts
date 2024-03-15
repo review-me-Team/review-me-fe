@@ -245,16 +245,22 @@ export const updateResume = async ({
   scopeId,
   occupationId,
   year,
+  jwt,
 }: {
   resumeId: number;
   title: string;
   scopeId: number;
   occupationId: number;
   year: number;
+  jwt: string;
 }) => {
   const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, {
     method: 'PATCH',
     body: JSON.stringify({ title, scopeId, occupationId, year }),
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
   });
 
   if (!response.ok) {
