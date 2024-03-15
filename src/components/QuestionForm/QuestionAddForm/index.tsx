@@ -10,7 +10,7 @@ interface Props {
   resumePage: number;
 }
 
-const QuestionForm = ({ resumeId, resumePage }: Props) => {
+const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
@@ -67,4 +67,4 @@ const QuestionForm = ({ resumeId, resumePage }: Props) => {
   );
 };
 
-export default QuestionForm;
+export default QuestionAddForm;
