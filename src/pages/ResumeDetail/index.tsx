@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Icon } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
-import CommentForm from '@components/CommentForm';
+import CommentAddForm from '@components/CommentForm/CommentAddForm';
 import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
 import PdfViewer from '@components/PdfViewer';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
@@ -201,7 +201,7 @@ const ResumeDetail = () => {
           {currentTab === 'question' && resumeId && (
             <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
           )}
-          {currentTab === 'comment' && resumeId && <CommentForm resumeId={Number(resumeId)} />}
+          {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
         </FeedbackAndQuestion>
       </ResumeContentWrapper>
     </Main>
