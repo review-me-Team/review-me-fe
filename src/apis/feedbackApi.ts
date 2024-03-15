@@ -232,6 +232,47 @@ export const useDeleteFeedback = () => {
   return useMutation({ mutationFn: deleteFeedback });
 };
 
+// PATCH 피드백 수정
+export const patchFeedback = async ({
+  resumeId,
+  feedbackId,
+  labelId,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  feedbackId: number;
+  labelId?: number;
+  content: string;
+  jwt: string;
+}) => {
+  const requestBody: { labelId?: number; content: string } = {
+    content,
+  };
+  if (labelId) requestBody.labelId = labelId;
+
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchFeedback = () => {
+  return useMutation({ mutationFn: patchFeedback });
+};
+
 // PATCH 피드백 체크 상태 수정
 export const patchFeedbackCheck = async ({
   resumeId,
