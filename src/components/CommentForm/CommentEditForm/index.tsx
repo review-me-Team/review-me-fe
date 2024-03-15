@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
@@ -18,6 +18,8 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
 
   const [content, setContent] = useState<string>(initContent);
 
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
   const { mutate: editComment } = usePatchComment();
 
   const resetForm = () => {
@@ -27,7 +29,14 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !content) return;
+    if (!jwt) return;
+
+    const hasContent = content.trim().length > 0;
+
+    if (!hasContent) {
+      contentRef.current?.focus();
+      return;
+    }
 
     editComment(
       {
@@ -51,7 +60,7 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
 
   return (
     <CommentFormLayout $type="edit" onSubmit={handleSubmit}>
-      <Textarea value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
       <ButtonWrapper $type="edit">
         <Button
           variant="outline"
