@@ -1,25 +1,23 @@
-import React, { FormEvent, MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
+import { Icon } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
+import CommentForm from '@components/CommentForm';
+import FeedbackForm from '@components/FeedbackForm';
 import PdfViewer from '@components/PdfViewer';
+import QuestionForm from '@components/QuestionForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
-import { useCommentList, usePostComment } from '@apis/commentApi';
-import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionList } from '@apis/questionApi';
+import { useCommentList } from '@apis/commentApi';
+import { useFeedbackList } from '@apis/feedbackApi';
+import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
-import { useLabelList } from '@apis/utilApi';
 import {
   Career,
   CommentList,
   FeedbackAndQuestion,
-  Form,
-  FormContent,
-  LabelList,
   Main,
   ResumeContentWrapper,
   ResumeInfo,
@@ -31,13 +29,11 @@ import {
   WriterInfo,
   WriterInfoContainer,
   ResumeViewer,
-  KeywordLabel,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
 
@@ -50,12 +46,6 @@ const ResumeDetail = () => {
   );
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
-
-  const [labelId, setLabelId] = useState<number | undefined>();
-  const [labelContent, setLabelContent] = useState<string>('');
-  const [comment, setComment] = useState<string>('');
-
-  const { data: labelList } = useLabelList();
 
   const enabledAboutFeedbackList = isLoggedIn
     ? currentTab === 'feedback' && !!jwt
@@ -94,91 +84,8 @@ const ResumeDetail = () => {
     },
   });
 
-  const { mutate: addFeedback } = usePostFeedback();
-  const { mutate: addQuestion } = usePostQuestion();
-  const { mutate: addComment } = usePostComment();
-
-  const textareaPlaceholder = {
-    feedback: '피드백',
-    question: '예상질문',
-    comment: '댓글',
-  };
-
-  const resetForm = () => {
-    setLabelContent('');
-    setLabelId(undefined);
-    setComment('');
-  };
-
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
-    resetForm();
-  };
-
-  const isAuthenticated = jwt && isLoggedIn;
-
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!resumeId || !comment || !isAuthenticated) return;
-
-    if (currentTab === 'feedback') {
-      addFeedback(
-        {
-          resumeId: Number(resumeId),
-          content: comment,
-          labelId,
-          resumePage: currentPageNum,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            return queryClient.invalidateQueries({
-              queryKey: ['feedbackList', Number(resumeId), currentPageNum],
-            });
-          },
-        },
-      );
-    } else if (currentTab === 'question') {
-      addQuestion(
-        {
-          resumeId: Number(resumeId),
-          content: comment,
-          labelContent: labelContent.trim(),
-          resumePage: currentPageNum,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            return Promise.all([
-              queryClient.invalidateQueries({
-                queryKey: ['questionList', Number(resumeId), currentPageNum],
-              }),
-              queryClient.invalidateQueries({
-                queryKey: ['questionList', Number(resumeId), 'labelList'],
-              }),
-            ]);
-          },
-        },
-      );
-    } else if (currentTab === 'comment') {
-      addComment(
-        {
-          resumeId: Number(resumeId),
-          content: comment,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            return queryClient.invalidateQueries({
-              queryKey: ['commentList', Number(resumeId)],
-            });
-          },
-        },
-      );
-    }
-
-    resetForm();
   };
 
   return (
@@ -288,45 +195,13 @@ const ResumeDetail = () => {
             <div ref={setTarget}></div>
           </CommentList>
 
-          <Form onSubmit={handleFormSubmit}>
-            {currentTab === 'feedback' && (
-              <LabelList>
-                {labelList?.map(({ id, label }) => {
-                  return (
-                    <Label
-                      key={id}
-                      isActive={labelId === id}
-                      py="4px"
-                      px="12px"
-                      onClick={() => setLabelId(id)}
-                    >
-                      {label}
-                    </Label>
-                  );
-                })}
-              </LabelList>
-            )}
-            {currentTab === 'question' && (
-              <>
-                <KeywordLabel>{labelContent}</KeywordLabel>
-                <Input
-                  placeholder="예상질문 키워드"
-                  value={labelContent}
-                  onChange={(e) => setLabelContent(e.target.value)}
-                />
-              </>
-            )}
-            <FormContent>
-              <Textarea
-                placeholder={textareaPlaceholder[currentTab] || ''}
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <Button variant="default" size="s">
-                작성
-              </Button>
-            </FormContent>
-          </Form>
+          {currentTab === 'feedback' && resumeId && (
+            <FeedbackForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
+          )}
+          {currentTab === 'question' && resumeId && (
+            <QuestionForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
+          )}
+          {currentTab === 'comment' && resumeId && <CommentForm resumeId={Number(resumeId)} />}
         </FeedbackAndQuestion>
       </ResumeContentWrapper>
     </Main>

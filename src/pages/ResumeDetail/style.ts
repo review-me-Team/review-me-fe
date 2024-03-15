@@ -110,50 +110,6 @@ const Tab = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
 `;
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-
-  box-shadow: rgba(0, 0, 0, 0.07) 0 0 1.25rem;
-`;
-
-const LabelList = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-`;
-
-const FormContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-  gap: 0.5rem;
-
-  & > button {
-    flex-shrink: 0;
-  }
-`;
-
-const KeywordLabel = styled.span`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: fit-content;
-  height: 1.5rem;
-  padding: 0 1rem;
-
-  background: ${theme.color.accent.bg.strong};
-  border-radius: 1rem;
-
-  ${theme.font.label}
-  color: ${theme.color.neutral.text.weak}
-`;
-
 // * 댓글 관련
 const CommentList = styled.ul`
   display: flex;
@@ -176,9 +132,5 @@ export {
   FeedbackAndQuestion,
   TabList,
   Tab,
-  Form,
-  FormContent,
-  KeywordLabel,
-  LabelList,
   CommentList,
 };
