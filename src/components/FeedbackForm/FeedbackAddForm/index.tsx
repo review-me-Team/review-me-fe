@@ -61,7 +61,16 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
               isActive={labelId === id}
               py="0.25rem"
               px="0.75rem"
-              onClick={() => setLabelId(id)}
+              onClick={() => {
+                const isLabelIdSameAsSelected = labelId === id;
+
+                if (isLabelIdSameAsSelected) {
+                  setLabelId(undefined);
+                  return;
+                }
+
+                setLabelId(id);
+              }}
             >
               {label}
             </Label>
