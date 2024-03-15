@@ -4,7 +4,7 @@ import { Icon } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentForm from '@components/CommentForm';
-import FeedbackForm from '@components/FeedbackForm';
+import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
 import PdfViewer from '@components/PdfViewer';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
@@ -196,7 +196,7 @@ const ResumeDetail = () => {
           </CommentList>
 
           {currentTab === 'feedback' && resumeId && (
-            <FeedbackForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
+            <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
           )}
           {currentTab === 'question' && resumeId && (
             <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />

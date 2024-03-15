@@ -34,6 +34,11 @@ const IconButton = styled.button`
   height: 1.5rem;
   background-color: transparent;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 `;
 
 const CommentInfo = styled.div`
@@ -124,6 +129,11 @@ const EmojiButton = styled.button`
   }
 
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 `;
 
 const EmojiLabelList = styled.ul`

@@ -3,6 +3,7 @@ import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
+import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
 import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
 import ReplyList from '@components/ReplyList';
 import useDropdown from '@hooks/useDropdown';
@@ -232,8 +233,9 @@ const Comment = ({
       deleteFeedback(
         { resumeId, feedbackId: id, jwt },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+          onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
+            closeDropdown();
           },
         },
       );
@@ -242,8 +244,9 @@ const Comment = ({
       deleteQuestion(
         { resumeId, questionId: id, jwt },
         {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+          onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
+            closeDropdown();
           },
         },
       );
@@ -320,7 +323,7 @@ const Comment = ({
           {!isEdited && (
             <ButtonsContainer>
               {hasBookMarkIcon && (
-                <IconButton onClick={handleBookMarkClick}>
+                <IconButton onClick={handleBookMarkClick} disabled={content === null}>
                   {bookmarked ? (
                     <Icon
                       iconName="filledBookMark"
@@ -339,7 +342,7 @@ const Comment = ({
                 </IconButton>
               )}
               {hasCheckMarkIcon && (
-                <IconButton onClick={handleCheckMarkClick}>
+                <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
                   {checked ? (
                     <Icon
                       iconName="filledCheckMark"
@@ -359,7 +362,7 @@ const Comment = ({
               )}
               {hasMoreIcon && (
                 <MoreIconContainer>
-                  <IconButton onClick={openDropdown}>
+                  <IconButton onClick={openDropdown} disabled={content === null}>
                     <Icon
                       iconName="more"
                       width={ICON_SIZE}
@@ -376,15 +379,12 @@ const Comment = ({
                       right: 0;
                     `}
                   >
-                    <Dropdown.DropdownItem onClick={handleEditBtnClick} disabled={content === null}>
-                      수정
-                    </Dropdown.DropdownItem>
+                    <Dropdown.DropdownItem onClick={handleEditBtnClick}>수정</Dropdown.DropdownItem>
                     <Dropdown.DropdownItem
                       onClick={handleDeleteBtnClick}
                       $css={css`
                         color: ${theme.palette.red};
                       `}
-                      disabled={content === null}
                     >
                       삭제
                     </Dropdown.DropdownItem>
@@ -395,6 +395,16 @@ const Comment = ({
           )}
         </Top>
 
+        {isEdited && type === 'feedback' && (
+          <FeedbackEditForm
+            resumeId={resumeId}
+            resumePage={resumePage}
+            feedbackId={id}
+            initLabelContent={labelContent || null}
+            initContent={content}
+            onCancelEdit={() => setIsEdited(false)}
+          />
+        )}
         {isEdited && type === 'question' && (
           <QuestionEditForm
             resumeId={resumeId}
@@ -423,6 +433,7 @@ const Comment = ({
                 <EmojiButton
                   onMouseEnter={() => changeHoverState(true)}
                   onMouseLeave={() => changeHoverState(false)}
+                  disabled={content === null}
                 >
                   <Icon iconName="emoji" />
                 </EmojiButton>
