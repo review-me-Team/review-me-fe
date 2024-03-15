@@ -2,21 +2,21 @@ import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useAuth from '@hooks/useAuth';
 import { useUserContext } from '@contexts/userContext';
-import { ROUTE_PATH } from '@constants';
+import { IS_LOGGED_IN_KEY, ROUTE_PATH } from '@constants';
 
 const SocialLogin = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams.get('code');
 
-  const { createJwtQuery } = useAuth();
-  const { logout, login } = useUserContext();
+  const { createRefreshTokenQuery } = useAuth();
+  const { logout } = useUserContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (code)
-      createJwtQuery.mutate(code, {
-        onSuccess: (data) => {
-          login(data.jwt);
+      createRefreshTokenQuery.mutate(code, {
+        onSuccess: () => {
+          localStorage.setItem(IS_LOGGED_IN_KEY, 'true');
         },
         onError: () => {
           alert('로그인에 실패했습니다.');
