@@ -376,12 +376,15 @@ const Comment = ({
                       right: 0;
                     `}
                   >
-                    <Dropdown.DropdownItem onClick={handleEditBtnClick}>수정</Dropdown.DropdownItem>
+                    <Dropdown.DropdownItem onClick={handleEditBtnClick} disabled={content === null}>
+                      수정
+                    </Dropdown.DropdownItem>
                     <Dropdown.DropdownItem
                       onClick={handleDeleteBtnClick}
                       $css={css`
                         color: ${theme.palette.red};
                       `}
+                      disabled={content === null}
                     >
                       삭제
                     </Dropdown.DropdownItem>

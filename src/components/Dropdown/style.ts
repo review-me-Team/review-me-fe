@@ -42,6 +42,10 @@ const DropdownItem = styled.button<{ $css?: CSSProp }>`
   }
 
   ${({ $css }) => $css}
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 export { DropdownLayout, BackDrop, DropdownItem };
