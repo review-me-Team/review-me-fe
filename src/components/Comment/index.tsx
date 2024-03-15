@@ -395,7 +395,7 @@ const Comment = ({
         {isEdited && type === 'question' && (
           <QuestionEditForm
             resumeId={resumeId}
-            currentPageNum={resumePage}
+            resumePage={resumePage}
             questionId={id}
             initLabelContent={labelContent}
             initContent={content}

@@ -199,7 +199,7 @@ const ResumeDetail = () => {
             <FeedbackForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
           )}
           {currentTab === 'question' && resumeId && (
-            <QuestionAddForm resumeId={Number(resumeId)} currentPageNum={currentPageNum} />
+            <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
           )}
           {currentTab === 'comment' && resumeId && <CommentForm resumeId={Number(resumeId)} />}
         </FeedbackAndQuestion>

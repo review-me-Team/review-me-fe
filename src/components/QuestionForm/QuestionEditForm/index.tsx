@@ -7,7 +7,7 @@ import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
   resumeId: number;
-  currentPageNum: number;
+  resumePage: number;
   questionId: number;
   initLabelContent?: string | null;
   initContent: string | null;
@@ -16,7 +16,7 @@ interface Props {
 
 const QuestionEditForm = ({
   resumeId,
-  currentPageNum,
+  resumePage,
   questionId,
   initLabelContent,
   initContent,
@@ -60,7 +60,7 @@ const QuestionEditForm = ({
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
-            queryKey: ['questionList', resumeId, currentPageNum],
+            queryKey: ['questionList', resumeId, resumePage],
           });
 
           resetForm();

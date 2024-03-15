@@ -7,10 +7,10 @@ import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
   resumeId: number;
-  currentPageNum: number;
+  resumePage: number;
 }
 
-const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
+const QuestionForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
@@ -34,13 +34,13 @@ const QuestionForm = ({ resumeId, currentPageNum }: Props) => {
         resumeId,
         content,
         labelContent: labelContent.trim(),
-        resumePage: currentPageNum,
+        resumePage,
         jwt,
       },
       {
         onSuccess: async () => {
           await queryClient.invalidateQueries({
-            queryKey: ['questionList', resumeId, currentPageNum],
+            queryKey: ['questionList', resumeId, resumePage],
           });
 
           resetForm();
