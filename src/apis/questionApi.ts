@@ -234,6 +234,46 @@ export const useDeleteQuestion = () => {
   return useMutation({ mutationFn: deleteQuestion });
 };
 
+// PATCH 예상질문 수정
+export const patchQuestion = async ({
+  resumeId,
+  questionId,
+  labelContent,
+  content,
+  jwt,
+}: {
+  resumeId: number;
+  questionId: number;
+  labelContent: string | null;
+  content: string | null;
+  jwt: string;
+}) => {
+  const requestBody: { labelContent?: string; content?: string } = {};
+  if (labelContent) requestBody.labelContent = labelContent;
+  if (content) requestBody.content = content;
+
+  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchQuestion = () => {
+  return useMutation({ mutationFn: patchQuestion });
+};
+
 // PATCH 예상질문 체크 상태 수정
 export const patchQuestionCheck = async ({
   resumeId,
