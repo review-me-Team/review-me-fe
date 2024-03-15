@@ -58,6 +58,11 @@ const Header = () => {
     window.location.assign(GITHUB_OAUTH_URI);
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate(ROUTE_PATH.ROOT);
+  };
+
   return (
     <>
       <HeaderLayout>
@@ -111,7 +116,7 @@ const Header = () => {
                     </Button>
                   )}
                   {isLoggedIn && (
-                    <Button variant="outline" size="s" onClick={logout}>
+                    <Button variant="outline" size="s" onClick={handleLogout}>
                       로그아웃
                     </Button>
                   )}
@@ -155,7 +160,7 @@ const Header = () => {
               <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
             </IconButton>
             {!isSMDevice && (
-              <Button variant="default" size="s" onClick={isLoggedIn ? logout : handleLogin}>
+              <Button variant="default" size="s" onClick={isLoggedIn ? handleLogout : handleLogin}>
                 {isLoggedIn ? '로그아웃' : '로그인'}
               </Button>
             )}
