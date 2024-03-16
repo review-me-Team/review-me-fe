@@ -8,7 +8,7 @@ export const ellipsisStyles = css`
   word-break: break-all;
 `;
 
-export const PageMain = styled.main<{ css?: CSSProp }>`
+export const PageMain = styled.main<{ $css?: CSSProp }>`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -24,5 +24,5 @@ export const PageMain = styled.main<{ css?: CSSProp }>`
     margin: 0.5rem auto;
   }
 
-  ${({ css }) => css}
+  ${({ $css }) => $css}
 `;

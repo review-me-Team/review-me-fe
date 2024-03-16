@@ -19,7 +19,7 @@ const MyPage = () => {
 
   return (
     <PageMain
-      css={css`
+      $css={css`
         align-items: center;
       `}
     >
