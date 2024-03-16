@@ -8,7 +8,7 @@ import { PageMain } from '@styles/common';
 import {
   FriendSectionContainer,
   FriendSection,
-  NavigationButton,
+  OpenModalButton,
   Title,
   UserImg,
   UserInfo,
@@ -42,9 +42,9 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>내 친구</span>
-            <NavigationButton>
+            <OpenModalButton>
               <Icon iconName="rightArrow" />
-            </NavigationButton>
+            </OpenModalButton>
           </Title>
 
           <ul>
@@ -57,9 +57,9 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>내가 친구 요청 보낸 사람</span>
-            <NavigationButton>
+            <OpenModalButton>
               <Icon iconName="rightArrow" />
-            </NavigationButton>
+            </OpenModalButton>
           </Title>
 
           <ul>
@@ -71,9 +71,9 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>나에게 친구 요청 보낸 사람</span>
-            <NavigationButton>
+            <OpenModalButton>
               <Icon iconName="rightArrow" />
-            </NavigationButton>
+            </OpenModalButton>
           </Title>
 
           <ul>
