@@ -3,6 +3,7 @@ import { Button, Icon } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FriendItem from '@components/FriendItem';
 import { useUserContext } from '@contexts/userContext';
+import { useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
 import {
   FriendSectionContainer,
@@ -15,7 +16,12 @@ import {
 } from './style';
 
 const MyPage = () => {
-  const { user } = useUserContext();
+  const SIZE = 2;
+  const { user, jwt } = useUserContext();
+
+  const { data: friendListData } = useFriendList({ jwt, size: SIZE });
+
+  const friendList = friendListData?.pages.map((page) => page.users).flat();
 
   return (
     <PageMain
@@ -42,8 +48,9 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            <FriendItem type="friend" userImg="" userName="김가나" />
-            <FriendItem type="friend" userImg="" userName="김가나" />
+            {friendList?.map((friend) => (
+              <FriendItem type="friend" key={friend.id} userName={friend.name} userImg={friend.profileUrl} />
+            ))}
           </ul>
         </FriendSection>
 
