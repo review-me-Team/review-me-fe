@@ -97,8 +97,7 @@ const Comment = ({
   emojis,
   myEmojiId,
 }: Props) => {
-  const { jwt, isLoggedIn, user } = useUserContext();
-  const isAuthenticated = jwt && isLoggedIn;
+  const { jwt, user } = useUserContext();
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
@@ -127,7 +126,7 @@ const Comment = ({
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
-    if (!isAuthenticated) return;
+    if (!jwt) return;
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 
