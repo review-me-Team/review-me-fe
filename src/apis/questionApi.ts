@@ -168,14 +168,14 @@ export const postQuestion = async ({
 }: {
   resumeId: number;
   content: string;
-  labelContent: string;
+  labelContent: string | null;
   resumePage: number;
   jwt: string;
 }) => {
   const newQuestion: {
     content: string;
     resumePage: number;
-    labelContent: string;
+    labelContent: string | null;
   } = {
     content,
     resumePage,
@@ -244,8 +244,8 @@ export const patchQuestion = async ({
 }: {
   resumeId: number;
   questionId: number;
-  labelContent: string | null;
-  content: string | null;
+  labelContent?: string | null;
+  content: string;
   jwt: string;
 }) => {
   const requestBody: { labelContent?: string; content?: string } = {};

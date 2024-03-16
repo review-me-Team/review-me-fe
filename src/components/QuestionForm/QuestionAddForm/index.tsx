@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
@@ -14,6 +14,8 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
   const { jwt } = useUserContext();
 
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
   const [labelContent, setLabelContent] = useState<string>('');
   const [content, setContent] = useState<string>('');
 
@@ -27,13 +29,22 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !resumeId || !content) return;
+    if (!jwt || !resumeId) return;
+
+    const hasContent = content.trim().length > 0;
+
+    if (!hasContent) {
+      contentRef.current?.focus();
+      return;
+    }
+
+    const hasLabelContent = labelContent.trim().length > 0;
 
     addQuestion(
       {
         resumeId,
         content,
-        labelContent: labelContent.trim(),
+        labelContent: hasLabelContent ? labelContent.trim() : null,
         resumePage,
         jwt,
       },
@@ -57,7 +68,12 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
         value={labelContent}
         onChange={(e) => setLabelContent(e.target.value)}
       />
-      <Textarea placeholder="예상질문" value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea
+        ref={contentRef}
+        placeholder="예상질문"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+      />
       <ButtonWrapper $type="add">
         <Button variant="default" size="s">
           작성
