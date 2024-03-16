@@ -7,7 +7,7 @@ const HeaderLayout = styled.header`
   padding: 0 2rem;
 
   background: ${theme.color.neutral.bg.default};
-  border-bottom: 1px solid ${theme.palette.grey300};
+  border-bottom: 1px solid ${theme.palette.gray300};
 
   @media screen and (max-width: 600px) {
     padding: 0 0.5rem;
@@ -118,6 +118,8 @@ const MobileMenuItem = styled.li`
 
   ${theme.font.title.default}
   color: ${theme.color.neutral.text.default};
+
+  cursor: pointer;
 `;
 
 const JoinUsMessage = styled.div`

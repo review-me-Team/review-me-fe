@@ -30,3 +30,18 @@ export const parseJwt = (token: string) => {
 
   return JSON.parse(jsonPayload);
 };
+
+export const getRangeText = ({ min, max }: { min: number; max: number }) => {
+  if (min === max) {
+    if (min === 0) return '신입';
+    if (min === 10) return '10년 +';
+    return `${min}년`;
+  }
+
+  if (min === 0 && max === 10) return '전체';
+
+  const minText = min === 0 ? '신입' : `${min}년`;
+  const maxText = max === 10 ? '10년 +' : `${max}년`;
+
+  return `${minText} ~ ${maxText}`;
+};

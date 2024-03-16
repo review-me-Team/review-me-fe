@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useModal } from 'review-me-design-system';
 import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
 import { ROUTE_PATH } from '@constants';
@@ -11,6 +11,8 @@ import {
   DescriptionContainer,
   MyResumeItemLayout,
   Title,
+  Scope,
+  CreatedAt,
 } from './style';
 
 interface Props {
@@ -28,13 +30,15 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
 
   return (
     <MyResumeItemLayout>
-      <Title>{title}</Title>
-      <DescriptionContainer>
-        <Occupation>직군: {occupation}</Occupation>
-        <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
-        <span>{scope}</span>
-        <span>{formatDate(createdAt)}</span>
-      </DescriptionContainer>
+      <Link to={`${ROUTE_PATH.RESUME}/${id}`}>
+        <Title>{title}</Title>
+        <DescriptionContainer>
+          <Scope>{scope}</Scope>
+          <Occupation>직군: {occupation}</Occupation>
+          <span>경력: {year > 0 ? `${year}년차` : '신입'}</span>
+          <CreatedAt>{formatDate(createdAt)}</CreatedAt>
+        </DescriptionContainer>
+      </Link>
       <ButtonsContainer>
         <Button
           $position="left"

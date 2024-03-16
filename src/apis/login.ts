@@ -3,12 +3,8 @@ import { useUserContext } from '@contexts/userContext';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse } from './response.types';
 
-// POST jwt 발급
-interface GetJwt {
-  jwt: string;
-}
-
-const getJwt = async (code: string) => {
+// POST code를 통해 refresh token만 생성
+const createRefreshToken = async (code: string) => {
   const response = await fetch(`${REQUEST_URL.OAUTH}`, {
     method: 'POST',
     headers: {
@@ -22,14 +18,14 @@ const getJwt = async (code: string) => {
     throw response;
   }
 
-  const { data }: ApiResponse<GetJwt> = await response.json();
+  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
 
-export const useJwt = () => {
+export const usePostRefreshToken = () => {
   return useMutation({
-    mutationFn: getJwt,
+    mutationFn: createRefreshToken,
   });
 };
 

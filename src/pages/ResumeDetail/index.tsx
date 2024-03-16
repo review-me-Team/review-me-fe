@@ -1,25 +1,23 @@
-import React, { FormEvent, MouseEvent, useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { Button, Icon, Input, Label, Textarea } from 'review-me-design-system';
+import { Icon } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
+import CommentAddForm from '@components/CommentForm/CommentAddForm';
+import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
 import PdfViewer from '@components/PdfViewer';
+import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
-import { useCommentList, usePostComment } from '@apis/commentApi';
-import { useFeedbackList, usePostFeedback } from '@apis/feedbackApi';
-import { usePostQuestion, useQuestionLabelList, useQuestionList } from '@apis/questionApi';
+import { useCommentList } from '@apis/commentApi';
+import { useFeedbackList } from '@apis/feedbackApi';
+import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
-import { useLabelList } from '@apis/utilApi';
 import {
   Career,
   CommentList,
   FeedbackAndQuestion,
-  Form,
-  FormContent,
-  LabelList,
   Main,
   ResumeContentWrapper,
   ResumeInfo,
@@ -31,17 +29,15 @@ import {
   WriterInfo,
   WriterInfoContainer,
   ResumeViewer,
-  KeywordLabel,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
 
-  const { data: resumeDetail } = useResumeDetail(Number(resumeId));
+  const { data: resumeDetail } = useResumeDetail({ resumeId: Number(resumeId), jwt });
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
@@ -51,26 +47,26 @@ const ResumeDetail = () => {
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
-  const [labelId, setLabelId] = useState<number | undefined>();
-  const [labelContent, setLabelContent] = useState<string>('');
-  const [comment, setComment] = useState<string>('');
+  const enabledAboutFeedbackList = isLoggedIn
+    ? currentTab === 'feedback' && !!jwt
+    : currentTab === 'feedback';
 
-  const { data: labelList } = useLabelList();
-
-  // todo: tab 변경 시 변경된 tab에 해당하는 currentPageNum을 가져오기
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
-    enabled: currentTab === 'feedback',
+    enabled: enabledAboutFeedbackList,
+    jwt,
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     enabled: currentTab === 'question',
+    jwt,
   });
   const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
+    jwt,
   });
 
   const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
@@ -88,86 +84,8 @@ const ResumeDetail = () => {
     },
   });
 
-  const { data: questionLabelList } = useQuestionLabelList({
-    resumeId: Number(resumeId),
-    enabled: currentTab === 'question',
-  });
-
-  const { mutate: addFeedback } = usePostFeedback();
-  const { mutate: addQuestion } = usePostQuestion();
-  const { mutate: mutateAboutComment } = usePostComment();
-
-  const textareaPlaceholder = {
-    feedback: '피드백',
-    question: '예상질문',
-    comment: '댓글',
-  };
-
-  const resetForm = () => {
-    setLabelContent('');
-    setLabelId(undefined);
-    setComment('');
-  };
-
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
-    resetForm();
-  };
-
-  const isUnauthorized = !(jwt && isLoggedIn);
-
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!resumeId || !comment || isUnauthorized) return;
-
-    if (currentTab === 'feedback') {
-      addFeedback(
-        {
-          resumeId: Number(resumeId),
-          content: comment,
-          labelId,
-          resumePage: currentPageNum,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            return queryClient.invalidateQueries({
-              queryKey: ['feedbackList', Number(resumeId), currentPageNum],
-            });
-          },
-        },
-      );
-    } else if (currentTab === 'question') {
-      addQuestion(
-        {
-          resumeId: Number(resumeId),
-          content: comment,
-          labelContent: labelContent.trim(),
-          resumePage: currentPageNum,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            return Promise.all([
-              queryClient.invalidateQueries({
-                queryKey: ['questionList', Number(resumeId), currentPageNum],
-              }),
-              queryClient.invalidateQueries({
-                queryKey: ['questionList', Number(resumeId), 'labelList'],
-              }),
-            ]);
-          },
-        },
-      );
-    } else if (currentTab === 'comment') {
-      mutateAboutComment({
-        resumeId: Number(resumeId),
-        content: comment,
-      });
-    }
-
-    resetForm();
   };
 
   return (
@@ -183,7 +101,8 @@ const ResumeDetail = () => {
                 <WriterInfo>
                   <span>{resumeDetail?.writerName}</span>
                   <Career>
-                    {resumeDetail?.occupation} | {resumeDetail?.year === 0 ? '신입' : resumeDetail?.year}
+                    {resumeDetail?.occupation} |{' '}
+                    {resumeDetail?.year === 0 ? '신입' : `${resumeDetail?.year}년차`}
                   </Career>
                 </WriterInfo>
               </WriterInfoContainer>
@@ -238,7 +157,12 @@ const ResumeDetail = () => {
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment type="feedback" {...feedback} />
+                    <Comment
+                      type="feedback"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...feedback}
+                    />
                   </li>
                 );
               })}
@@ -246,7 +170,12 @@ const ResumeDetail = () => {
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment type="question" {...question} />
+                    <Comment
+                      type="question"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...question}
+                    />
                   </li>
                 );
               })}
@@ -254,52 +183,25 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment type="comment" {...comment} />
+                    <Comment
+                      type="comment"
+                      resumeId={Number(resumeId)}
+                      resumePage={currentPageNum}
+                      {...comment}
+                    />
                   </li>
                 );
               })}
             <div ref={setTarget}></div>
           </CommentList>
 
-          <Form onSubmit={handleFormSubmit}>
-            {currentTab === 'feedback' && (
-              <LabelList>
-                {labelList?.map(({ id, label }) => {
-                  return (
-                    <Label
-                      key={id}
-                      isActive={labelId === id}
-                      py="4px"
-                      px="12px"
-                      onClick={() => setLabelId(id)}
-                    >
-                      {label}
-                    </Label>
-                  );
-                })}
-              </LabelList>
-            )}
-            {currentTab === 'question' && (
-              <>
-                <KeywordLabel>{labelContent}</KeywordLabel>
-                <Input
-                  placeholder="예상질문 키워드"
-                  value={labelContent}
-                  onChange={(e) => setLabelContent(e.target.value)}
-                />
-              </>
-            )}
-            <FormContent>
-              <Textarea
-                placeholder={textareaPlaceholder[currentTab] || ''}
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <Button variant="default" size="s">
-                작성
-              </Button>
-            </FormContent>
-          </Form>
+          {currentTab === 'feedback' && resumeId && (
+            <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+          )}
+          {currentTab === 'question' && resumeId && (
+            <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+          )}
+          {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
         </FeedbackAndQuestion>
       </ResumeContentWrapper>
     </Main>

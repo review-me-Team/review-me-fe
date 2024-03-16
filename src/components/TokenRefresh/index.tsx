@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '@hooks/useAuth';
 import { useUserContext } from '@contexts/userContext';
+import { ROUTE_PATH } from '@constants';
 
 interface Props {
   children: React.ReactNode;
@@ -8,8 +10,9 @@ interface Props {
 
 const TokenRefresh = ({ children }: Props) => {
   const { getRenewedJwtQuery } = useAuth();
-  const { isSuccess, refetch, isFetched, data, isError, status } = getRenewedJwtQuery;
-  const { login, logout, isLoggedIn } = useUserContext();
+  const { refetch, data, isError, isSuccess, isFetched } = getRenewedJwtQuery;
+  const { login, logout, isLoggedIn, jwt } = useUserContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const shouldRefreshJwt = isLoggedIn;
@@ -21,18 +24,17 @@ const TokenRefresh = ({ children }: Props) => {
       return;
     }
 
-    const isJwtRenewalSuccessful = isSuccess && data;
-    const isJwtRenewalFailed = isError;
-
-    if (isJwtRenewalSuccessful) {
+    if (isSuccess && data) {
       login(data.jwt);
     }
-    if (isJwtRenewalFailed) {
+    if (isError) {
       logout();
+      alert('다시 로그인해주세요!');
+      navigate(ROUTE_PATH.ROOT);
     }
-  }, [isSuccess, isFetched, data, isLoggedIn]);
+  }, [isSuccess, isError, isFetched, data, isLoggedIn]);
 
-  const isRenewedJwtNotReceived = status === 'pending' && isLoggedIn;
+  const isRenewedJwtNotReceived = isLoggedIn && !jwt;
 
   if (isRenewedJwtNotReceived) {
     return <></>;

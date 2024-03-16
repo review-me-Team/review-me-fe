@@ -13,7 +13,7 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 `;
 
 const Info = styled.div`
@@ -22,10 +22,23 @@ const Info = styled.div`
   gap: 0.5rem;
 `;
 
+const ButtonsContainer = styled.div`
+  display: flex;
+`;
+
+const MoreIconContainer = styled.div`
+  position: relative;
+`;
+
 const IconButton = styled.button`
   height: 1.5rem;
   background-color: transparent;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 `;
 
 const CommentInfo = styled.div`
@@ -51,7 +64,7 @@ const Time = styled.span`
 const CommentContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1rem;
 `;
 
 const SelectedLabel = styled.div`
@@ -59,13 +72,13 @@ const SelectedLabel = styled.div`
   justify-content: center;
   align-items: center;
   width: fit-content;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 
-  background: ${theme.color.accent.bg.strong};
+  background: ${theme.palette.green300};
   border-radius: 1rem;
 
-  ${theme.font.label}
-  color: ${theme.color.neutral.text.weak}
+  ${theme.font.body.weak}
+  color: ${theme.color.neutral.text.default}
 `;
 
 const Content = styled.span`
@@ -87,12 +100,12 @@ const OpenReplyButton = styled.button`
   background-color: transparent;
 
   ${theme.font.label}
-  color: ${theme.palette.grey600};
+  color: ${theme.palette.gray600};
 
   cursor: pointer;
 
   & > svg {
-    fill: ${theme.palette.grey600};
+    fill: ${theme.palette.gray600};
   }
 `;
 
@@ -108,14 +121,19 @@ const EmojiButton = styled.button`
   height: 1.5rem;
   flex-shrink: 0;
 
-  background-color: ${theme.palette.grey300};
+  background-color: ${theme.palette.gray300};
   border-radius: 50%;
 
   & > svg {
-    fill: ${theme.palette.grey600};
+    fill: ${theme.palette.gray600};
   }
 
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
 `;
 
 const EmojiLabelList = styled.ul`
@@ -133,7 +151,7 @@ const EmojiModal = styled.div`
   padding: 0.5rem;
   gap: 0.25rem;
   position: absolute;
-  left: -1.5rem;
+  left: -0.75rem;
   top: auto;
   bottom: 100%;
   z-index: ${theme.zIndex.modal};
@@ -152,6 +170,8 @@ export {
   Top,
   Info,
   IconButton,
+  ButtonsContainer,
+  MoreIconContainer,
   CommentInfo,
   UserImg,
   UserName,

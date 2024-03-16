@@ -1,23 +1,47 @@
-import React, { useState } from 'react';
-import { Button, Select } from 'review-me-design-system';
+import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Modal, useModal } from 'review-me-design-system';
+import { css } from 'styled-components';
+import Dropdown from '@components/Dropdown';
 import ResumeItem from '@components/ResumeItem';
+import Select from '@components/Select';
+import YearRangeFilter from '@components/YearRangeFilter';
+import useDropdown from '@hooks/useDropdown';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import useMediaQuery from '@hooks/useMediaQuery';
+import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
-import { Occupation, useOccupationList } from '@apis/utilApi';
-import { Filter, FilterContainer, Main, MainHeader, ResumeList } from './style';
+import { useOccupationList } from '@apis/utilApi';
+import { ROUTE_PATH } from '@constants';
+import { getRangeText } from '@utils';
+import { Filter, FilterContainer, Main, MainHeader, ResumeList, YearRange } from './style';
 
 const Resume = () => {
-  const yearOptions = [
-    { value: 0, label: '신입' },
-    { value: 1, label: '1 ~ 3년차' },
-    { value: 2, label: '4 ~ 6년차' },
-    { value: 3, label: '7 ~ 9년차' },
-    { value: 4, label: '10년차 이상' },
-  ];
-  const [, setSelectedOccupation] = useState<Occupation | undefined>();
+  const navigate = useNavigate();
+  const occupationFilterRef = useRef<HTMLSelectElement>(null);
+
+  const { isLoggedIn, jwt } = useUserContext();
+
+  const [occupationId, setOccupationId] = useState<number | undefined>();
+  const [yearRange, setYearRange] = useState<{ startYear: number; endYear: number }>({
+    startYear: 0,
+    endYear: 10,
+  });
+
+  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+
+  const rangeText = getRangeText({ min: yearRange.startYear, max: yearRange.endYear });
+
+  const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
+  const { isOpen: isModalOpen, open: openModal, close: closeModal } = useModal();
 
   const { data: occupationList } = useOccupationList();
-  const { data: resumeListData, fetchNextPage } = useResumeList();
+  const { data: resumeListData, fetchNextPage } = useResumeList({
+    jwt,
+    occupationId,
+    startYear: yearRange.startYear,
+    endYear: yearRange.endYear,
+  });
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
@@ -31,55 +55,94 @@ const Resume = () => {
   return (
     <Main>
       <MainHeader>
-        <FilterContainer>
+        <FilterContainer $isMDevice={isMDevice}>
           <Filter>
-            <span>직군</span>
-            <Select
-              width="12.5rem"
-              onSelectOption={(option) => {
-                if (option && typeof option.name === 'number' && typeof option.value === 'string')
-                  setSelectedOccupation({ id: option.name, occupation: option.value });
+            <span
+              onClick={() => {
+                occupationFilterRef.current?.focus();
               }}
             >
-              <Select.TriggerButton />
-              <Select.OptionList maxHeight="12.5rem">
-                {occupationList?.map(({ id, occupation }) => {
-                  return (
-                    <Select.OptionItem key={id} value={id} name={occupation}>
-                      {occupation}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
+              직군
+            </span>
+            <Select
+              ref={occupationFilterRef}
+              value={occupationId}
+              defaultValue={'all'}
+              onChange={(e) => {
+                if (e.target.value === 'all') {
+                  setOccupationId(undefined);
+                  return;
+                }
+
+                setOccupationId(Number(e.target.value));
+              }}
+              width="10.25rem"
+            >
+              <option value="all">전체</option>
+              {occupationList?.map(({ id, occupation }) => {
+                return (
+                  <option key={id} value={id}>
+                    {occupation}
+                  </option>
+                );
+              })}
             </Select>
           </Filter>
           <Filter>
             <span>경력</span>
-            <Select width="12.5rem">
-              <Select.TriggerButton />
-              <Select.OptionList>
-                {yearOptions.map((option) => {
-                  return (
-                    <Select.OptionItem key={option.value} value={option.value} name={option.label}>
-                      {option.label}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
-            </Select>
+            <YearRange
+              onClick={() => {
+                if (isDropdownOpen) {
+                  closeDropdown();
+                  return;
+                }
+                openDropdown();
+              }}
+            >
+              <span>{rangeText}</span>
+            </YearRange>
+            <Dropdown
+              isOpen={isDropdownOpen}
+              onClose={closeDropdown}
+              css={css`
+                width: ${isMDevice ? '16rem' : '17.5rem'};
+                top: 2.875rem;
+                left: 0;
+              `}
+            >
+              <YearRangeFilter
+                min={0}
+                max={10}
+                startYear={yearRange.startYear}
+                endYear={yearRange.endYear}
+                onCancelRangeChange={closeDropdown}
+                onApplyRangeChange={(range) => {
+                  setYearRange({ startYear: range.min, endYear: range.max });
+                  closeDropdown();
+                }}
+              />
+            </Dropdown>
           </Filter>
         </FilterContainer>
 
-        <Button variant="default" size="m">
-          내 이력서 보러가기
-        </Button>
+        {isLoggedIn && (
+          <Button
+            variant="default"
+            size="m"
+            onClick={() => {
+              if (isLoggedIn) navigate(ROUTE_PATH.MY_RESUME);
+            }}
+          >
+            내 이력서 보러가기
+          </Button>
+        )}
       </MainHeader>
 
       <ResumeList>
         {resumeList?.map((resume) => {
           return (
             <li key={resume.id}>
-              <ResumeItem {...resume} />;
+              <ResumeItem {...resume} />
             </li>
           );
         })}

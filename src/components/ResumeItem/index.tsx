@@ -1,7 +1,7 @@
 import React from 'react';
 import { ROUTE_PATH } from '@constants';
 import { formatDate } from '@utils';
-import { ResumeItemLayout, Title, User, UserImg, UserInfo } from './style';
+import { CreatedAt, ResumeItemLayout, Title, User, UserImg, UserInfo } from './style';
 
 interface Props {
   id: number;
@@ -25,7 +25,7 @@ const ResumeItem = ({ id, title, writerName, writerProfileUrl, createdAt, occupa
         <span>직군: {occupation}</span>
         <span>경력: {year === 0 ? '신입' : `${year}년차`}</span>
       </UserInfo>
-      <span>{formatDate(createdAt)}</span>
+      <CreatedAt>{formatDate(createdAt)}</CreatedAt>
     </ResumeItemLayout>
   );
 };

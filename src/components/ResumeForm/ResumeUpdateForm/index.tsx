@@ -1,70 +1,68 @@
-import React, { FormEvent } from 'react';
-import { Button, Icon, Input, Select } from 'review-me-design-system';
+import React, { FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Icon, Input } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import PdfViewer from '@components/PdfViewer';
+import Select from '@components/Select';
 import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
-import { Occupation, Scope, useOccupationList, useScopeList } from '@apis/utilApi';
+import { useUserContext } from '@contexts/userContext';
+import { useUpdateResume } from '@apis/resumeApi';
+import { useOccupationList, useScopeList } from '@apis/utilApi';
+import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, Form, ResumeFormLayout, Label } from '../style';
 
 interface Props {
   resumeId: number;
   file?: string;
-  title: string;
-  year?: number;
-  selectedOccupation?: Occupation;
-  selectedScope?: Scope;
-  onChangeTitle: (title: string) => void;
-  onChangeYear: (year: number) => void;
-  onChangeSelectedOccupation: (occupation: Occupation) => void;
-  onChangeSelectedScope: (scope: Scope) => void;
-  onSubmit: ({
-    resumeId,
-    title,
-    scopeId,
-    occupationId,
-    year,
-  }: {
-    resumeId: number;
-    title: string;
-    scopeId: number;
-    occupationId: number;
-    year: number;
-  }) => void;
+  initTitle: string;
+  initOccupation: string;
+  initScope: string;
+  initYear: number;
 }
 
-const ResumeUpdateForm = ({
-  resumeId,
-  file,
-  title,
-  year,
-  selectedOccupation,
-  selectedScope,
-  onChangeTitle,
-  onChangeYear,
-  onChangeSelectedOccupation,
-  onChangeSelectedScope,
-  onSubmit,
-}: Props) => {
+const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope, initYear }: Props) => {
+  const navigate = useNavigate();
+
+  const { data: occupationList } = useOccupationList();
+  const { data: scopeList } = useScopeList();
+
+  const { jwt } = useUserContext();
+
+  const initOccupationId = occupationList?.find(({ occupation }) => occupation === initOccupation)?.id;
+  const initScopeId = scopeList?.find(({ scope }) => scope === initScope)?.id;
+
+  const [title, setTitle] = useState<string>(initTitle);
+  const [occupationId, setOccupationId] = useState<number | undefined>(initOccupationId);
+  const [scopeId, setScopeId] = useState<number | undefined>(initScopeId);
+  const [year, setYear] = useState<number | undefined>(initYear);
+
+  const { mutate: updateResume } = useUpdateResume();
+
   const PDF_BUTTON_ICON_SIZE = 24;
 
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
   const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
 
-  const { data: occupationList } = useOccupationList();
-  const { data: scopeList } = useScopeList();
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedOccupation || !selectedScope || title.length === 0 || !year) return;
+    if (!jwt || !occupationId || !scopeId || title.length === 0 || !year) return;
 
-    onSubmit({
-      resumeId,
-      title,
-      scopeId: selectedScope.id,
-      occupationId: selectedOccupation.id,
-      year,
-    });
+    updateResume(
+      {
+        resumeId,
+        title,
+        scopeId,
+        occupationId,
+        year,
+        jwt,
+      },
+      {
+        onSuccess: () => {
+          navigate(`${ROUTE_PATH.RESUME}/${resumeId}`);
+        },
+      },
+    );
   };
 
   return (
@@ -92,50 +90,64 @@ const ResumeUpdateForm = ({
         <FieldContainer>
           <Field>
             <Label htmlFor="title">제목</Label>
-            <Input id="title" name="title" onChange={(e) => onChangeTitle(e.target.value)} />
+            <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </Field>
 
           <Field>
             <Label htmlFor="scope">공개 범위</Label>
             <Select
-              width="100%"
-              onSelectOption={(option) => {
-                if (option && typeof option.name === 'string' && typeof option.value === 'number')
-                  onChangeSelectedScope({ id: option.value, scope: option.name });
+              id="scope"
+              name="scope"
+              defaultValue={scopeId}
+              onChange={(e) => {
+                if (e.target.value === 'none') {
+                  setScopeId(undefined);
+                  return;
+                }
+
+                const value = Number(e.target.value);
+                if (Number.isNaN(value)) return;
+
+                setScopeId(value);
               }}
             >
-              <Select.TriggerButton height="2.875rem" />
-              <Select.OptionList maxHeight="12.5rem">
-                {scopeList?.map(({ id, scope }) => {
-                  return (
-                    <Select.OptionItem key={id} value={id} name={scope}>
-                      {scope}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
+              <option value="none" disabled />
+              {scopeList?.map(({ id, scope }) => {
+                return (
+                  <option key={id} value={id}>
+                    {scope}
+                  </option>
+                );
+              })}
             </Select>
           </Field>
 
           <Field>
-            <Label htmlFor="scope">직군</Label>
+            <Label htmlFor="occupation">직군</Label>
             <Select
-              width="100%"
-              onSelectOption={(option) => {
-                if (option && typeof option.name === 'string' && typeof option.value === 'number')
-                  onChangeSelectedOccupation({ id: option.value, occupation: option.name });
+              id="occupation"
+              name="occupation"
+              defaultValue={occupationId}
+              onChange={(e) => {
+                if (e.target.value === 'none') {
+                  setOccupationId(undefined);
+                  return;
+                }
+
+                const value = Number(e.target.value);
+                if (Number.isNaN(value)) return;
+
+                setOccupationId(value);
               }}
             >
-              <Select.TriggerButton height="2.875rem" />
-              <Select.OptionList maxHeight="12.5rem">
-                {occupationList?.map(({ id, occupation }) => {
-                  return (
-                    <Select.OptionItem key={id} value={id} name={occupation}>
-                      {occupation}
-                    </Select.OptionItem>
-                  );
-                })}
-              </Select.OptionList>
+              <option value="none" disabled />
+              {occupationList?.map(({ id, occupation }) => {
+                return (
+                  <option key={id} value={id}>
+                    {occupation}
+                  </option>
+                );
+              })}
             </Select>
           </Field>
 
@@ -146,8 +158,9 @@ const ResumeUpdateForm = ({
               id="year"
               name="year"
               placeholder="신입일 경우 0 입력"
+              value={year}
               min={0}
-              onChange={(e) => onChangeYear(e.target.valueAsNumber)}
+              onChange={(e) => setYear(e.target.valueAsNumber)}
             />
           </Field>
         </FieldContainer>

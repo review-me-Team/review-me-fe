@@ -8,9 +8,6 @@ const meta: Meta<typeof Comment> = {
   component: Comment,
   tags: ['autodocs'],
   argTypes: {
-    writerId: {
-      description: '이력서 작성자의 id',
-    },
     content: {
       description: '댓글 내용',
     },
@@ -87,7 +84,6 @@ export const FeedbackReply: Story = {
 
 export const Question: Story = {
   args: {
-    writerId: 1,
     content: '프로젝트에서 react-query를 사용하셨는데 사용한 이유가 궁금합니다.',
     commenterId: 1,
     commenterName: 'aken-you',

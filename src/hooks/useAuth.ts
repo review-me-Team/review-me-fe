@@ -1,10 +1,10 @@
-import { useJwt, useRenewJwt } from '@apis/login';
+import { usePostRefreshToken, useRenewJwt } from '@apis/login';
 
 const useAuth = () => {
-  const createJwtQuery = useJwt();
+  const createRefreshTokenQuery = usePostRefreshToken();
   const getRenewedJwtQuery = useRenewJwt();
 
-  return { createJwtQuery, getRenewedJwtQuery };
+  return { createRefreshTokenQuery, getRenewedJwtQuery };
 };
 
 export default useAuth;
