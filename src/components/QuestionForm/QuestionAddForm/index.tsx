@@ -29,11 +29,13 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
 
     if (!jwt || !resumeId || !content) return;
 
+    const hasLabelContent = labelContent.trim().length > 0;
+
     addQuestion(
       {
         resumeId,
         content,
-        labelContent: labelContent.trim(),
+        labelContent: hasLabelContent ? labelContent.trim() : null,
         resumePage,
         jwt,
       },
