@@ -10,7 +10,7 @@ interface Props {
 
 const TokenRefresh = ({ children }: Props) => {
   const { getRenewedJwtQuery } = useAuth();
-  const { isSuccess, refetch, isFetched, data, isError, status, error } = getRenewedJwtQuery;
+  const { refetch, data, isError, isSuccess, isFetched } = getRenewedJwtQuery;
   const { login, logout, isLoggedIn, jwt } = useUserContext();
   const navigate = useNavigate();
 
@@ -24,15 +24,12 @@ const TokenRefresh = ({ children }: Props) => {
       return;
     }
 
-    const isJwtRenewalSuccessful = isSuccess && data;
-    const isJwtRenewalFailed = isError;
-
-    if (isJwtRenewalSuccessful) {
+    if (isSuccess && data) {
       login(data.jwt);
     }
-    if (isJwtRenewalFailed) {
+    if (isError) {
       logout();
-      alert(error?.message);
+      alert('다시 로그인해주세요!');
       navigate(ROUTE_PATH.ROOT);
     }
   }, [isSuccess, isError, isFetched, data, isLoggedIn]);
