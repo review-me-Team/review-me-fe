@@ -1,8 +1,9 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
+import ReplyEditForm from '@components/ReplyForm/ReplyEditForm';
 import useDropdown from '@hooks/useDropdown';
 import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
@@ -80,6 +81,8 @@ const Reply = ({
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const { jwt, user } = useUserContext();
+
+  const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
 
@@ -198,7 +201,7 @@ const Reply = ({
           </CommentInfo>
         </Info>
 
-        {hasMoreIcon && (
+        {!isEdited && hasMoreIcon && (
           <MoreIconContainer>
             <IconButton onClick={openDropdown}>
               <Icon
@@ -217,7 +220,7 @@ const Reply = ({
                 right: 0;
               `}
             >
-              <Dropdown.DropdownItem>수정</Dropdown.DropdownItem>
+              <Dropdown.DropdownItem onClick={() => setIsEdited(true)}>수정</Dropdown.DropdownItem>
               <Dropdown.DropdownItem
                 onClick={handleDeleteBtnClick}
                 $css={css`
@@ -231,62 +234,79 @@ const Reply = ({
         )}
       </Top>
 
-      <CommentContent>
-        <Content>{content}</Content>
-      </CommentContent>
+      {isEdited && (
+        <ReplyEditForm
+          type={type}
+          resumeId={resumeId}
+          parentId={parentId}
+          id={id}
+          onCancelEdit={() => {
+            setIsEdited(false);
+            closeDropdown();
+          }}
+        />
+      )}
 
-      <Bottom>
-        <EmojiButtonContainer>
-          <EmojiButton
-            onMouseEnter={() => changeHoverState(true)}
-            onMouseLeave={() => changeHoverState(false)}
-          >
-            <Icon iconName="emoji" />
-          </EmojiButton>
-          <EmojiModal
-            className={isHover ? 'active' : ''}
-            onMouseEnter={() => changeHoverState(true)}
-            onMouseLeave={() => changeHoverState(false)}
-          >
-            {emojiList?.map(({ id, emoji }) => {
-              return (
-                <EmojiLabel
-                  key={id}
-                  isActive={id === myEmojiId}
-                  py="0.5rem"
-                  px="0.75rem"
-                  onClick={(e) => handleEmojiLabelClick(e, id)}
-                >
-                  {emoji}
-                </EmojiLabel>
-              );
-            })}
-          </EmojiModal>
-        </EmojiButtonContainer>
+      {!isEdited && (
+        <>
+          <CommentContent>
+            <Content>{content}</Content>
+          </CommentContent>
 
-        <EmojiLabelList>
-          {emojis.map(({ id, count }) => {
-            const hasEmoji = count > 0;
+          <Bottom>
+            <EmojiButtonContainer>
+              <EmojiButton
+                onMouseEnter={() => changeHoverState(true)}
+                onMouseLeave={() => changeHoverState(false)}
+              >
+                <Icon iconName="emoji" />
+              </EmojiButton>
+              <EmojiModal
+                className={isHover ? 'active' : ''}
+                onMouseEnter={() => changeHoverState(true)}
+                onMouseLeave={() => changeHoverState(false)}
+              >
+                {emojiList?.map(({ id, emoji }) => {
+                  return (
+                    <EmojiLabel
+                      key={id}
+                      isActive={id === myEmojiId}
+                      py="0.5rem"
+                      px="0.75rem"
+                      onClick={(e) => handleEmojiLabelClick(e, id)}
+                    >
+                      {emoji}
+                    </EmojiLabel>
+                  );
+                })}
+              </EmojiModal>
+            </EmojiButtonContainer>
 
-            if (!hasEmoji) return;
+            <EmojiLabelList>
+              {emojis.map(({ id, count }) => {
+                const hasEmoji = count > 0;
 
-            const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
+                if (!hasEmoji) return;
 
-            return (
-              <EmojiLabelItem key={id}>
-                <EmojiLabel
-                  isActive={id === myEmojiId}
-                  py="0"
-                  px="0.75rem"
-                  onClick={(e) => handleEmojiLabelClick(e, id)}
-                >
-                  {`${emoji} ${count}`}
-                </EmojiLabel>
-              </EmojiLabelItem>
-            );
-          })}
-        </EmojiLabelList>
-      </Bottom>
+                const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
+
+                return (
+                  <EmojiLabelItem key={id}>
+                    <EmojiLabel
+                      isActive={id === myEmojiId}
+                      py="0"
+                      px="0.75rem"
+                      onClick={(e) => handleEmojiLabelClick(e, id)}
+                    >
+                      {`${emoji} ${count}`}
+                    </EmojiLabel>
+                  </EmojiLabelItem>
+                );
+              })}
+            </EmojiLabelList>
+          </Bottom>
+        </>
+      )}
     </CommentLayout>
   );
 };
