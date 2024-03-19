@@ -69,7 +69,13 @@ const MyPage = () => {
 
           <ul>
             {friendList?.map((friend) => (
-              <FriendItem type="friend" key={friend.id} userName={friend.name} userImg={friend.profileUrl} />
+              <FriendItem
+                type="friend"
+                key={friend.id}
+                userId={friend.id}
+                userName={friend.name}
+                userImg={friend.profileUrl}
+              />
             ))}
           </ul>
         </FriendSection>
@@ -83,8 +89,8 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            <FriendItem type="request" userImg="" userName="김가나" />
-            <FriendItem type="request" userImg="" userName="김가나" />
+            <FriendItem type="request" userId={1} userImg="" userName="김가나" />
+            <FriendItem type="request" userId={2} userImg="" userName="김가나" />
           </ul>
         </FriendSection>
 
@@ -97,8 +103,8 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            <FriendItem type="response" userImg="" userName="김가나" />
-            <FriendItem type="response" userImg="" userName="김가나" />
+            <FriendItem type="response" userId={3} userImg="" userName="김가나" />
+            <FriendItem type="response" userId={4} userImg="" userName="김가나" />
           </ul>
         </FriendSection>
       </FriendSectionContainer>

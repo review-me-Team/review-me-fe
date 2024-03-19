@@ -57,7 +57,13 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
       {name.length > 0 ? (
         <FriendList>
           {friendList?.map((friend) => (
-            <FriendItem key={friend.id} type="friend" userImg={friend.profileUrl} userName={friend.name} />
+            <FriendItem
+              key={friend.id}
+              type="friend"
+              userId={friend.id}
+              userImg={friend.profileUrl}
+              userName={friend.name}
+            />
           ))}
         </FriendList>
       ) : (
