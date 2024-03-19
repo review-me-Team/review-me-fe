@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Icon, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FriendItem from '@components/FriendItem';
+import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import { useUserContext } from '@contexts/userContext';
 import { useFriendList } from '@apis/friendApi';
@@ -26,6 +27,11 @@ const MyPage = () => {
   const friendList = friendListData?.pages.map((page) => page.users).flat();
 
   const {
+    isOpen: isFriendRequestModalOpen,
+    open: openFriendRequestModal,
+    close: closeFriendRequestModal,
+  } = useModal();
+  const {
     isOpen: isFriendSearchModalOpen,
     open: openFriendSearchModal,
     close: closeFriendSearchModal,
@@ -42,9 +48,23 @@ const MyPage = () => {
         <UserName>{user?.name}</UserName>
       </UserInfo>
 
-      <Button variant="default" size="l">
+      <Button
+        variant="default"
+        size="l"
+        onClick={() => {
+          openFriendRequestModal();
+          manageBodyScroll(false);
+        }}
+      >
         친구 추가하기
       </Button>
+      <FriendRequestModal
+        isOpen={isFriendRequestModalOpen}
+        onClose={() => {
+          closeFriendRequestModal();
+          manageBodyScroll(true);
+        }}
+      />
 
       <FriendSectionContainer>
         <FriendSection>
