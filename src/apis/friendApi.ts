@@ -49,7 +49,7 @@ interface UseFriendListProps {
   enabled?: boolean;
 }
 
-export const useFriendList = ({ jwt, size = 7, start, enabled = true }: UseFriendListProps) => {
+export const useFriendList = ({ jwt, size = 7, start = '', enabled = true }: UseFriendListProps) => {
   return useInfiniteQuery({
     queryKey: ['friendList', start],
     initialPageParam: 0,

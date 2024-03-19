@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
 import FriendItem from '@components/FriendItem';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useFriendList } from '@apis/friendApi';
@@ -17,7 +18,17 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: friendListData, refetch } = useFriendList({ jwt, start: name, enabled: false });
+  const {
+    data: friendListData,
+    refetch,
+    fetchNextPage,
+  } = useFriendList({ jwt, start: name, enabled: false });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      fetchNextPage();
+    },
+    options: { threshold: 0.5 },
+  });
 
   const friendList = friendListData?.pages.map((page) => page.users).flat();
 
@@ -54,7 +65,20 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
         }}
       />
 
-      {name.length === 0 && <SearchUserInstruction>친구의 이름을 검색해주세요.</SearchUserInstruction>}
+      {name.length === 0 && (
+        <FriendList>
+          {friendList?.map((friend) => (
+            <FriendItem
+              key={friend.id}
+              type="friend"
+              userId={friend.id}
+              userImg={friend.profileUrl}
+              userName={friend.name}
+            />
+          ))}
+          <div ref={setTarget}></div>
+        </FriendList>
+      )}
       {name.length > 0 && friendList && friendList.length > 0 && (
         <FriendList>
           {friendList.map((friend) => (
@@ -66,6 +90,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
               userName={friend.name}
             />
           ))}
+          <div ref={setTarget}></div>
         </FriendList>
       )}
       {name.length > 0 && friendList && friendList.length === 0 && (
