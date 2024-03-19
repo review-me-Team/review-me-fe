@@ -118,6 +118,61 @@ export const usePostFriendRequest = () => {
   });
 };
 
+// GET 내가 보낸 친구 요청 목록 조회
+interface GetFollowingList extends PageNationData {
+  users: User[];
+}
+const getFollowingList = async ({
+  pageParam,
+  start,
+  size,
+  jwt,
+}: {
+  pageParam: number;
+  start: string;
+  size: number;
+  jwt?: string;
+}) => {
+  const response = await fetch(
+    `${REQUEST_URL.FRIEND}/following?page=${pageParam}&size=${size}${start && `&start=${start}`}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetFollowingList> = await response.json();
+
+  return data;
+};
+
+interface UseFollowingListProps {
+  jwt?: string;
+  start?: string;
+  size?: number;
+  enabled?: boolean;
+}
+
+export const useFollowingList = ({ jwt, start = '', size = 7, enabled = true }: UseFollowingListProps) => {
+  return useInfiniteQuery({
+    queryKey: ['followingList', start],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => getFollowingList({ pageParam, start, size, jwt }),
+    getNextPageParam: (lastPage) => {
+      const { pageNumber, lastPage: lastPageNum } = lastPage;
+
+      return pageNumber < lastPageNum ? pageNumber + 1 : null;
+    },
+    enabled,
+  });
+};
+
 // DELETE 친구 요청 취소
 const deleteFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
   const response = await fetch(`${REQUEST_URL.FRIEND}/following/${userId}`, {
