@@ -33,6 +33,11 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
 
   const followingList = followingListData?.pages.map((page) => page.users).flat();
 
+  const handleClose = () => {
+    onClose();
+    setName('');
+  };
+
   useEffect(() => {
     if (name.length === 0) return;
 
@@ -49,14 +54,12 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
     <Modal
       modalRootId="modal-root"
       isOpen={isOpen}
-      onClose={() => {
-        onClose();
-      }}
+      onClose={handleClose}
       width={isMDevice ? '80%' : '37.5rem'}
     >
       <Header>
         <Modal.Title>전송한 친구 요청 보기</Modal.Title>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={handleClose}>
           <Icon iconName="xMark" />
         </IconButton>
       </Header>
