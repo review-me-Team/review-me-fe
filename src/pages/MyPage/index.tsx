@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Icon, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FriendItem from '@components/FriendItem';
+import FollowingModal from '@components/Modal/FollowingModal';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import { useUserContext } from '@contexts/userContext';
@@ -38,6 +39,7 @@ const MyPage = () => {
     open: openFriendSearchModal,
     close: closeFriendSearchModal,
   } = useModal();
+  const { isOpen: isFollowingModalOpen, open: openFollowingModal, close: closeFollowingModal } = useModal();
 
   return (
     <PageMain
@@ -105,9 +107,21 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>전송한 친구 요청 보기</span>
-            <OpenModalButton>
+            <OpenModalButton
+              onClick={() => {
+                openFollowingModal();
+                manageBodyScroll(false);
+              }}
+            >
               <Icon iconName="rightArrow" />
             </OpenModalButton>
+            <FollowingModal
+              isOpen={isFollowingModalOpen}
+              onClose={() => {
+                closeFollowingModal();
+                manageBodyScroll(true);
+              }}
+            />
           </Title>
 
           <ul>
