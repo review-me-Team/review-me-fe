@@ -242,3 +242,29 @@ export const useDeleteFriendRequest = () => {
     mutationFn: deleteFriendRequest,
   });
 };
+
+// PATCH 친구 요청 수락
+const patchFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(REQUEST_URL.FRIEND, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePatchFriendRequest = () => {
+  return useMutation({
+    mutationFn: patchFriendRequest,
+  });
+};
