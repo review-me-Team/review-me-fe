@@ -102,7 +102,7 @@ const MyPage = () => {
 
         <FriendSection>
           <Title>
-            <span>내가 친구 요청 보낸 사람</span>
+            <span>전송한 친구 요청 보기</span>
             <OpenModalButton>
               <Icon iconName="rightArrow" />
             </OpenModalButton>
