@@ -4,10 +4,11 @@ import { ellipsisStyles } from '@styles/common';
 
 const FriendItemLayout = styled.li`
   display: flex;
-  padding: 0.75rem 0rem;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0rem;
 `;
 
 const UserInfo = styled.div`
@@ -41,4 +42,20 @@ const ButtonsContainer = styled.div`
   margin-left: 0.25rem;
 `;
 
-export { FriendItemLayout, UserInfo, UserImg, UserName, ButtonsContainer };
+// skeleton 스타일
+const SkeletonImg = styled.div`
+  width: 2.5rem;
+  height: 2.5rem;
+
+  border-radius: 50%;
+  background-color: ${theme.color.neutral.bg.light};
+`;
+
+const SkeletonUserName = styled.div`
+  width: 50%;
+  height: 1.75rem;
+
+  background-color: ${theme.color.neutral.bg.light};
+`;
+
+export { FriendItemLayout, UserInfo, UserImg, UserName, ButtonsContainer, SkeletonImg, SkeletonUserName };
