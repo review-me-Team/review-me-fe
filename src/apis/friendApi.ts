@@ -93,14 +93,14 @@ export const useDeleteFriend = () => {
 };
 
 // POST 친구 요청
-const postFriendRequest = async ({ friendId, jwt }: { friendId: number; jwt: string }) => {
+const postFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
   const response = await fetch(`${REQUEST_URL.FRIEND}`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ userId: friendId }),
+    body: JSON.stringify({ userId }),
   });
 
   if (!response.ok) {

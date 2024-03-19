@@ -39,7 +39,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           variant="default"
           size="s"
           onClick={() => {
-            if (jwt) requestFriend({ friendId: userId, jwt });
+            if (jwt) requestFriend({ userId, jwt });
             setType('request');
           }}
         >
