@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
 import FriendItem from '@components/FriendItem';
 import useMediaQuery from '@hooks/useMediaQuery';
@@ -17,9 +17,19 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: friendListData } = useFriendList({ jwt, start: name, enabled: !!name });
+  const { data: friendListData, refetch } = useFriendList({ jwt, start: name, enabled: false });
 
   const friendList = friendListData?.pages.map((page) => page.users).flat();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      refetch();
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [name]);
 
   return (
     <Modal
