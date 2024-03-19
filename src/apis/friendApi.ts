@@ -91,3 +91,53 @@ export const useDeleteFriend = () => {
     },
   });
 };
+
+// POST 친구 요청
+const postFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePostFriendRequest = () => {
+  return useMutation({
+    mutationFn: postFriendRequest,
+  });
+};
+
+// DELETE 친구 요청 취소
+const deleteFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}/following/${userId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useDeleteFriendRequest = () => {
+  return useMutation({
+    mutationFn: deleteFriendRequest,
+  });
+};
