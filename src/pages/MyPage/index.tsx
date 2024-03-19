@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Icon, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FriendItem from '@components/FriendItem';
+import FollowerModal from '@components/Modal/FollowerModal';
 import FollowingModal from '@components/Modal/FollowingModal';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
@@ -23,7 +24,7 @@ const MyPage = () => {
   const SIZE = 7;
   const { user, jwt } = useUserContext();
 
-  const { data: friendListData } = useFriendList({ jwt, size: SIZE });
+  const { data: friendListData, refetch: refetchFriendList } = useFriendList({ jwt, size: SIZE });
   const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt, size: SIZE });
   const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
@@ -52,6 +53,7 @@ const MyPage = () => {
     close: closeFriendSearchModal,
   } = useModal();
   const { isOpen: isFollowingModalOpen, open: openFollowingModal, close: closeFollowingModal } = useModal();
+  const { isOpen: isFollowerModalOpen, open: openFollowerModal, close: closeFollowerModal } = useModal();
 
   return (
     <PageMain
@@ -154,9 +156,23 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>친구 요청에 응답하기</span>
-            <OpenModalButton>
+            <OpenModalButton
+              onClick={() => {
+                openFollowerModal();
+                manageBodyScroll(false);
+              }}
+            >
               <Icon iconName="rightArrow" />
             </OpenModalButton>
+            <FollowerModal
+              isOpen={isFollowerModalOpen}
+              onClose={() => {
+                closeFollowerModal();
+                manageBodyScroll(true);
+                refetchFollowerList();
+                refetchFriendList();
+              }}
+            />
           </Title>
 
           <ul>
