@@ -91,3 +91,29 @@ export const useDeleteFriend = () => {
     },
   });
 };
+
+// POST 친구 요청
+const postFriendRequest = async ({ friendId, jwt }: { friendId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId: friendId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const usePostFriendRequest = () => {
+  return useMutation({
+    mutationFn: postFriendRequest,
+  });
+};
