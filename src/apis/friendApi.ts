@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
@@ -60,5 +60,34 @@ export const useFriendList = ({ jwt, size = 7, start, enabled = true }: UseFrien
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     enabled,
+  });
+};
+
+// DELETE 친구 삭제
+export const deleteFriend = async ({ friendId, jwt }: { friendId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}/${friendId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useDeleteFriend = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteFriend,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['friendList'] });
+    },
   });
 };
