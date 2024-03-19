@@ -46,9 +46,10 @@ interface UseFriendListProps {
   jwt?: string;
   size?: number;
   start?: string;
+  enabled?: boolean;
 }
 
-export const useFriendList = ({ jwt, size = 7, start }: UseFriendListProps) => {
+export const useFriendList = ({ jwt, size = 7, start, enabled = true }: UseFriendListProps) => {
   return useInfiniteQuery({
     queryKey: ['friendList', start],
     initialPageParam: 0,
@@ -58,5 +59,6 @@ export const useFriendList = ({ jwt, size = 7, start }: UseFriendListProps) => {
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    enabled,
   });
 };
