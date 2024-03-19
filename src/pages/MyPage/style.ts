@@ -55,10 +55,10 @@ const Title = styled.header`
   color: ${theme.color.neutral.text.strong};
 `;
 
-const NavigationButton = styled.button`
+const OpenModalButton = styled.button`
   background-color: transparent;
 
   cursor: pointer;
 `;
 
-export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title, NavigationButton };
+export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title, OpenModalButton };
