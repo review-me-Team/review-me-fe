@@ -54,9 +54,10 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
         }}
       />
 
-      {name.length > 0 ? (
+      {name.length === 0 && <SearchUserInstruction>친구의 이름을 검색해주세요.</SearchUserInstruction>}
+      {name.length > 0 && friendList && friendList.length > 0 && (
         <FriendList>
-          {friendList?.map((friend) => (
+          {friendList.map((friend) => (
             <FriendItem
               key={friend.id}
               type="friend"
@@ -66,8 +67,9 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
             />
           ))}
         </FriendList>
-      ) : (
-        <SearchUserInstruction>친구의 이름을 검색해주세요.</SearchUserInstruction>
+      )}
+      {name.length > 0 && friendList && friendList.length === 0 && (
+        <SearchUserInstruction>검색어와 일치하는 친구가 없습니다.</SearchUserInstruction>
       )}
     </Modal>
   );
