@@ -5,7 +5,7 @@ import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
 
 interface Props {
-  type: 'friend' | 'request' | 'response';
+  type: 'friend' | 'request' | 'response' | 'none';
   userId: number;
   userImg: string;
   userName: string;
@@ -25,6 +25,11 @@ const FriendItem = ({ type, userId, userImg, userName }: Props) => {
         <UserName>{userName}</UserName>
       </UserInfo>
 
+      {type === 'none' && (
+        <Button variant="default" size="s">
+          친구 요청
+        </Button>
+      )}
       {type === 'friend' && (
         <>
           <Button
