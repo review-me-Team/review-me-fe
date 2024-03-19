@@ -20,14 +20,21 @@ import {
 } from './style';
 
 const MyPage = () => {
-  const SIZE = 2;
+  const SIZE = 7;
   const { user, jwt } = useUserContext();
 
   const { data: friendListData } = useFriendList({ jwt, size: SIZE });
-  const { data: followingListData } = useFollowingList({ jwt, size: SIZE });
+  const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt, size: SIZE });
 
-  const friendList = friendListData?.pages.map((page) => page.users).flat();
-  const followingList = followingListData?.pages.map((page) => page.users).flat();
+  const ITEM_COUNT = 2;
+  const friendList = friendListData?.pages
+    .map((page) => page.users)
+    .flat()
+    .slice(0, ITEM_COUNT);
+  const followingList = followingListData?.pages
+    .map((page) => page.users)
+    .flat()
+    .slice(0, ITEM_COUNT);
 
   const {
     isOpen: isFriendRequestModalOpen,
@@ -120,6 +127,7 @@ const MyPage = () => {
               onClose={() => {
                 closeFollowingModal();
                 manageBodyScroll(true);
+                refetchFollowingList();
               }}
             />
           </Title>
