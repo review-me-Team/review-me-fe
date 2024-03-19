@@ -18,12 +18,15 @@ export const getFriendList = async ({
   pageParam,
   jwt,
   size,
+  start,
 }: {
   pageParam: number;
   jwt?: string;
   size: number;
+  start?: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.FRIEND}?page=${pageParam}&size=${size || 10}`, {
+  const queryString = `page=${pageParam}&size=${size || 10}${start && `&start=${start}`}`;
+  const response = await fetch(`${REQUEST_URL.FRIEND}?${queryString}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -42,13 +45,14 @@ export const getFriendList = async ({
 interface UseFriendListProps {
   jwt?: string;
   size?: number;
+  start?: string;
 }
 
-export const useFriendList = ({ jwt, size = 10 }: UseFriendListProps) => {
+export const useFriendList = ({ jwt, size = 7, start }: UseFriendListProps) => {
   return useInfiniteQuery({
-    queryKey: ['friendList'],
+    queryKey: ['friendList', start],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, size }),
+    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, size, start }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
