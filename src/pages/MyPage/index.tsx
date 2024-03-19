@@ -1,10 +1,12 @@
 import React from 'react';
-import { Button, Icon } from 'review-me-design-system';
+import { Button, Icon, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FriendItem from '@components/FriendItem';
+import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import { useUserContext } from '@contexts/userContext';
 import { useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
+import { manageBodyScroll } from '@utils';
 import {
   FriendSectionContainer,
   FriendSection,
@@ -22,6 +24,12 @@ const MyPage = () => {
   const { data: friendListData } = useFriendList({ jwt, size: SIZE });
 
   const friendList = friendListData?.pages.map((page) => page.users).flat();
+
+  const {
+    isOpen: isFriendSearchModalOpen,
+    open: openFriendSearchModal,
+    close: closeFriendSearchModal,
+  } = useModal();
 
   return (
     <PageMain
@@ -42,9 +50,21 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>내 친구</span>
-            <OpenModalButton>
+            <OpenModalButton
+              onClick={() => {
+                openFriendSearchModal();
+                manageBodyScroll(false);
+              }}
+            >
               <Icon iconName="rightArrow" />
             </OpenModalButton>
+            <FriendSearchModal
+              isOpen={isFriendSearchModalOpen}
+              onClose={() => {
+                closeFriendSearchModal();
+                manageBodyScroll(true);
+              }}
+            />
           </Title>
 
           <ul>
