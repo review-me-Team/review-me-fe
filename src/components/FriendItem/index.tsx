@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, useModal } from 'review-me-design-system';
 import FriendDeleteModal from '@components/Modal/FriendDeleteModal';
 import { useUserContext } from '@contexts/userContext';
-import { usePostFriendRequest } from '@apis/friendApi';
+import { useDeleteFriendRequest, usePostFriendRequest } from '@apis/friendApi';
 import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
 
@@ -26,6 +26,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
     close: closeFriendDeleteModal,
   } = useModal();
   const { mutate: requestFriend } = usePostFriendRequest();
+  const { mutate: cancelFriendRequest } = useDeleteFriendRequest();
 
   return (
     <FriendItemLayout>
@@ -69,7 +70,14 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
         </>
       )}
       {type === 'request' && (
-        <Button variant="outline" size="s">
+        <Button
+          variant="outline"
+          size="s"
+          onClick={() => {
+            if (jwt) cancelFriendRequest({ userId, jwt });
+            setType('none');
+          }}
+        >
           요청 취소
         </Button>
       )}
