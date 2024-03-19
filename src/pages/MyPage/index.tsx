@@ -6,7 +6,7 @@ import FollowingModal from '@components/Modal/FollowingModal';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import { useUserContext } from '@contexts/userContext';
-import { useFollowingList, useFriendList } from '@apis/friendApi';
+import { useFollowerList, useFollowingList, useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
 import { manageBodyScroll } from '@utils';
 import {
@@ -25,6 +25,7 @@ const MyPage = () => {
 
   const { data: friendListData } = useFriendList({ jwt, size: SIZE });
   const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt, size: SIZE });
+  const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
   const ITEM_COUNT = 2;
   const friendList = friendListData?.pages
@@ -32,6 +33,10 @@ const MyPage = () => {
     .flat()
     .slice(0, ITEM_COUNT);
   const followingList = followingListData?.pages
+    .map((page) => page.users)
+    .flat()
+    .slice(0, ITEM_COUNT);
+  const followerList = followerListData?.pages
     .map((page) => page.users)
     .flat()
     .slice(0, ITEM_COUNT);
@@ -148,15 +153,22 @@ const MyPage = () => {
 
         <FriendSection>
           <Title>
-            <span>나에게 친구 요청 보낸 사람</span>
+            <span>친구 요청에 응답하기</span>
             <OpenModalButton>
               <Icon iconName="rightArrow" />
             </OpenModalButton>
           </Title>
 
           <ul>
-            <FriendItem type="response" userId={3} userImg="" userName="김가나" />
-            <FriendItem type="response" userId={4} userImg="" userName="김가나" />
+            {followerList?.map((user) => (
+              <FriendItem
+                key={user.id}
+                type="response"
+                userId={user.id}
+                userName={user.name}
+                userImg={user.profileUrl}
+              />
+            ))}
           </ul>
         </FriendSection>
       </FriendSectionContainer>
