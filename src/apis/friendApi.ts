@@ -268,3 +268,27 @@ export const useAcceptFriendRequest = () => {
     mutationFn: acceptFriendRequest,
   });
 };
+
+// PATCH 친구 요청 거절
+const rejectFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}/${userId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useRejectFriendRequest = () => {
+  return useMutation({
+    mutationFn: rejectFriendRequest,
+  });
+};
