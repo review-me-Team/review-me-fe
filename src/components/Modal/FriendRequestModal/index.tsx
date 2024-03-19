@@ -40,18 +40,21 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
     };
   }, [name]);
 
+  const handleClose = () => {
+    onClose();
+    setName('');
+  };
+
   return (
     <Modal
       modalRootId="modal-root"
       isOpen={isOpen}
-      onClose={() => {
-        onClose();
-      }}
+      onClose={handleClose}
       width={isMDevice ? '80%' : '37.5rem'}
     >
       <Header>
         <Modal.Title>친구 추가하기</Modal.Title>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={handleClose}>
           <Icon iconName="xMark" />
         </IconButton>
       </Header>
