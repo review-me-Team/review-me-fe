@@ -5,7 +5,7 @@ import FriendItem from '@components/FriendItem';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import { useUserContext } from '@contexts/userContext';
-import { useFriendList } from '@apis/friendApi';
+import { useFollowingList, useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
 import { manageBodyScroll } from '@utils';
 import {
@@ -23,8 +23,10 @@ const MyPage = () => {
   const { user, jwt } = useUserContext();
 
   const { data: friendListData } = useFriendList({ jwt, size: SIZE });
+  const { data: followingListData } = useFollowingList({ jwt, size: SIZE });
 
   const friendList = friendListData?.pages.map((page) => page.users).flat();
+  const followingList = followingListData?.pages.map((page) => page.users).flat();
 
   const {
     isOpen: isFriendRequestModalOpen,
@@ -109,8 +111,15 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            <FriendItem type="request" userId={1} userImg="" userName="김가나" />
-            <FriendItem type="request" userId={2} userImg="" userName="김가나" />
+            {followingList?.map((user) => (
+              <FriendItem
+                key={user.id}
+                type="request"
+                userId={user.id}
+                userName={user.name}
+                userImg={user.profileUrl}
+              />
+            ))}
           </ul>
         </FriendSection>
 
