@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, useModal } from 'review-me-design-system';
 import FriendDeleteModal from '@components/Modal/FriendDeleteModal';
 import { useUserContext } from '@contexts/userContext';
-import { useDeleteFriendRequest, usePatchFriendRequest, usePostFriendRequest } from '@apis/friendApi';
+import { useDeleteFriendRequest, useAcceptFriendRequest, usePostFriendRequest } from '@apis/friendApi';
 import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
 
@@ -27,7 +27,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
   } = useModal();
   const { mutate: requestFriend } = usePostFriendRequest();
   const { mutate: cancelFriendRequest } = useDeleteFriendRequest();
-  const { mutate: acceptFriendRequest } = usePatchFriendRequest();
+  const { mutate: acceptFriendRequest } = useAcceptFriendRequest();
 
   return (
     <FriendItemLayout>
