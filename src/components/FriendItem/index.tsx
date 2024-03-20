@@ -95,7 +95,6 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
             size="s"
             onClick={() => {
               if (jwt) acceptFriendRequest({ userId, jwt });
-              setType('friend');
             }}
           >
             수락
@@ -105,7 +104,6 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
             size="s"
             onClick={() => {
               if (jwt) rejectFriendRequest({ userId, jwt });
-              setType('none');
             }}
           >
             거절

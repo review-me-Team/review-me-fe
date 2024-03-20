@@ -264,8 +264,13 @@ const acceptFriendRequest = async ({ userId, jwt }: { userId: number; jwt: strin
 };
 
 export const useAcceptFriendRequest = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: acceptFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+    },
   });
 };
 
@@ -288,7 +293,12 @@ const rejectFriendRequest = async ({ userId, jwt }: { userId: number; jwt: strin
 };
 
 export const useRejectFriendRequest = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+    },
   });
 };
