@@ -11,15 +11,16 @@ interface Props {
   resumeId: number;
   parentId: number;
   id: number;
+  initContent: string;
   onCancelEdit: () => void;
 }
 
-const ReplyEditForm = ({ type, resumeId, parentId, id, onCancelEdit }: Props) => {
+const ReplyEditForm = ({ type, resumeId, parentId, id, initContent, onCancelEdit }: Props) => {
   const { jwt } = useUserContext();
   const queryClient = useQueryClient();
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>(initContent);
   const { mutate: editFeedbackReply } = usePatchFeedback();
   const { mutate: editQuestionReply } = usePatchQuestion();
 
