@@ -21,7 +21,7 @@ import { breakPoints } from '@styles/common';
 import {
   Career,
   CommentList,
-  FeedbackAndQuestion,
+  ResumeDetailAside,
   Main,
   ResumeContentWrapper,
   ResumeInfo,
@@ -145,7 +145,7 @@ const ResumeDetail = () => {
           </PdfViewer>
         </ResumeViewer>
 
-        <FeedbackAndQuestion $isMobile={isMobile}>
+        <ResumeDetailAside $isMobile={isMobile}>
           <TabList>
             <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
               피드백
@@ -205,7 +205,7 @@ const ResumeDetail = () => {
             <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
           )}
           {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
-        </FeedbackAndQuestion>
+        </ResumeDetailAside>
       </ResumeContentWrapper>
     </Main>
   );

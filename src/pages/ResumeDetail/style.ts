@@ -89,7 +89,7 @@ const Career = styled.span`
 
 // * Main 중간: pdf, 피드백, 예상질문
 
-const FeedbackAndQuestion = styled.aside<{ $isMobile: boolean }>`
+const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: column;
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
@@ -130,7 +130,7 @@ export {
   WriterInfo,
   Career,
   ResumeContentWrapper,
-  FeedbackAndQuestion,
+  ResumeDetailAside,
   TabList,
   Tab,
   CommentList,
