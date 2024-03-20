@@ -5,6 +5,7 @@ import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useFriendList } from '@apis/friendApi';
+import { breakPoints } from '@styles/common';
 import { FriendList, Header, IconButton, SearchUserInstruction } from './style';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 
 const FriendSearchModal = ({ isOpen, onClose }: Props) => {
   const { jwt } = useUserContext();
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const [name, setName] = useState<string>('');
 
@@ -49,7 +50,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
       onClose={() => {
         onClose();
       }}
-      width={isMDevice ? '80%' : '37.5rem'}
+      width={isMobile ? '80%' : '34rem'}
     >
       <Header>
         <Modal.Title>친구</Modal.Title>
