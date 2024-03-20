@@ -1,5 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
 const Main = styled.main`
   width: 100%;
@@ -36,7 +37,7 @@ const ResumeInfo = styled.div`
   padding: 0.5rem 0;
   margin: 0 auto;
 
-  @media screen and (max-width: 600px) {
+  @media ${breakPoints.mobile} {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -75,7 +76,7 @@ const WriterInfo = styled.div`
   ${theme.font.body.weak}
   color: ${theme.color.neutral.text.strong};
 
-  @media screen and (max-width: 600px) {
+  @media ${breakPoints.mobile} {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;

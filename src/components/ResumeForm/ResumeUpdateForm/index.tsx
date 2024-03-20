@@ -9,6 +9,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useUpdateResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
+import { breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, Form, ResumeFormLayout, Label } from '../style';
 
@@ -42,7 +43,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
   const PDF_BUTTON_ICON_SIZE = 24;
 
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,7 +74,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
         totalPages={totalPages}
         scale={scale}
         onLoadSuccess={setTotalPages}
-        width={isMDevice ? '100%' : '55%'}
+        width={isMobile ? '100%' : '55%'}
         height="35rem"
       >
         <ButtonGroup height="2rem">

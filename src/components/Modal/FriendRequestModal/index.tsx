@@ -5,6 +5,7 @@ import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useUserList } from '@apis/userApi';
+import { breakPoints } from '@styles/common';
 import { UserList, Header, IconButton, SearchUserInstruction } from './style';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 
 const FriendRequestModal = ({ isOpen, onClose }: Props) => {
   const { jwt } = useUserContext();
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const [name, setName] = useState<string>('');
 
@@ -46,12 +47,7 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal
-      modalRootId="modal-root"
-      isOpen={isOpen}
-      onClose={handleClose}
-      width={isMDevice ? '80%' : '37.5rem'}
-    >
+    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
       <Header>
         <Modal.Title>친구 추가하기</Modal.Title>
         <IconButton onClick={handleClose}>

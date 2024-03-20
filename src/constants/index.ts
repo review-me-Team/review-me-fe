@@ -24,7 +24,6 @@ export const REQUEST_URL = {
 } as const;
 
 export const PDF_VIEWER_SCALE = {
-  INIT_SCALE: 1.2,
   MAX_SCALE: 2,
   MIN_SCALE: 0.6,
   SCALE_STEP: 0.2,

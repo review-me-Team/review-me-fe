@@ -4,6 +4,7 @@ import { Button, Icon, theme, useModal } from 'review-me-design-system';
 import LoginRequestModal from '@components/Modal/LoginRequestModal';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
+import { breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { manageBodyScroll } from '@utils';
 import {
@@ -26,7 +27,7 @@ import {
 
 const Header = () => {
   const navigate = useNavigate();
-  const { matches: isSMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 600px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
   const { isLoggedIn, logout } = useUserContext();
   const {
     isOpen: isOpenLoginRequestModal,
@@ -36,14 +37,14 @@ const Header = () => {
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
   const handleOpenMobileMenu = () => {
-    if (!isSMDevice) return;
+    if (!isMobile) return;
 
     setIsOpenMobileMenu(true);
     manageBodyScroll(false);
   };
 
   const handleCloseMobileMenu = () => {
-    if (!isSMDevice) return;
+    if (!isMobile) return;
 
     setIsOpenMobileMenu(false);
     manageBodyScroll(true);
@@ -67,7 +68,7 @@ const Header = () => {
     <>
       <HeaderLayout>
         <NavContainer>
-          {isSMDevice && (
+          {isMobile && (
             <>
               <IconButton onClick={handleOpenMobileMenu}>
                 <Icon iconName="menu" color={theme.color.accent.text.strong} width={28} height={28} />
@@ -125,7 +126,7 @@ const Header = () => {
               {isOpenMobileMenu && <BackDrop onClick={handleCloseMobileMenu} />}
             </>
           )}
-          {!isSMDevice && (
+          {!isMobile && (
             <LeftContainer>
               <ReviewMe>
                 <Link to={ROUTE_PATH.ROOT}>review me</Link>
@@ -159,7 +160,7 @@ const Header = () => {
             >
               <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
             </IconButton>
-            {!isSMDevice && (
+            {!isMobile && (
               <Button variant="default" size="s" onClick={isLoggedIn ? handleLogout : handleLogin}>
                 {isLoggedIn ? '로그아웃' : '로그인'}
               </Button>

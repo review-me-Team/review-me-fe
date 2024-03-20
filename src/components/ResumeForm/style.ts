@@ -1,11 +1,12 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
 const ResumeFormLayout = styled.div<{ $width?: string }>`
   display: flex;
-  width: ${({ $width }) => $width || '100%'};
+  width: 100%;
 
-  @media screen and (max-width: 768px) {
+  @media ${breakPoints.mobile} {
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -19,7 +20,7 @@ const Form = styled.form`
   width: 45%;
   margin-left: 1rem;
 
-  @media screen and (max-width: 768px) {
+  @media ${breakPoints.mobile} {
     width: 100%;
     gap: 0.5rem;
     margin-left: 0;
