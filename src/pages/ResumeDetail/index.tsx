@@ -4,8 +4,10 @@ import { Icon } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
+import Feedback from '@components/Feedback';
 import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
 import PdfViewer from '@components/PdfViewer';
+import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import usePdf from '@hooks/usePdf';
@@ -154,26 +156,28 @@ const ResumeDetail = () => {
 
           <CommentList>
             {currentTab === 'feedback' &&
+              resumeDetail &&
               feedbackList?.map((feedback) => {
                 return (
                   <li key={feedback.id}>
-                    <Comment
-                      type="feedback"
+                    <Feedback
                       resumeId={Number(resumeId)}
                       resumePage={currentPageNum}
+                      resumeWriterId={resumeDetail.writerId}
                       {...feedback}
                     />
                   </li>
                 );
               })}
             {currentTab === 'question' &&
+              resumeDetail &&
               questionList?.map((question) => {
                 return (
                   <li key={question.id}>
-                    <Comment
-                      type="question"
+                    <Question
                       resumeId={Number(resumeId)}
                       resumePage={currentPageNum}
+                      resumeWriterId={resumeDetail.writerId}
                       {...question}
                     />
                   </li>
@@ -183,12 +187,7 @@ const ResumeDetail = () => {
               commentList?.map((comment) => {
                 return (
                   <li key={comment.id}>
-                    <Comment
-                      type="comment"
-                      resumeId={Number(resumeId)}
-                      resumePage={currentPageNum}
-                      {...comment}
-                    />
+                    <Comment resumeId={Number(resumeId)} {...comment} />
                   </li>
                 );
               })}
