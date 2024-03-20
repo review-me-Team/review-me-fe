@@ -83,6 +83,8 @@ const SelectedLabel = styled.div`
 
 const Content = styled.span`
   ${theme.font.body.weak}
+
+  white-space: pre-wrap;
 `;
 
 const Bottom = styled.div`
