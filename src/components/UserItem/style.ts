@@ -2,7 +2,7 @@ import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 import { ellipsisStyles } from '@styles/common';
 
-const FriendItemLayout = styled.li`
+const UserItemLayout = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -58,4 +58,4 @@ const SkeletonUserName = styled.div`
   background-color: ${theme.color.neutral.bg.light};
 `;
 
-export { FriendItemLayout, UserInfo, UserImg, UserName, ButtonsContainer, SkeletonImg, SkeletonUserName };
+export { UserItemLayout, UserInfo, UserImg, UserName, ButtonsContainer, SkeletonImg, SkeletonUserName };

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Icon, useModal } from 'review-me-design-system';
 import { css } from 'styled-components';
-import FriendItem from '@components/FriendItem';
 import FollowerModal from '@components/Modal/FollowerModal';
 import FollowingModal from '@components/Modal/FollowingModal';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
+import UserItem from '@components/UserItem';
 import { useUserContext } from '@contexts/userContext';
 import { useFollowerList, useFollowingList, useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
@@ -108,7 +108,7 @@ const MyPage = () => {
 
           <ul>
             {friendList?.map((friend) => (
-              <FriendItem
+              <UserItem
                 type="friend"
                 key={friend.id}
                 userId={friend.id}
@@ -142,9 +142,9 @@ const MyPage = () => {
 
           <ul>
             {followingList?.map((user) => (
-              <FriendItem
+              <UserItem
                 key={user.id}
-                type="request"
+                type="following"
                 userId={user.id}
                 userName={user.name}
                 userImg={user.profileUrl}
@@ -177,9 +177,9 @@ const MyPage = () => {
 
           <ul>
             {followerList?.map((user) => (
-              <FriendItem
+              <UserItem
                 key={user.id}
-                type="response"
+                type="follower"
                 userId={user.id}
                 userName={user.name}
                 userImg={user.profileUrl}

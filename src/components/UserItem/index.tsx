@@ -9,9 +9,9 @@ import {
   useRejectFriendRequest,
 } from '@apis/friendApi';
 import { manageBodyScroll } from '@utils';
-import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
+import { ButtonsContainer, UserItemLayout, UserImg, UserInfo, UserName } from './style';
 
-type Type = 'friend' | 'request' | 'response' | 'none';
+type Type = 'friend' | 'following' | 'follower' | 'none';
 
 interface Props {
   type: Type;
@@ -20,7 +20,7 @@ interface Props {
   userName: string;
 }
 
-const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
+const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
   const { jwt } = useUserContext();
 
   const [type, setType] = useState<Type>(initType);
@@ -36,7 +36,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
   const { mutate: rejectFriendRequest } = useRejectFriendRequest();
 
   return (
-    <FriendItemLayout>
+    <UserItemLayout>
       <UserInfo>
         <UserImg src={userImg} alt={userName} />
         <UserName>{userName}</UserName>
@@ -48,7 +48,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           size="s"
           onClick={() => {
             if (jwt) requestFriend({ userId, jwt });
-            setType('request');
+            setType('following');
           }}
         >
           친구 요청
@@ -76,7 +76,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           />
         </>
       )}
-      {type === 'request' && (
+      {type === 'following' && (
         <Button
           variant="outline"
           size="s"
@@ -88,7 +88,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           요청 취소
         </Button>
       )}
-      {type === 'response' && (
+      {type === 'follower' && (
         <ButtonsContainer>
           <Button
             variant="default"
@@ -110,8 +110,8 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           </Button>
         </ButtonsContainer>
       )}
-    </FriendItemLayout>
+    </UserItemLayout>
   );
 };
 
-export default FriendItem;
+export default UserItem;
