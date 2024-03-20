@@ -61,7 +61,7 @@ const Time = styled.span`
   ${theme.font.body.weak}
 `;
 
-const CommentContent = styled.div`
+const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -180,7 +180,7 @@ export {
   Time,
   SelectedLabel,
   Content,
-  CommentContent,
+  ContentContainer,
   Bottom,
   OpenReplyButton,
   EmojiButtonContainer,
