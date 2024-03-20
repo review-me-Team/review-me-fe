@@ -12,7 +12,7 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { useOccupationList } from '@apis/utilApi';
-import { PageMain } from '@styles/common';
+import { PageMain, breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { getRangeText } from '@utils';
 import { Filter, FilterContainer, MainHeader, ResumeList, YearRange } from './style';
@@ -29,7 +29,7 @@ const Resume = () => {
     endYear: 10,
   });
 
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const rangeText = getRangeText({ min: yearRange.startYear, max: yearRange.endYear });
 
@@ -55,7 +55,7 @@ const Resume = () => {
   return (
     <PageMain>
       <MainHeader>
-        <FilterContainer $isMDevice={isMDevice}>
+        <FilterContainer $isMDevice={isMobile}>
           <Filter>
             <span
               onClick={() => {
@@ -105,7 +105,7 @@ const Resume = () => {
               isOpen={isDropdownOpen}
               onClose={closeDropdown}
               css={css`
-                width: ${isMDevice ? '16rem' : '17.5rem'};
+                width: ${isMobile ? '16rem' : '17.5rem'};
                 top: 2.875rem;
                 left: 0;
               `}

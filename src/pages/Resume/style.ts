@@ -1,5 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
 const MainHeader = styled.header`
   display: flex;
@@ -7,7 +8,7 @@ const MainHeader = styled.header`
   justify-content: space-between;
   align-items: center;
 
-  @media screen and (max-width: 768px) {
+  @media ${breakPoints.mobile} {
     flex-direction: column;
     gap: 0.25rem;
     align-items: start;
@@ -47,15 +48,17 @@ const YearRange = styled.button`
 
 const ResumeList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem;
   width: 100%;
 
-  @media screen and (max-width: 1280px) {
+  @media ${breakPoints.desktop} {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  @media ${breakPoints.tablet} {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.5rem;
   }
-  @media screen and (max-width: 768px) {
+  @media ${breakPoints.mobile} {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem 0.625rem;
   }
