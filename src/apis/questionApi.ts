@@ -1,5 +1,5 @@
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { REQUEST_URL } from '@constants';
+import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
 interface Emoji {
@@ -119,7 +119,7 @@ export const getQuestionReplyList = async ({
   };
 
   const response = await fetch(
-    `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}&size=${REPLY_LIST_SIZE}`,
     requestOptions,
   );
 
@@ -135,16 +135,10 @@ export const getQuestionReplyList = async ({
 interface UseQuestionReplyListProps {
   resumeId: number;
   parentQuestionId: number;
-  enabled: boolean;
   jwt?: string;
 }
 
-export const useQuestionReplyList = ({
-  resumeId,
-  parentQuestionId,
-  enabled,
-  jwt,
-}: UseQuestionReplyListProps) => {
+export const useQuestionReplyList = ({ resumeId, parentQuestionId, jwt }: UseQuestionReplyListProps) => {
   return useInfiniteQuery({
     queryKey: ['questionReplyList', resumeId, parentQuestionId],
     initialPageParam: 0,
@@ -154,7 +148,12 @@ export const useQuestionReplyList = ({
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
-    enabled,
+    select: (data) => {
+      return {
+        pages: [...data.pages].reverse(),
+        pageParams: [...data.pageParams].reverse(),
+      };
+    },
   });
 };
 

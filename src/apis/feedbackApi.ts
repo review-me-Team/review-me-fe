@@ -1,5 +1,5 @@
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { REQUEST_URL } from '@constants';
+import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { ApiResponse, PageNationData } from './response.types';
 
 // GET 피드백 목록 조회
@@ -117,7 +117,7 @@ export const getFeedbackReplyList = async ({
   };
 
   const response = await fetch(
-    `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}&size=${REPLY_LIST_SIZE}`,
     requestOptions,
   );
 
@@ -133,16 +133,10 @@ export const getFeedbackReplyList = async ({
 interface UseFeedbackReplyListProps {
   resumeId: number;
   parentFeedbackId: number;
-  enabled: boolean;
   jwt?: string;
 }
 
-export const useFeedbackReplyList = ({
-  resumeId,
-  parentFeedbackId,
-  enabled,
-  jwt,
-}: UseFeedbackReplyListProps) => {
+export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, jwt }: UseFeedbackReplyListProps) => {
   return useInfiniteQuery({
     queryKey: ['feedbackReplyList', resumeId, parentFeedbackId],
     initialPageParam: 0,
@@ -152,7 +146,12 @@ export const useFeedbackReplyList = ({
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
-    enabled,
+    select: (data) => {
+      return {
+        pages: [...data.pages].reverse(),
+        pageParams: [...data.pageParams].reverse(),
+      };
+    },
   });
 };
 

@@ -30,3 +30,5 @@ export const PDF_VIEWER_SCALE = {
 } as const;
 
 export const IS_LOGGED_IN_KEY = 'isLoggedIn';
+
+export const REPLY_LIST_SIZE = 4;

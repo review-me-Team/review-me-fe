@@ -220,8 +220,6 @@ const FeedbackReply = ({
 
                 const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
 
-                console.log(id, myEmojiId);
-
                 return (
                   <EmojiLabelItem key={id}>
                     <EmojiLabel
