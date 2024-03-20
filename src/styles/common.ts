@@ -8,6 +8,12 @@ export const ellipsisStyles = css`
   word-break: break-all;
 `;
 
+export const breakPoints = {
+  mobile: `(max-width: 600px)`,
+  tablet: `(max-width: 1119px)`,
+  desktop: `(min-width: 1200px)`,
+};
+
 export const PageMain = styled.main<{ $css?: CSSProp }>`
   display: flex;
   flex-direction: column;
