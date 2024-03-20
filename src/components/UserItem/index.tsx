@@ -9,7 +9,7 @@ import {
   useRejectFriendRequest,
 } from '@apis/friendApi';
 import { manageBodyScroll } from '@utils';
-import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
+import { ButtonsContainer, UserItemLayout, UserImg, UserInfo, UserName } from './style';
 
 type Type = 'friend' | 'request' | 'response' | 'none';
 
@@ -20,7 +20,7 @@ interface Props {
   userName: string;
 }
 
-const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
+const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
   const { jwt } = useUserContext();
 
   const [type, setType] = useState<Type>(initType);
@@ -36,7 +36,7 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
   const { mutate: rejectFriendRequest } = useRejectFriendRequest();
 
   return (
-    <FriendItemLayout>
+    <UserItemLayout>
       <UserInfo>
         <UserImg src={userImg} alt={userName} />
         <UserName>{userName}</UserName>
@@ -110,8 +110,8 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
           </Button>
         </ButtonsContainer>
       )}
-    </FriendItemLayout>
+    </UserItemLayout>
   );
 };
 
-export default FriendItem;
+export default UserItem;

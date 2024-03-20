@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
-import FriendItem from '@components/FriendItem';
+import UserItem from '@components/UserItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
@@ -66,7 +66,7 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
       {name.length > 0 && userList && userList.length > 0 && (
         <UserList>
           {userList.map((user) => (
-            <FriendItem
+            <UserItem
               key={user.id}
               type="none"
               userId={user.id}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
-import FriendItem from '@components/FriendItem';
+import UserItem from '@components/UserItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
@@ -70,7 +70,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
       {followingList && followingList.length > 0 && (
         <UserList>
           {followingList.map((user) => (
-            <FriendItem
+            <UserItem
               key={user.id}
               type="request"
               userId={user.id}

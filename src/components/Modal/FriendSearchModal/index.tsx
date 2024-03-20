@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
-import FriendItem from '@components/FriendItem';
+import UserItem from '@components/UserItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
@@ -69,7 +69,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
       {name.length === 0 && (
         <FriendList>
           {friendList?.map((friend) => (
-            <FriendItem
+            <UserItem
               key={friend.id}
               type="friend"
               userId={friend.id}
@@ -83,7 +83,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
       {name.length > 0 && friendList && friendList.length > 0 && (
         <FriendList>
           {friendList.map((friend) => (
-            <FriendItem
+            <UserItem
               key={friend.id}
               type="friend"
               userId={friend.id}
