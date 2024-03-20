@@ -10,16 +10,18 @@ import PdfViewer from '@components/PdfViewer';
 import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList } from '@apis/commentApi';
 import { useFeedbackList } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
+import { breakPoints } from '@styles/common';
 import {
   Career,
   CommentList,
-  FeedbackAndQuestion,
+  ResumeDetailAside,
   Main,
   ResumeContentWrapper,
   ResumeInfo,
@@ -38,6 +40,8 @@ type ActiveTab = 'feedback' | 'question' | 'comment';
 const ResumeDetail = () => {
   const { jwt, isLoggedIn } = useUserContext();
   const { resumeId } = useParams();
+
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const { data: resumeDetail } = useResumeDetail({ resumeId: Number(resumeId), jwt });
 
@@ -91,9 +95,9 @@ const ResumeDetail = () => {
   };
 
   return (
-    <Main>
-      <ResumeContentWrapper>
-        <ResumeViewer>
+    <Main $isMobile={isMobile}>
+      <ResumeContentWrapper $isMobile={isMobile}>
+        <ResumeViewer $isMobile={isMobile}>
           <ResumeViewerHeader>
             <ResumeInfo>
               <Title>{resumeDetail?.title}</Title>
@@ -141,7 +145,7 @@ const ResumeDetail = () => {
           </PdfViewer>
         </ResumeViewer>
 
-        <FeedbackAndQuestion>
+        <ResumeDetailAside $isMobile={isMobile}>
           <TabList>
             <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
               피드백
@@ -154,7 +158,7 @@ const ResumeDetail = () => {
             </Tab>
           </TabList>
 
-          <CommentList>
+          <CommentList $isMobile={isMobile}>
             {currentTab === 'feedback' &&
               resumeDetail &&
               feedbackList?.map((feedback) => {
@@ -201,7 +205,7 @@ const ResumeDetail = () => {
             <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
           )}
           {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
-        </FeedbackAndQuestion>
+        </ResumeDetailAside>
       </ResumeContentWrapper>
     </Main>
   );
