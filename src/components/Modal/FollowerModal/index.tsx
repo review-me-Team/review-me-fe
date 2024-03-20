@@ -68,7 +68,7 @@ const FollowerModal = ({ isOpen, onClose }: Props) => {
           {followerList.map((user) => (
             <UserItem
               key={user.id}
-              type="response"
+              type="follower"
               userId={user.id}
               userImg={user.profileUrl}
               userName={user.name}

@@ -144,7 +144,7 @@ const MyPage = () => {
             {followingList?.map((user) => (
               <UserItem
                 key={user.id}
-                type="request"
+                type="following"
                 userId={user.id}
                 userName={user.name}
                 userImg={user.profileUrl}
@@ -179,7 +179,7 @@ const MyPage = () => {
             {followerList?.map((user) => (
               <UserItem
                 key={user.id}
-                type="response"
+                type="follower"
                 userId={user.id}
                 userName={user.name}
                 userImg={user.profileUrl}

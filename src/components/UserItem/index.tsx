@@ -11,7 +11,7 @@ import {
 import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, UserItemLayout, UserImg, UserInfo, UserName } from './style';
 
-type Type = 'friend' | 'request' | 'response' | 'none';
+type Type = 'friend' | 'following' | 'follower' | 'none';
 
 interface Props {
   type: Type;
@@ -48,7 +48,7 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
           size="s"
           onClick={() => {
             if (jwt) requestFriend({ userId, jwt });
-            setType('request');
+            setType('following');
           }}
         >
           친구 요청
@@ -76,7 +76,7 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
           />
         </>
       )}
-      {type === 'request' && (
+      {type === 'following' && (
         <Button
           variant="outline"
           size="s"
@@ -88,7 +88,7 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
           요청 취소
         </Button>
       )}
-      {type === 'response' && (
+      {type === 'follower' && (
         <ButtonsContainer>
           <Button
             variant="default"

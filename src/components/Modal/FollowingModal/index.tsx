@@ -72,7 +72,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
           {followingList.map((user) => (
             <UserItem
               key={user.id}
-              type="request"
+              type="following"
               userId={user.id}
               userImg={user.profileUrl}
               userName={user.name}
