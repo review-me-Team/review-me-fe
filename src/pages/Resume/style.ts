@@ -1,23 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 
-const Main = styled.main`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 80%;
-  margin: 2rem auto;
-
-  @media screen and (max-width: 1280px) {
-    width: 80%;
-    margin: 1rem auto;
-  }
-  @media screen and (max-width: 768px) {
-    width: 90%;
-    margin: 0.5rem auto;
-  }
-`;
-
 const MainHeader = styled.header`
   display: flex;
   flex-direction: row;
@@ -78,4 +61,4 @@ const ResumeList = styled.ul`
   }
 `;
 
-export { Main, MainHeader, FilterContainer, Filter, YearRange, ResumeList };
+export { MainHeader, FilterContainer, Filter, YearRange, ResumeList };

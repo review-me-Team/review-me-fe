@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Modal, useModal } from 'review-me-design-system';
+import { Button } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import ResumeItem from '@components/ResumeItem';
@@ -12,9 +12,10 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
 import { useOccupationList } from '@apis/utilApi';
+import { PageMain } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { getRangeText } from '@utils';
-import { Filter, FilterContainer, Main, MainHeader, ResumeList, YearRange } from './style';
+import { Filter, FilterContainer, MainHeader, ResumeList, YearRange } from './style';
 
 const Resume = () => {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ const Resume = () => {
   const rangeText = getRangeText({ min: yearRange.startYear, max: yearRange.endYear });
 
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
-  const { isOpen: isModalOpen, open: openModal, close: closeModal } = useModal();
 
   const { data: occupationList } = useOccupationList();
   const { data: resumeListData, fetchNextPage } = useResumeList({
@@ -53,7 +53,7 @@ const Resume = () => {
   const resumeList = resumeListData?.pages.map((page) => page.resumes).flat();
 
   return (
-    <Main>
+    <PageMain>
       <MainHeader>
         <FilterContainer $isMDevice={isMDevice}>
           <Filter>
@@ -148,7 +148,7 @@ const Resume = () => {
         })}
       </ResumeList>
       <div ref={setTarget}></div>
-    </Main>
+    </PageMain>
   );
 };
 
