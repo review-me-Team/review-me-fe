@@ -173,6 +173,52 @@ export const useFollowingList = ({ jwt, start = '', size = 7, enabled = true }: 
   });
 };
 
+// GET 나에게 온 친구 요청 목록 조회
+interface GetFollowerList extends PageNationData {
+  users: User[];
+}
+
+const getFollowerList = async ({
+  jwt,
+  pageParam,
+  start,
+}: {
+  jwt?: string;
+  pageParam: number;
+  start: string;
+}) => {
+  const response = await fetch(
+    `${REQUEST_URL.FRIEND}/follower?page=${pageParam}&size=7${start && `&start=${start}`}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<GetFollowerList> = await response.json();
+
+  return data;
+};
+
+export const useFollowerList = ({ jwt, start = '' }: { jwt?: string; start?: string }) => {
+  return useInfiniteQuery({
+    queryKey: ['followerList'],
+    initialPageParam: 0,
+    queryFn: ({ pageParam }) => getFollowerList({ jwt, pageParam, start }),
+    getNextPageParam: (lastPage) => {
+      const { pageNumber, lastPage: lastPageNum } = lastPage;
+
+      return pageNumber < lastPageNum ? pageNumber + 1 : null;
+    },
+  });
+};
+
 // DELETE 친구 요청 취소
 const deleteFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
   const response = await fetch(`${REQUEST_URL.FRIEND}/following/${userId}`, {
@@ -194,5 +240,65 @@ const deleteFriendRequest = async ({ userId, jwt }: { userId: number; jwt: strin
 export const useDeleteFriendRequest = () => {
   return useMutation({
     mutationFn: deleteFriendRequest,
+  });
+};
+
+// PATCH 친구 요청 수락
+const acceptFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(REQUEST_URL.FRIEND, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useAcceptFriendRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: acceptFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+    },
+  });
+};
+
+// PATCH 친구 요청 거절
+const rejectFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
+  const response = await fetch(`${REQUEST_URL.FRIEND}/${userId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw response;
+  }
+
+  const { data }: ApiResponse<null> = await response.json();
+
+  return data;
+};
+
+export const useRejectFriendRequest = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: rejectFriendRequest,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+    },
   });
 };

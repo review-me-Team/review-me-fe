@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Button, useModal } from 'review-me-design-system';
 import FriendDeleteModal from '@components/Modal/FriendDeleteModal';
 import { useUserContext } from '@contexts/userContext';
-import { useDeleteFriendRequest, usePostFriendRequest } from '@apis/friendApi';
+import {
+  useDeleteFriendRequest,
+  useAcceptFriendRequest,
+  usePostFriendRequest,
+  useRejectFriendRequest,
+} from '@apis/friendApi';
 import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, FriendItemLayout, UserImg, UserInfo, UserName } from './style';
 
@@ -27,6 +32,8 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
   } = useModal();
   const { mutate: requestFriend } = usePostFriendRequest();
   const { mutate: cancelFriendRequest } = useDeleteFriendRequest();
+  const { mutate: acceptFriendRequest } = useAcceptFriendRequest();
+  const { mutate: rejectFriendRequest } = useRejectFriendRequest();
 
   return (
     <FriendItemLayout>
@@ -83,10 +90,22 @@ const FriendItem = ({ type: initType, userId, userImg, userName }: Props) => {
       )}
       {type === 'response' && (
         <ButtonsContainer>
-          <Button variant="default" size="s">
+          <Button
+            variant="default"
+            size="s"
+            onClick={() => {
+              if (jwt) acceptFriendRequest({ userId, jwt });
+            }}
+          >
             수락
           </Button>
-          <Button variant="outline" size="s">
+          <Button
+            variant="outline"
+            size="s"
+            onClick={() => {
+              if (jwt) rejectFriendRequest({ userId, jwt });
+            }}
+          >
             거절
           </Button>
         </ButtonsContainer>
