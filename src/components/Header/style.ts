@@ -1,5 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
 const HeaderLayout = styled.header`
   width: 100%;
@@ -9,7 +10,7 @@ const HeaderLayout = styled.header`
   background: ${theme.color.neutral.bg.default};
   border-bottom: 1px solid ${theme.palette.gray300};
 
-  @media screen and (max-width: 600px) {
+  @media ${breakPoints.mobile} {
     padding: 0 0.5rem;
   }
 `;
