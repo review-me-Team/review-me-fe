@@ -36,7 +36,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
   const [title, setTitle] = useState<string>(initTitle);
   const [occupationId, setOccupationId] = useState<number | undefined>(initOccupationId);
   const [scopeId, setScopeId] = useState<number | undefined>(initScopeId);
-  const [year, setYear] = useState<number | undefined>(initYear);
+  const [year, setYear] = useState<number>(initYear);
 
   const { mutate: updateResume } = useUpdateResume();
 
@@ -47,7 +47,8 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!jwt || !occupationId || !scopeId || title.length === 0 || !year) return;
+
+    if (!jwt || !occupationId || !scopeId || title.length === 0 || year < 0) return;
 
     updateResume(
       {
