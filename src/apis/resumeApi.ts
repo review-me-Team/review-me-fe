@@ -136,6 +136,7 @@ interface GetResumeDetail {
   writerName: string;
   writerProfileUrl: string;
   occupation: string;
+  scope: string;
   year: number;
 }
 
