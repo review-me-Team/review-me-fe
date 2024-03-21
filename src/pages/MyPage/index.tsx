@@ -126,6 +126,7 @@ const MyPage = () => {
               onClick={() => {
                 openFollowingModal();
                 manageBodyScroll(false);
+                refetchFollowingList();
               }}
             >
               <Icon iconName="rightArrow" />
