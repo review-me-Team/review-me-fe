@@ -1,16 +1,14 @@
 import React, { MouseEvent, useState } from 'react';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
 import QuestionReplyList from '@components/ReplyList/QuestionReplyList';
 import useDropdown from '@hooks/useDropdown';
-import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import {
-  GetQuestionList,
   Question as QuestionType,
   useDeleteQuestion,
   usePatchBookMark,
@@ -84,7 +82,6 @@ const Question = ({
   };
 
   const { mutate: toggleEmoji } = usePatchEmojiAboutQuestion();
-  const { updateEmojis } = useEmojiUpdate();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -101,22 +98,7 @@ const Question = ({
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData<InfiniteData<GetQuestionList>>(
-            ['questionList', resumeId, resumePage],
-            (oldData) => {
-              if (!oldData) return;
-
-              return {
-                ...oldData,
-                pages: oldData.pages.map((page) => ({
-                  ...page,
-                  questions: page.questions.map((question) =>
-                    updateEmojis<QuestionType>({ data: question, id, clickedEmojiId, myEmojiId }),
-                  ),
-                })),
-              };
-            },
-          );
+          queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
         },
       },
     );
