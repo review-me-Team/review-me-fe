@@ -1,17 +1,15 @@
 import React, { MouseEvent, useState } from 'react';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
 import FeedbackReplyList from '@components/ReplyList/FeedbackReplyList';
 import useDropdown from '@hooks/useDropdown';
-import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import {
   Feedback as FeedbackType,
-  GetFeedbackList,
   useDeleteFeedback,
   usePatchEmojiAboutFeedback,
   usePatchFeedbackCheck,
@@ -82,7 +80,6 @@ const Feedback = ({
   };
 
   const { mutate: toggleEmoji } = usePatchEmojiAboutFeedback();
-  const { updateEmojis } = useEmojiUpdate();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -99,22 +96,7 @@ const Feedback = ({
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData<InfiniteData<GetFeedbackList>>(
-            ['feedbackList', resumeId, resumePage],
-            (oldData) => {
-              if (!oldData) return;
-
-              return {
-                ...oldData,
-                pages: oldData.pages.map((page) => ({
-                  ...page,
-                  feedbacks: page.feedbacks.map((feedback) =>
-                    updateEmojis<FeedbackType>({ data: feedback, id, clickedEmojiId, myEmojiId }),
-                  ),
-                })),
-              };
-            },
-          );
+          queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
         },
       },
     );
