@@ -269,7 +269,10 @@ export const useAcceptFriendRequest = () => {
   return useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['followerList'] }),
+        queryClient.invalidateQueries({ queryKey: ['friendList'] }),
+      ]);
     },
   });
 };
