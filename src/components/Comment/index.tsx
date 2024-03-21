@@ -1,19 +1,13 @@
 import React, { MouseEvent, useState } from 'react';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import CommentEditForm from '@components/CommentForm/CommentEditForm';
 import Dropdown from '@components/Dropdown';
 import useDropdown from '@hooks/useDropdown';
-import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import {
-  GetCommentList,
-  usePatchEmojiAboutComment,
-  Comment as CommentType,
-  useDeleteComment,
-} from '@apis/commentApi';
+import { usePatchEmojiAboutComment, Comment as CommentType, useDeleteComment } from '@apis/commentApi';
 import { useEmojiList } from '@apis/utilApi';
 import {
   CommentLayout,
@@ -63,7 +57,6 @@ const Comment = ({
   const { data: emojiList } = useEmojiList();
 
   const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
-  const { updateEmojis } = useEmojiUpdate();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -80,19 +73,7 @@ const Comment = ({
       },
       {
         onSuccess: () => {
-          queryClient.setQueryData<InfiniteData<GetCommentList>>(['commentList', resumeId], (oldData) => {
-            if (!oldData) return;
-
-            return {
-              ...oldData,
-              pages: oldData.pages.map((page) => ({
-                ...page,
-                comments: page.comments.map((comment) =>
-                  updateEmojis<CommentType>({ data: comment, id, clickedEmojiId, myEmojiId }),
-                ),
-              })),
-            };
-          });
+          queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
         },
       },
     );
