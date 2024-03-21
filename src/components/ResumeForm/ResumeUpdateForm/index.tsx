@@ -9,6 +9,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useUpdateResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
+import { breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, Form, ResumeFormLayout, Label } from '../style';
 
@@ -16,12 +17,12 @@ interface Props {
   resumeId: number;
   file?: string;
   initTitle: string;
-  initOccupation: string;
-  initScope: string;
+  initOccupationId: number;
+  initScopeId: number;
   initYear: number;
 }
 
-const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope, initYear }: Props) => {
+const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initScopeId, initYear }: Props) => {
   const navigate = useNavigate();
 
   const { data: occupationList } = useOccupationList();
@@ -29,24 +30,22 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
 
   const { jwt } = useUserContext();
 
-  const initOccupationId = occupationList?.find(({ occupation }) => occupation === initOccupation)?.id;
-  const initScopeId = scopeList?.find(({ scope }) => scope === initScope)?.id;
-
   const [title, setTitle] = useState<string>(initTitle);
-  const [occupationId, setOccupationId] = useState<number | undefined>(initOccupationId);
-  const [scopeId, setScopeId] = useState<number | undefined>(initScopeId);
-  const [year, setYear] = useState<number | undefined>(initYear);
+  const [occupationId, setOccupationId] = useState<number>(initOccupationId);
+  const [scopeId, setScopeId] = useState<number>(initScopeId);
+  const [year, setYear] = useState<number>(initYear);
 
   const { mutate: updateResume } = useUpdateResume();
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!jwt || !occupationId || !scopeId || title.length === 0 || !year) return;
+
+    if (!jwt || !occupationId || !scopeId || title.length === 0 || year < 0) return;
 
     updateResume(
       {
@@ -73,7 +72,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
         totalPages={totalPages}
         scale={scale}
         onLoadSuccess={setTotalPages}
-        width={isMDevice ? '100%' : '55%'}
+        width={isMobile ? '100%' : '55%'}
         height="35rem"
       >
         <ButtonGroup height="2rem">
@@ -100,11 +99,6 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
               name="scope"
               defaultValue={scopeId}
               onChange={(e) => {
-                if (e.target.value === 'none') {
-                  setScopeId(undefined);
-                  return;
-                }
-
                 const value = Number(e.target.value);
                 if (Number.isNaN(value)) return;
 
@@ -129,11 +123,6 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupation, initScope
               name="occupation"
               defaultValue={occupationId}
               onChange={(e) => {
-                if (e.target.value === 'none') {
-                  setOccupationId(undefined);
-                  return;
-                }
-
                 const value = Number(e.target.value);
                 if (Number.isNaN(value)) return;
 

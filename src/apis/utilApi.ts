@@ -27,7 +27,12 @@ export const getOccupationList = async () => {
 };
 
 export const useOccupationList = () => {
-  return useQuery({ queryKey: ['occupationList'], queryFn: getOccupationList });
+  return useQuery({
+    queryKey: ['occupationList'],
+    queryFn: getOccupationList,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 // GET 공개 범위 목록 조회
@@ -55,7 +60,7 @@ export const getScopeList = async () => {
 };
 
 export const useScopeList = () => {
-  return useQuery({ queryKey: ['scopeList'], queryFn: getScopeList });
+  return useQuery({ queryKey: ['scopeList'], queryFn: getScopeList, staleTime: Infinity, gcTime: Infinity });
 };
 
 // GET 이모지 목록 조회

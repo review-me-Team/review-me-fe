@@ -50,12 +50,8 @@ const router = createBrowserRouter([
         element: <ResumeUpload />,
       },
       {
-        path: ROUTE_PATH.RESUME_UPDATE,
-        element: (
-          <TokenRefresh>
-            <ResumeUpdate />
-          </TokenRefresh>
-        ),
+        path: `${ROUTE_PATH.RESUME_UPDATE}/:resumeId`,
+        element: <ResumeUpdate />,
       },
     ],
   },

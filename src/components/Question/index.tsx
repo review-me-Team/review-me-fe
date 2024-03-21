@@ -2,21 +2,30 @@ import React, { MouseEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
-import CommentEditForm from '@components/CommentForm/CommentEditForm';
 import Dropdown from '@components/Dropdown';
+import QuestionEditForm from '@components/QuestionForm/QuestionEditForm';
+import QuestionReplyList from '@components/ReplyList/QuestionReplyList';
 import useDropdown from '@hooks/useDropdown';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { usePatchEmojiAboutComment, Comment as CommentType, useDeleteComment } from '@apis/commentApi';
+import {
+  Question as QuestionType,
+  useDeleteQuestion,
+  usePatchBookMark,
+  usePatchEmojiAboutQuestion,
+  usePatchQuestionCheck,
+} from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
 import {
-  CommentLayout,
+  CommentLayout as QuestionLayout,
   Info,
   Time,
   UserImg,
   UserName,
+  SelectedLabel,
   Content,
   Bottom,
+  OpenReplyButton,
   EmojiButton,
   Top,
   IconButton,
@@ -24,39 +33,55 @@ import {
   EmojiButtonContainer,
   EmojiLabelList,
   EmojiLabelItem,
+  ContentContainer,
   CommentInfo,
   MoreIconContainer,
   ButtonsContainer,
 } from '@styles/comment';
 import { formatDate } from '@utils';
 
-interface Props extends CommentType {
+interface Props extends QuestionType {
   resumeId: number;
+  resumePage: number;
+  resumeWriterId: number;
 }
 
-const Comment = ({
+const Question = ({
   resumeId,
+  resumePage,
+  resumeWriterId,
   id,
   content,
   commenterId,
   commenterName,
   commenterProfileUrl,
+  labelContent,
   createdAt,
+  countOfReplies,
+  checked,
+  bookmarked,
   emojis,
   myEmojiId,
 }: Props) => {
   const { jwt, user } = useUserContext();
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
+  const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
   const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
+  const REPLY_ICON_SIZE = 20;
 
   const isCommenterUser = commenterId === user?.id;
+  const isResumeWriterUser = resumeWriterId === user?.id;
 
   const { data: emojiList } = useEmojiList();
 
-  const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
+  const handleReplyButtonClick = () => {
+    setIsOpenReplyList((prev) => !prev);
+  };
+
+  const { mutate: toggleEmoji } = usePatchEmojiAboutQuestion();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -64,32 +89,32 @@ const Comment = ({
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 
-    toggleEmojiAboutComment(
+    toggleEmoji(
       {
         resumeId,
-        commentId: id,
+        questionId: id,
         emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
         jwt,
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+          queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
         },
       },
     );
   };
 
   // 삭제
-  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: deleteQuestion } = useDeleteQuestion();
 
   const handleDeleteBtnClick = () => {
-    if (!jwt) return;
+    if (!jwt || !isCommenterUser) return;
 
-    deleteComment(
-      { resumeId, commentId: id, jwt },
+    deleteQuestion(
+      { resumeId, questionId: id, jwt },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: ['questionList', resumeId, resumePage] });
           closeDropdown();
         },
       },
@@ -102,9 +127,37 @@ const Comment = ({
     closeDropdown();
   };
 
+  // Check 수정
+  const { mutate: toggleCheckAboutQuestion } = usePatchQuestionCheck({ resumePage });
+
+  const handleCheckMarkClick = () => {
+    if (!jwt || !isResumeWriterUser) return;
+
+    toggleCheckAboutQuestion({
+      resumeId,
+      questionId: id,
+      checked: !checked,
+      jwt,
+    });
+  };
+
+  // bookmark 수정
+  const { mutate: toggleBookMark } = usePatchBookMark({ resumePage });
+
+  const handleBookMarkClick = () => {
+    if (!jwt || !isResumeWriterUser) return;
+
+    toggleBookMark({
+      resumeId,
+      questionId: id,
+      bookmarked: !bookmarked,
+      jwt,
+    });
+  };
+
   return (
     <>
-      <CommentLayout>
+      <QuestionLayout>
         <Top>
           <Info>
             <UserImg src={commenterProfileUrl} />
@@ -116,6 +169,42 @@ const Comment = ({
 
           {!isEdited && (
             <ButtonsContainer>
+              {isResumeWriterUser && (
+                <IconButton onClick={handleBookMarkClick} disabled={content === null}>
+                  {bookmarked ? (
+                    <Icon
+                      iconName="filledBookMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.default}
+                    />
+                  ) : (
+                    <Icon
+                      iconName="bookMark"
+                      width={ICON_SIZE}
+                      height={ICON_SIZE}
+                      color={theme.color.accent.bg.strong}
+                    />
+                  )}
+                </IconButton>
+              )}
+              <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
+                {checked ? (
+                  <Icon
+                    iconName="filledCheckMark"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.default}
+                  />
+                ) : (
+                  <Icon
+                    iconName="checkMark"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.strong}
+                  />
+                )}
+              </IconButton>
               {isCommenterUser && (
                 <MoreIconContainer>
                   <IconButton onClick={openDropdown} disabled={content === null}>
@@ -152,18 +241,27 @@ const Comment = ({
         </Top>
 
         {isEdited && (
-          <CommentEditForm
+          <QuestionEditForm
             resumeId={resumeId}
-            commentId={id}
+            resumePage={resumePage}
+            questionId={id}
+            initLabelContent={labelContent}
             initContent={content}
             onCancelEdit={() => setIsEdited(false)}
           />
         )}
         {!isEdited && (
           <>
-            <Content>{content ?? '삭제된 댓글입니다.'}</Content>
+            <ContentContainer>
+              {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
+              <Content>{content ?? '삭제된 예상질문입니다.'}</Content>
+            </ContentContainer>
 
             <Bottom>
+              <OpenReplyButton onClick={handleReplyButtonClick}>
+                <Icon iconName="communication" width={REPLY_ICON_SIZE} height={REPLY_ICON_SIZE} />
+                <span>{countOfReplies}</span>
+              </OpenReplyButton>
               <EmojiButtonContainer>
                 <EmojiButton
                   onMouseEnter={() => changeHoverState(true)}
@@ -218,9 +316,10 @@ const Comment = ({
             </Bottom>
           </>
         )}
-      </CommentLayout>
+      </QuestionLayout>
+      {isOpenReplyList && <QuestionReplyList parentId={id} resumeId={resumeId} />}
     </>
   );
 };
 
-export default Comment;
+export default Question;

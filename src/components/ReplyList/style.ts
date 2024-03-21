@@ -9,4 +9,15 @@ const ReplyListLayout = styled.div`
   background-color: ${theme.palette.green100};
 `;
 
-export { ReplyListLayout };
+const MoreButton = styled.button`
+  margin: auto;
+
+  background-color: transparent;
+
+  ${theme.font.button.weak}
+  color: ${theme.palette.gray600};
+
+  cursor: pointer;
+`;
+
+export { ReplyListLayout, MoreButton };

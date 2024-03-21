@@ -6,7 +6,7 @@ import { useUserContext } from '@contexts/userContext';
 import { useMyResumeList } from '@apis/resumeApi';
 import { PageMain } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
-import { Main, MyResumeList } from './style';
+import { MyResumeList } from './style';
 
 const MyResume = () => {
   const navigate = useNavigate();

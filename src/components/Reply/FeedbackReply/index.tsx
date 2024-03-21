@@ -1,30 +1,20 @@
 import React, { MouseEvent, useState } from 'react';
-import { InfiniteData, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import ReplyEditForm from '@components/ReplyForm/ReplyEditForm';
 import useDropdown from '@hooks/useDropdown';
-import useEmojiUpdate from '@hooks/useEmojiUpdate';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import {
-  FeedbackReply,
-  GetFeedbackReplyList,
+  FeedbackReply as FeedbackReplyType,
   useDeleteFeedback,
   usePatchEmojiAboutFeedback,
 } from '@apis/feedbackApi';
-import {
-  GetQuestionReplyList,
-  QuestionReply,
-  useDeleteQuestion,
-  usePatchEmojiAboutQuestion,
-} from '@apis/questionApi';
 import { useEmojiList } from '@apis/utilApi';
-import { formatDate } from '@utils';
-// * Comment와 동일한 스타일을 공유하기 때문에 styled-components로 만든 공통 컴포넌트를 사용
 import {
-  CommentLayout,
+  CommentLayout as ReplyLayout,
   Info,
   Time,
   UserImg,
@@ -38,38 +28,20 @@ import {
   EmojiButtonContainer,
   EmojiLabelList,
   EmojiLabelItem,
-  CommentContent,
+  ContentContainer,
   CommentInfo,
   MoreIconContainer,
-} from '../style';
+} from '@styles/comment';
+import { formatDate } from '@utils';
 
-type Emoji = {
-  id: number;
-  count: number;
-};
-
-export interface ReplyType {
-  id: number;
-  parentId: number;
-  content: string | null;
-  commenterId: number;
-  commenterName: string;
-  commenterProfileUrl: string;
-  createdAt: string;
-  emojis: Emoji[];
-  myEmojiId: number | null;
-}
-
-interface Props extends ReplyType {
-  type: 'feedback' | 'question';
+interface Props extends FeedbackReplyType {
   resumeId: number;
 }
 
-const Reply = ({
-  type,
+const FeedbackReply = ({
   resumeId,
   id,
-  parentId,
+  parentFeedbackId,
   content,
   commenterId,
   commenterName,
@@ -86,13 +58,11 @@ const Reply = ({
 
   const ICON_SIZE = 24;
 
-  const hasMoreIcon = commenterId === user?.id;
+  const isCommenterUser = commenterId === user?.id;
 
   const { data: emojiList } = useEmojiList();
 
-  const { mutate: toggleEmojiAboutFeedback } = usePatchEmojiAboutFeedback();
-  const { mutate: toggleEmojiAboutQuestion } = usePatchEmojiAboutQuestion();
-  const { updateEmojis } = useEmojiUpdate();
+  const { mutate: toggleEmoji } = usePatchEmojiAboutFeedback();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -100,98 +70,39 @@ const Reply = ({
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 
-    if (type === 'feedback')
-      toggleEmojiAboutFeedback(
-        {
-          resumeId,
-          feedbackId: id,
-          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
-          jwt,
+    toggleEmoji(
+      {
+        resumeId,
+        feedbackId: id,
+        emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
+        jwt,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentFeedbackId] });
         },
-        {
-          onSuccess: () => {
-            queryClient.setQueryData<InfiniteData<GetFeedbackReplyList>>(
-              ['feedbackReplyList', resumeId, parentId],
-              (oldData) => {
-                if (!oldData) return;
-
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map((page) => ({
-                    ...page,
-                    feedbackComments: page.feedbackComments.map((comment) =>
-                      updateEmojis<FeedbackReply>({ data: comment, id, clickedEmojiId, myEmojiId }),
-                    ),
-                  })),
-                };
-              },
-            );
-          },
-        },
-      );
-
-    if (type === 'question')
-      toggleEmojiAboutQuestion(
-        {
-          resumeId,
-          questionId: id,
-          emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
-          jwt,
-        },
-        {
-          onSuccess: () => {
-            queryClient.setQueryData<InfiniteData<GetQuestionReplyList>>(
-              ['questionReplyList', resumeId, parentId],
-              (oldData) => {
-                if (!oldData) return;
-
-                return {
-                  ...oldData,
-                  pages: oldData.pages.map((page) => ({
-                    ...page,
-                    questionComments: page.questionComments.map((comment) =>
-                      updateEmojis<QuestionReply>({ data: comment, id, clickedEmojiId, myEmojiId }),
-                    ),
-                  })),
-                };
-              },
-            );
-          },
-        },
-      );
+      },
+    );
   };
 
   // 삭제
   const { mutate: deleteFeedback } = useDeleteFeedback();
-  const { mutate: deleteQuestion } = useDeleteQuestion();
 
   const handleDeleteBtnClick = () => {
-    if (!jwt) return;
+    if (!jwt || !isCommenterUser) return;
 
-    if (type === 'feedback') {
-      deleteFeedback(
-        { resumeId, feedbackId: id, jwt },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentId] });
-          },
+    deleteFeedback(
+      { resumeId, feedbackId: id, jwt },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentFeedbackId] });
         },
-      );
-    }
-    if (type === 'question') {
-      deleteQuestion(
-        { resumeId, questionId: id, jwt },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['questionReplyList', resumeId, parentId] });
-          },
-        },
-      );
-    }
+      },
+    );
   };
 
   return (
-    <CommentLayout>
+    <ReplyLayout>
       <Top>
         <Info>
           <UserImg src={commenterProfileUrl} />
@@ -201,7 +112,7 @@ const Reply = ({
           </CommentInfo>
         </Info>
 
-        {!isEdited && hasMoreIcon && (
+        {!isEdited && isCommenterUser && (
           <MoreIconContainer>
             <IconButton onClick={openDropdown}>
               <Icon
@@ -236,10 +147,11 @@ const Reply = ({
 
       {isEdited && (
         <ReplyEditForm
-          type={type}
+          type="feedback"
           resumeId={resumeId}
-          parentId={parentId}
+          parentId={parentFeedbackId}
           id={id}
+          initContent={content}
           onCancelEdit={() => {
             setIsEdited(false);
             closeDropdown();
@@ -249,9 +161,9 @@ const Reply = ({
 
       {!isEdited && (
         <>
-          <CommentContent>
+          <ContentContainer>
             <Content>{content}</Content>
-          </CommentContent>
+          </ContentContainer>
 
           <Bottom>
             <EmojiButtonContainer>
@@ -284,9 +196,9 @@ const Reply = ({
 
             <EmojiLabelList>
               {emojis.map(({ id, count }) => {
-                const hasEmoji = count > 0;
+                const isEmojiClickable = count > 0;
 
-                if (!hasEmoji) return;
+                if (!isEmojiClickable) return;
 
                 const emoji = emojiList?.find(({ id: emojiId }) => emojiId === id)?.emoji;
 
@@ -307,8 +219,8 @@ const Reply = ({
           </Bottom>
         </>
       )}
-    </CommentLayout>
+    </ReplyLayout>
   );
 };
 
-export default Reply;
+export default FeedbackReply;

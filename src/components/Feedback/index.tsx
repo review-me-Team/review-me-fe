@@ -2,21 +2,29 @@ import React, { MouseEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
-import CommentEditForm from '@components/CommentForm/CommentEditForm';
 import Dropdown from '@components/Dropdown';
+import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
+import FeedbackReplyList from '@components/ReplyList/FeedbackReplyList';
 import useDropdown from '@hooks/useDropdown';
 import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
-import { usePatchEmojiAboutComment, Comment as CommentType, useDeleteComment } from '@apis/commentApi';
+import {
+  Feedback as FeedbackType,
+  useDeleteFeedback,
+  usePatchEmojiAboutFeedback,
+  usePatchFeedbackCheck,
+} from '@apis/feedbackApi';
 import { useEmojiList } from '@apis/utilApi';
 import {
-  CommentLayout,
+  CommentLayout as FeedbackLayout,
   Info,
   Time,
   UserImg,
   UserName,
+  SelectedLabel,
   Content,
   Bottom,
+  OpenReplyButton,
   EmojiButton,
   Top,
   IconButton,
@@ -24,39 +32,54 @@ import {
   EmojiButtonContainer,
   EmojiLabelList,
   EmojiLabelItem,
+  ContentContainer,
   CommentInfo,
   MoreIconContainer,
   ButtonsContainer,
 } from '@styles/comment';
 import { formatDate } from '@utils';
 
-interface Props extends CommentType {
+interface Props extends FeedbackType {
   resumeId: number;
+  resumePage: number;
+  resumeWriterId: number;
 }
 
-const Comment = ({
+const Feedback = ({
   resumeId,
+  resumePage,
+  resumeWriterId,
   id,
   content,
   commenterId,
   commenterName,
   commenterProfileUrl,
+  labelContent,
   createdAt,
+  countOfReplies,
+  checked,
   emojis,
   myEmojiId,
 }: Props) => {
   const { jwt, user } = useUserContext();
   const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
+  const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
   const [isEdited, setIsEdited] = useState<boolean>(false);
 
   const ICON_SIZE = 24;
+  const REPLY_ICON_SIZE = 20;
 
   const isCommenterUser = commenterId === user?.id;
+  const isResumeWriterUser = resumeWriterId === user?.id;
 
   const { data: emojiList } = useEmojiList();
 
-  const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
+  const handleReplyButtonClick = () => {
+    setIsOpenReplyList((prev) => !prev);
+  };
+
+  const { mutate: toggleEmoji } = usePatchEmojiAboutFeedback();
   const queryClient = useQueryClient();
 
   const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
@@ -64,32 +87,32 @@ const Comment = ({
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
 
-    toggleEmojiAboutComment(
+    toggleEmoji(
       {
         resumeId,
-        commentId: id,
+        feedbackId: id,
         emojiId: shouldDeleteEmoji ? null : clickedEmojiId,
         jwt,
       },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+          queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
         },
       },
     );
   };
 
   // 삭제
-  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: deleteFeedback } = useDeleteFeedback();
 
   const handleDeleteBtnClick = () => {
-    if (!jwt) return;
+    if (!jwt || !isCommenterUser) return;
 
-    deleteComment(
-      { resumeId, commentId: id, jwt },
+    deleteFeedback(
+      { resumeId, feedbackId: id, jwt },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['commentList', resumeId] });
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
           closeDropdown();
         },
       },
@@ -102,9 +125,23 @@ const Comment = ({
     closeDropdown();
   };
 
+  // Check 수정
+  const { mutate: toggleCheck } = usePatchFeedbackCheck({ resumePage });
+
+  const handleCheckMarkClick = () => {
+    if (!jwt || !isResumeWriterUser) return;
+
+    toggleCheck({
+      resumeId,
+      feedbackId: id,
+      checked: !checked,
+      jwt,
+    });
+  };
+
   return (
     <>
-      <CommentLayout>
+      <FeedbackLayout>
         <Top>
           <Info>
             <UserImg src={commenterProfileUrl} />
@@ -116,6 +153,23 @@ const Comment = ({
 
           {!isEdited && (
             <ButtonsContainer>
+              <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
+                {checked ? (
+                  <Icon
+                    iconName="filledCheckMark"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.default}
+                  />
+                ) : (
+                  <Icon
+                    iconName="checkMark"
+                    width={ICON_SIZE}
+                    height={ICON_SIZE}
+                    color={theme.color.accent.bg.strong}
+                  />
+                )}
+              </IconButton>
               {isCommenterUser && (
                 <MoreIconContainer>
                   <IconButton onClick={openDropdown} disabled={content === null}>
@@ -152,18 +206,28 @@ const Comment = ({
         </Top>
 
         {isEdited && (
-          <CommentEditForm
+          <FeedbackEditForm
             resumeId={resumeId}
-            commentId={id}
+            resumePage={resumePage}
+            feedbackId={id}
+            initLabelContent={labelContent}
             initContent={content}
             onCancelEdit={() => setIsEdited(false)}
           />
         )}
         {!isEdited && (
           <>
-            <Content>{content ?? '삭제된 댓글입니다.'}</Content>
+            <ContentContainer>
+              {labelContent && <SelectedLabel>{labelContent}</SelectedLabel>}
+              <Content>{content ?? '삭제된 피드백입니다.'}</Content>
+            </ContentContainer>
 
             <Bottom>
+              <OpenReplyButton onClick={handleReplyButtonClick}>
+                <Icon iconName="communication" width={REPLY_ICON_SIZE} height={REPLY_ICON_SIZE} />
+                <span>{countOfReplies}</span>
+              </OpenReplyButton>
+
               <EmojiButtonContainer>
                 <EmojiButton
                   onMouseEnter={() => changeHoverState(true)}
@@ -218,9 +282,10 @@ const Comment = ({
             </Bottom>
           </>
         )}
-      </CommentLayout>
+      </FeedbackLayout>
+      {isOpenReplyList && <FeedbackReplyList parentId={id} resumeId={resumeId} />}
     </>
   );
 };
 
-export default Comment;
+export default Feedback;

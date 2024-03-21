@@ -9,6 +9,7 @@ import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { usePostResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
+import { breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from '../style';
 
@@ -25,7 +26,7 @@ const ResumeUploadForm = () => {
   const { mutate: addResume } = usePostResume();
 
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
-  const { matches: isMDevice } = useMediaQuery({ mediaQueryString: '(max-width: 768px)' });
+  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
@@ -39,7 +40,7 @@ const ResumeUploadForm = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !file || !occupationId || !scopeId || title.length === 0 || !year) return;
+    if (!jwt || !file || !occupationId || !scopeId || title.length === 0 || typeof year !== 'number') return;
 
     addResume(
       {
@@ -61,7 +62,7 @@ const ResumeUploadForm = () => {
 
   return (
     <ResumeFormLayout>
-      {isMDevice && (
+      {isMobile && (
         <Field>
           <FileLabel htmlFor="file">파일 선택</FileLabel>
           <input
@@ -81,7 +82,7 @@ const ResumeUploadForm = () => {
         totalPages={totalPages}
         scale={scale}
         onLoadSuccess={setTotalPages}
-        width={isMDevice ? '100%' : '55%'}
+        width={isMobile ? '100%' : '55%'}
         height="35rem"
       >
         <ButtonGroup height="2rem">
@@ -96,7 +97,7 @@ const ResumeUploadForm = () => {
 
       <Form onSubmit={handleSubmit}>
         <FieldContainer>
-          {!isMDevice && (
+          {!isMobile && (
             <Field>
               <FileLabel htmlFor="file">파일 선택</FileLabel>
               <input

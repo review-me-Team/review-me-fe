@@ -1,25 +1,26 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
-const Main = styled.main`
+const Main = styled.main<{ $isMobile: boolean }>`
   width: 100%;
-  height: calc(100vh - 3.75rem);
+  height: calc(${({ $isMobile }) => ($isMobile ? '100%' : '100vh')} - 3.75rem);
 
   background-color: ${theme.color.neutral.bg.default};
 `;
 
-const ResumeContentWrapper = styled.section`
+const ResumeContentWrapper = styled.section<{ $isMobile: boolean }>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ $isMobile }) => ($isMobile ? 'column' : 'row')};
   height: 100%;
   margin: 0 auto;
 `;
 
 // * Main 상단: Resume에 대한 정보
-const ResumeViewer = styled.section`
+const ResumeViewer = styled.section<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: ${({ $isMobile }) => ($isMobile ? '100%' : '60%')};
 `;
 
 const ResumeViewerHeader = styled.header`
@@ -36,7 +37,7 @@ const ResumeInfo = styled.div`
   padding: 0.5rem 0;
   margin: 0 auto;
 
-  @media screen and (max-width: 600px) {
+  @media ${breakPoints.mobile} {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -75,7 +76,7 @@ const WriterInfo = styled.div`
   ${theme.font.body.weak}
   color: ${theme.color.neutral.text.strong};
 
-  @media screen and (max-width: 600px) {
+  @media ${breakPoints.mobile} {
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
@@ -88,10 +89,10 @@ const Career = styled.span`
 
 // * Main 중간: pdf, 피드백, 예상질문
 
-const FeedbackAndQuestion = styled.aside`
+const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
 `;
 
 const TabList = styled.div`
@@ -111,11 +112,11 @@ const Tab = styled.button<{ $isActive: boolean }>`
 `;
 
 // * 댓글 관련
-const CommentList = styled.ul`
+const CommentList = styled.ul<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  height: 100%;
+  height: ${({ $isMobile }) => ($isMobile ? '43.75rem' : '100%')};
 `;
 
 export {
@@ -129,7 +130,7 @@ export {
   WriterInfo,
   Career,
   ResumeContentWrapper,
-  FeedbackAndQuestion,
+  ResumeDetailAside,
   TabList,
   Tab,
   CommentList,

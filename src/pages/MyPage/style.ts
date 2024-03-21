@@ -1,5 +1,6 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
+import { breakPoints } from '@styles/common';
 
 const UserInfo = styled.div`
   display: flex;
@@ -34,10 +35,13 @@ const FriendSectionContainer = styled.div`
   background: ${theme.color.neutral.bg.default};
   box-shadow: 0 0 1.5rem -0.25rem rgba(16, 24, 40, 0.08);
 
-  @media screen and (max-width: 1280px) {
+  @media ${breakPoints.desktop} {
+    width: 50%;
+  }
+  @media ${breakPoints.tablet} {
     width: 60%;
   }
-  @media screen and (max-width: 768px) {
+  @media ${breakPoints.mobile} {
     width: 100%;
   }
 `;
@@ -55,10 +59,10 @@ const Title = styled.header`
   color: ${theme.color.neutral.text.strong};
 `;
 
-const NavigationButton = styled.button`
+const OpenModalButton = styled.button`
   background-color: transparent;
 
   cursor: pointer;
 `;
 
-export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title, NavigationButton };
+export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title, OpenModalButton };

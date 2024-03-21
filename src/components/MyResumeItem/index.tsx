@@ -43,7 +43,7 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <Button
           $position="left"
           onClick={() => {
-            navigate(ROUTE_PATH.RESUME_UPDATE, { state: { resumeId: id, title, year, occupation, scope } });
+            navigate(`${ROUTE_PATH.RESUME_UPDATE}/${id}`);
           }}
         >
           수정

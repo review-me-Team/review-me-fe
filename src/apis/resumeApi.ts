@@ -132,9 +132,11 @@ export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
 interface GetResumeDetail {
   resumeUrl: string;
   title: string;
+  writerId: number;
   writerName: string;
   writerProfileUrl: string;
   occupation: string;
+  scope: string;
   year: number;
 }
 
