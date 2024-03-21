@@ -34,6 +34,8 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
   const friendList = friendListData?.pages.map((page) => page.users).flat();
 
   useEffect(() => {
+    if (name.length === 0) return;
+
     const timer = setTimeout(() => {
       refetch();
     }, 500);
