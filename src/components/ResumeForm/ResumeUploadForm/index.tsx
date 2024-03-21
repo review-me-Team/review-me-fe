@@ -40,7 +40,7 @@ const ResumeUploadForm = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !file || !occupationId || !scopeId || title.length === 0 || !year) return;
+    if (!jwt || !file || !occupationId || !scopeId || title.length === 0 || typeof year !== 'number') return;
 
     addResume(
       {
