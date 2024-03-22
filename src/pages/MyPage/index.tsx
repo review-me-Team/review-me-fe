@@ -21,11 +21,10 @@ import {
 } from './style';
 
 const MyPage = () => {
-  const SIZE = 7;
   const { user, jwt } = useUserContext();
 
   const { data: friendListData, refetch: refetchFriendList } = useFriendList({ jwt });
-  const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt, size: SIZE });
+  const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt });
   const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
   const ITEM_COUNT = 2;

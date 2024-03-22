@@ -103,15 +103,13 @@ interface GetFollowingList extends PageNationData {
 const getFollowingList = async ({
   pageParam,
   start,
-  size,
   jwt,
 }: {
   pageParam: number;
   start: string;
-  size: number;
   jwt?: string;
 }) => {
-  const queryString = `page=${pageParam}&size=${size}${start && `&start=${start}`}`;
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
   const data = apiClient.get<GetFollowingList>(`${REQUEST_URL.FRIEND}/following?${queryString}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
@@ -124,20 +122,14 @@ const getFollowingList = async ({
 interface UseFollowingListProps {
   jwt?: string;
   start?: string;
-  size?: number;
   enabled?: boolean;
 }
 
-export const useFollowingList = ({
-  jwt,
-  start = '',
-  size = FRIEND_LIST_SIZE,
-  enabled = true,
-}: UseFollowingListProps) => {
+export const useFollowingList = ({ jwt, start = '', enabled = true }: UseFollowingListProps) => {
   return useInfiniteQuery({
     queryKey: ['followingList', start],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFollowingList({ pageParam, start, size, jwt }),
+    queryFn: ({ pageParam }) => getFollowingList({ pageParam, start, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
