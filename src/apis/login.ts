@@ -1,11 +1,11 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserContext } from '@contexts/userContext';
 import { REQUEST_URL } from '@constants';
-import { ApiResponse } from './response.types';
+import { apiClient } from './apiClient';
 
 // POST code를 통해 refresh token만 생성
 const createRefreshToken = async (code: string) => {
-  const response = await fetch(`${REQUEST_URL.OAUTH}`, {
+  const data = apiClient.post<null>(`${REQUEST_URL.OAUTH}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -13,12 +13,6 @@ const createRefreshToken = async (code: string) => {
     body: JSON.stringify({ code }),
     credentials: 'include',
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -35,16 +29,7 @@ interface GetRenewedJwt {
 }
 
 const getRenewedJwt = async () => {
-  const response = await fetch(`${REQUEST_URL.RENEW_JWT}`, {
-    method: 'GET',
-    credentials: 'include',
-  });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetRenewedJwt> = await response.json();
+  const data = apiClient.get<GetRenewedJwt>(REQUEST_URL.RENEW_JWT, { credentials: 'include' });
 
   return data;
 };
