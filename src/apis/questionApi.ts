@@ -1,6 +1,7 @@
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 interface Emoji {
   id: number;
@@ -48,16 +49,10 @@ export const getQuestionList = async ({
     headers,
   };
 
-  const response = await fetch(
+  const data = apiClient.get<GetQuestionList>(
     `${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}&resumePage=${resumePage}`,
     requestOptions,
   );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetQuestionList> = await response.json();
 
   return data;
 };
@@ -118,16 +113,10 @@ export const getQuestionReplyList = async ({
     headers,
   };
 
-  const response = await fetch(
+  const data = apiClient.get<GetQuestionReplyList>(
     `${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}?page=${pageParam}&size=${REPLY_LIST_SIZE}`,
     requestOptions,
   );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetQuestionReplyList> = await response.json();
 
   return data;
 };
@@ -181,20 +170,13 @@ export const postQuestion = async ({
     labelContent,
   };
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question`, {
-    method: 'POST',
+  const data = apiClient.post<null>(`${REQUEST_URL.RESUME}/${resumeId}/question`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newQuestion),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data } = await response.json();
 
   return data;
 };
@@ -213,18 +195,11 @@ export const deleteQuestion = async ({
   questionId: number;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
-    method: 'DELETE',
+  const data = apiClient.delete<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -251,20 +226,13 @@ export const patchQuestion = async ({
   if (labelContent) requestBody.labelContent = labelContent;
   if (content) requestBody.content = content;
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(requestBody),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -285,20 +253,13 @@ export const patchQuestionCheck = async ({
   checked: boolean;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/check`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/check`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ checked }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -369,20 +330,13 @@ export const patchBookMark = async ({
   bookmarked: boolean;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/bookmark`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/bookmark`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ bookmarked }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -453,20 +407,13 @@ export const patchEmojiAboutQuestion = async ({
   emojiId: number | null;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/emoji`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${questionId}/emoji`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ id: emojiId }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -487,20 +434,13 @@ export const postQuestionReply = async ({
   content: string;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}`, {
-    method: 'POST',
+  const data = apiClient.post<null>(`${REQUEST_URL.RESUME}/${resumeId}/question/${parentQuestionId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ content }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
