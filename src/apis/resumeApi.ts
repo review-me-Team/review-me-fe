@@ -1,4 +1,10 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -62,7 +68,7 @@ interface UseResumeListProps {
 export const useResumeList = ({ jwt, occupationId, startYear, endYear }: UseResumeListProps) => {
   const yearFilter = { startYear, endYear };
 
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ['resumeList', occupationId, yearFilter],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getResumeList({ pageParam, jwt, occupationId, startYear, endYear }),

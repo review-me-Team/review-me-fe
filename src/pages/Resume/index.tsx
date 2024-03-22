@@ -1,27 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { Suspense, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
 import { css } from 'styled-components';
+import DelayedComponent from '@components/DelayedComponent';
 import Dropdown from '@components/Dropdown';
-import ResumeItem from '@components/ResumeItem';
+import ResumeList from '@components/ResumeList';
+import SkeletonResumeList from '@components/ResumeList/skeleton';
 import Select from '@components/Select';
 import YearRangeFilter from '@components/YearRangeFilter';
 import useDropdown from '@hooks/useDropdown';
-import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
-import { useResumeList } from '@apis/resumeApi';
 import { useOccupationList } from '@apis/utilApi';
 import { PageMain, breakPoints } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
 import { getRangeText } from '@utils';
-import { Filter, FilterContainer, MainHeader, ResumeList, YearRange } from './style';
+import { Filter, FilterContainer, MainHeader, YearRange } from './style';
 
 const Resume = () => {
   const navigate = useNavigate();
   const occupationFilterRef = useRef<HTMLSelectElement>(null);
 
-  const { isLoggedIn, jwt } = useUserContext();
+  const { isLoggedIn } = useUserContext();
 
   const [occupationId, setOccupationId] = useState<number | undefined>();
   const [yearRange, setYearRange] = useState<{ startYear: number; endYear: number }>({
@@ -36,21 +36,6 @@ const Resume = () => {
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
 
   const { data: occupationList } = useOccupationList();
-  const { data: resumeListData, fetchNextPage } = useResumeList({
-    jwt,
-    occupationId,
-    startYear: yearRange.startYear,
-    endYear: yearRange.endYear,
-  });
-
-  const { setTarget } = useIntersectionObserver({
-    onIntersect: () => fetchNextPage(),
-    options: {
-      threshold: 0.5,
-    },
-  });
-
-  const resumeList = resumeListData?.pages.map((page) => page.resumes).flat();
 
   return (
     <PageMain>
@@ -138,16 +123,15 @@ const Resume = () => {
         )}
       </MainHeader>
 
-      <ResumeList>
-        {resumeList?.map((resume) => {
-          return (
-            <li key={resume.id}>
-              <ResumeItem {...resume} />
-            </li>
-          );
-        })}
-      </ResumeList>
-      <div ref={setTarget}></div>
+      <Suspense
+        fallback={
+          <DelayedComponent>
+            <SkeletonResumeList />
+          </DelayedComponent>
+        }
+      >
+        <ResumeList occupationId={occupationId} startYear={yearRange.startYear} endYear={yearRange.endYear} />
+      </Suspense>
     </PageMain>
   );
 };
