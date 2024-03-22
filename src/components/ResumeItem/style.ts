@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { theme } from 'review-me-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ellipsisStyles } from '@styles/common';
 
-const ResumeItemLayout = styled(Link)`
+const resumeItemLayoutStyles = css`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -12,6 +12,10 @@ const ResumeItemLayout = styled(Link)`
   background-color: ${theme.color.neutral.bg.default};
   border-radius: 1rem;
   box-shadow: 0 0 1.5rem -0.25rem rgba(16, 24, 40, 0.08);
+`;
+
+const ResumeItemLayout = styled(Link)`
+  ${resumeItemLayoutStyles}
 
   color: ${theme.color.neutral.text.default};
   ${theme.font.body.default};
@@ -39,7 +43,6 @@ const UserImg = styled.img`
   height: 2.25rem;
 
   border-radius: 50%;
-  border: 0.0625rem solid ${theme.color.accent.bd.strong};
 `;
 
 const UserInfo = styled.div`
@@ -56,4 +59,9 @@ const CreatedAt = styled.span`
   color: ${theme.palette.gray500};
 `;
 
-export { ResumeItemLayout, Title, User, UserImg, UserInfo, CreatedAt };
+// skeleton 스타일
+const SkeletonResumeItemLayout = styled.div`
+  ${resumeItemLayoutStyles}
+`;
+
+export { ResumeItemLayout, Title, User, UserImg, UserInfo, CreatedAt, SkeletonResumeItemLayout };
