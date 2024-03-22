@@ -18,15 +18,13 @@ interface GetFriendList extends PageNationData {
 export const getFriendList = async ({
   pageParam,
   jwt,
-  size,
   start,
 }: {
   pageParam: number;
   jwt?: string;
-  size: number;
   start?: string;
 }) => {
-  const queryString = `page=${pageParam}&size=${size}${start && `&start=${start}`}`;
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
 
   const data = apiClient.get<GetFriendList>(`${REQUEST_URL.FRIEND}?${queryString}`, {
     headers: {
@@ -39,21 +37,15 @@ export const getFriendList = async ({
 
 interface UseFriendListProps {
   jwt?: string;
-  size?: number;
   start?: string;
   enabled?: boolean;
 }
 
-export const useFriendList = ({
-  jwt,
-  size = FRIEND_LIST_SIZE,
-  start = '',
-  enabled = true,
-}: UseFriendListProps) => {
+export const useFriendList = ({ jwt, start = '', enabled = true }: UseFriendListProps) => {
   return useInfiniteQuery({
     queryKey: ['friendList', start],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, size, start }),
+    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, start }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 

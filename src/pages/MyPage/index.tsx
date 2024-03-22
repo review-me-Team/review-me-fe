@@ -24,7 +24,7 @@ const MyPage = () => {
   const SIZE = 7;
   const { user, jwt } = useUserContext();
 
-  const { data: friendListData, refetch: refetchFriendList } = useFriendList({ jwt, size: SIZE });
+  const { data: friendListData, refetch: refetchFriendList } = useFriendList({ jwt });
   const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt, size: SIZE });
   const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
