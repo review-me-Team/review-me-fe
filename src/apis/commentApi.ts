@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 interface Emoji {
   id: number;
@@ -40,13 +41,10 @@ export const getCommentList = async ({
     headers,
   };
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`, requestOptions);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetCommentList> = await response.json();
+  const data = apiClient.get<GetCommentList>(
+    `${REQUEST_URL.RESUME}/${resumeId}/comment?page=${pageParam}`,
+    requestOptions,
+  );
 
   return data;
 };
@@ -83,20 +81,13 @@ export const postComment = async ({
 }) => {
   const newComment: { content: string } = { content };
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment`, {
-    method: 'POST',
+  const data = await apiClient.post<null>(`${REQUEST_URL.RESUME}/${resumeId}/comment`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newComment),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -115,18 +106,11 @@ export const deleteComment = async ({
   commentId: number;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}`, {
-    method: 'DELETE',
+  const data = await apiClient.delete<null>(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -147,20 +131,13 @@ export const patchComment = async ({
   content: string;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}`, {
-    method: 'PATCH',
+  const data = await apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ content }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -181,20 +158,13 @@ export const patchEmojiAboutComment = async ({
   emojiId: number | null;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}/emoji`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/comment/${commentId}/emoji`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ id: emojiId }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
