@@ -7,6 +7,7 @@ import { UserProvider } from '@contexts/userContext';
 import MainPage from '@pages/MainPage';
 import MyPage from '@pages/MyPage';
 import MyResume from '@pages/MyResume';
+import NotFound from '@pages/NotFound';
 import Resume from '@pages/Resume';
 import ResumeDetail from '@pages/ResumeDetail';
 import ResumeUpdate from '@pages/ResumeUpdate';
@@ -17,6 +18,7 @@ import { ROUTE_PATH } from '@constants';
 const router = createBrowserRouter([
   {
     path: ROUTE_PATH.ROOT,
+    errorElement: <NotFound />,
     element: (
       <UserProvider>
         <TokenRefresh>
