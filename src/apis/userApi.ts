@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { FRIEND_LIST_SIZE, REQUEST_URL } from '@constants';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 interface User {
   id: number;
@@ -22,19 +23,13 @@ export const getUserList = async ({
   start: string;
   jwt?: string;
 }) => {
-  const queryString = `page=${pageParam}&size=7${start && `&start=${start}`}`;
-  const response = await fetch(`${REQUEST_URL.USER}?${queryString}`, {
-    method: 'GET',
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
+
+  const data = apiClient.get<GetUserList>(`${REQUEST_URL.USER}?${queryString}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetUserList> = await response.json();
 
   return data;
 };
