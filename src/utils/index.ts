@@ -59,3 +59,7 @@ export const validateTitle = (title: string) => {
 export const validateYear = (year: number) => {
   return year >= 0;
 };
+
+export const validateContent = (content: string) => {
+  return content.length > 0;
+};
