@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchComment } from '@apis/commentApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, CommentFormLayout } from '../style';
 
 interface Props {
@@ -31,9 +32,7 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
@@ -60,7 +59,7 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
 
   return (
     <CommentFormLayout $type="edit" onSubmit={handleSubmit}>
-      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value.trim())} />
       <ButtonWrapper $type="edit">
         <Button
           variant="outline"
