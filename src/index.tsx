@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ReviewMeProvider } from 'review-me-design-system';
+import { ToastProvider } from '@contexts/toastContext';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import router from './router';
 
@@ -25,7 +26,9 @@ const main = async () => {
         <ReactQueryDevtools initialIsOpen={false} />
         <ReviewMeProvider>
           <GlobalStyle />
-          <RouterProvider router={router} />
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
         </ReviewMeProvider>
       </QueryClientProvider>
     </React.StrictMode>,
