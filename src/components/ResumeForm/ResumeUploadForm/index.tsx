@@ -6,11 +6,13 @@ import PdfViewer from '@components/PdfViewer';
 import Select from '@components/Select';
 import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
+import { useToastContext } from '@contexts/toastContext';
 import { useUserContext } from '@contexts/userContext';
 import { usePostResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
 import { breakPoints } from '@styles/common';
-import { ROUTE_PATH } from '@constants';
+import { FAILURE_MESSAGE, ROUTE_PATH, SUCCESS_MESSAGE } from '@constants';
+import { validateFileName, validateTitle, validateYear } from '@utils';
 import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from '../style';
 
 const ResumeUploadForm = () => {
@@ -23,6 +25,8 @@ const ResumeUploadForm = () => {
   const [occupationId, setOccupationId] = useState<number | undefined>();
   const [scopeId, setScopeId] = useState<number | undefined>();
   const [year, setYear] = useState<number | undefined>();
+
+  const { openToast } = useToastContext();
   const { mutate: addResume } = usePostResume();
 
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
@@ -40,7 +44,37 @@ const ResumeUploadForm = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !file || !occupationId || !scopeId || title.length === 0 || typeof year !== 'number') return;
+    if (!jwt) return;
+
+    if (!file) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.NOT_SELECTED_FILE });
+      return;
+    }
+
+    if (!validateFileName(file)) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.LIMITED_FILE_NAME });
+      return;
+    }
+
+    if (!validateTitle(title)) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.EMPTY_TITLE });
+      return;
+    }
+
+    if (!scopeId) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.NOT_SELECTED_SCOPE });
+      return;
+    }
+
+    if (!occupationId) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.NOT_SELECTED_OCCUPATION });
+      return;
+    }
+
+    if (!(year && validateYear(year))) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.INVALID_YEAR });
+      return;
+    }
 
     addResume(
       {
@@ -55,6 +89,7 @@ const ResumeUploadForm = () => {
         onSuccess: (data) => {
           const { id } = data;
           navigate(`${ROUTE_PATH.RESUME}/${id}`);
+          openToast({ type: 'success', message: SUCCESS_MESSAGE.UPLOAD_RESUME });
         },
       },
     );
@@ -113,7 +148,7 @@ const ResumeUploadForm = () => {
 
           <Field>
             <Label htmlFor="title">제목</Label>
-            <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value.trim())} />
           </Field>
 
           <Field>
@@ -175,7 +210,7 @@ const ResumeUploadForm = () => {
           </Field>
 
           <Field>
-            <Label htmlFor="year">재직 기간</Label>
+            <Label htmlFor="year">경력</Label>
             <Input
               type="number"
               id="year"
@@ -188,7 +223,7 @@ const ResumeUploadForm = () => {
           </Field>
         </FieldContainer>
 
-        <Button variant="default" size="m">
+        <Button type="submit" variant="default" size="m">
           올리기
         </Button>
       </Form>
