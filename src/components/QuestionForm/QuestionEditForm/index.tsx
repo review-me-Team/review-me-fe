@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchQuestion } from '@apis/questionApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
@@ -42,19 +43,19 @@ const QuestionEditForm = ({
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
+
+    const hasLabelContent = labelContent.length > 0;
 
     editQuestion(
       {
         resumeId,
         questionId,
-        labelContent: labelContent.trim(),
-        content: content.trim(),
+        labelContent: hasLabelContent ? labelContent : null,
+        content,
         jwt,
       },
       {
@@ -76,13 +77,13 @@ const QuestionEditForm = ({
       <Input
         placeholder="예상질문 키워드"
         value={labelContent}
-        onChange={(e) => setLabelContent(e.target.value)}
+        onChange={(e) => setLabelContent(e.target.value.trim())}
       />
       <Textarea
         ref={contentRef}
         placeholder="예상질문"
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value.trim())}
       />
       <ButtonWrapper $type="edit">
         <Button

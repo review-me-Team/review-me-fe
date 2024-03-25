@@ -4,6 +4,7 @@ import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchFeedback } from '@apis/feedbackApi';
 import { useLabelList } from '@apis/utilApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 
 interface Props {
@@ -24,7 +25,7 @@ const FeedbackEditForm = ({
   onCancelEdit,
 }: Props) => {
   const queryClient = useQueryClient();
-  const { jwt } = useUserContext();
+  const { jwt, isLoggedIn } = useUserContext();
 
   const { data: labelList } = useLabelList();
   const initLabelId = labelList?.find(({ label }) => label === initLabelContent)?.id;
@@ -46,9 +47,7 @@ const FeedbackEditForm = ({
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
@@ -85,6 +84,8 @@ const FeedbackEditForm = ({
               py="0.25rem"
               px="0.75rem"
               onClick={() => {
+                if (!isLoggedIn) return;
+
                 const isLabelIdSameAsSelected = labelId === id;
 
                 if (isLabelIdSameAsSelected) {
@@ -104,7 +105,8 @@ const FeedbackEditForm = ({
         ref={contentRef}
         placeholder="피드백"
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={(e) => setContent(e.target.value.trim())}
+        disabled={!isLoggedIn}
       />
       <ButtonWrapper $type="edit">
         <Button
@@ -117,7 +119,7 @@ const FeedbackEditForm = ({
         >
           취소
         </Button>
-        <Button variant="default" size="s">
+        <Button type="submit" variant="default" size="s" disabled={!isLoggedIn}>
           수정
         </Button>
       </ButtonWrapper>

@@ -1,8 +1,9 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostComment } from '@apis/commentApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, CommentFormLayout } from '../style';
 
 interface Props {
@@ -11,9 +12,11 @@ interface Props {
 
 const CommentAddForm = ({ resumeId }: Props) => {
   const queryClient = useQueryClient();
-  const { jwt } = useUserContext();
+  const { jwt, isLoggedIn } = useUserContext();
 
   const [content, setContent] = useState<string>('');
+
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate: addComment } = usePostComment();
 
@@ -24,7 +27,12 @@ const CommentAddForm = ({ resumeId }: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !resumeId || !content) return;
+    if (!jwt) return;
+
+    if (!validateContent(content)) {
+      contentRef.current?.focus();
+      return;
+    }
 
     addComment(
       {
@@ -46,9 +54,15 @@ const CommentAddForm = ({ resumeId }: Props) => {
 
   return (
     <CommentFormLayout $type="add" onSubmit={handleSubmit}>
-      <Textarea placeholder="댓글" value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea
+        ref={contentRef}
+        placeholder="댓글"
+        value={content}
+        onChange={(e) => setContent(e.target.value.trim())}
+        disabled={!isLoggedIn}
+      />
       <ButtonWrapper $type="add">
-        <Button variant="default" size="s">
+        <Button type="submit" variant="default" size="s" disabled={!isLoggedIn}>
           작성
         </Button>
       </ButtonWrapper>

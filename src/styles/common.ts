@@ -1,5 +1,5 @@
 import type { CSSProp } from 'styled-components';
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 export const ellipsisStyles = css`
   overflow-x: hidden;
@@ -33,4 +33,13 @@ export const PageMain = styled.main<{ $css?: CSSProp }>`
   }
 
   ${({ $css }) => $css}
+`;
+
+export const fadeIn = keyframes`
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
 `;

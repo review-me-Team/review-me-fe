@@ -4,6 +4,7 @@ import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedbackReply } from '@apis/feedbackApi';
 import { usePostQuestionReply } from '@apis/questionApi';
+import { validateContent } from '@utils';
 import { ReplyFormLayout } from '../style';
 
 interface Props {
@@ -13,8 +14,7 @@ interface Props {
 }
 
 const ReplyAddForm = ({ type, resumeId, parentId }: Props) => {
-  const { jwt } = useUserContext();
-  const queryClient = useQueryClient();
+  const { jwt, isLoggedIn } = useUserContext();
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [content, setContent] = useState<string>('');
@@ -30,9 +30,7 @@ const ReplyAddForm = ({ type, resumeId, parentId }: Props) => {
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
@@ -47,8 +45,13 @@ const ReplyAddForm = ({ type, resumeId, parentId }: Props) => {
 
   return (
     <ReplyFormLayout onSubmit={handleSubmit}>
-      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
-      <Button variant="default" size="s">
+      <Textarea
+        ref={contentRef}
+        value={content}
+        onChange={(e) => setContent(e.target.value.trim())}
+        disabled={!isLoggedIn}
+      />
+      <Button type="submit" variant="default" size="s" disabled={!isLoggedIn}>
         작성
       </Button>
     </ReplyFormLayout>
