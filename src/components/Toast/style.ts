@@ -1,12 +1,12 @@
 import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
-import { fadeIn } from '@styles/common';
+import { breakPoints, fadeIn } from '@styles/common';
 
 const ToastLayout = styled.li<{ $isOpen: boolean; $type: 'success' | 'error' }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 17.5rem;
+  width: 20rem;
   height: fit-content;
   padding: 0.5rem 1rem;
   position: fixed;
@@ -24,6 +24,10 @@ const ToastLayout = styled.li<{ $isOpen: boolean; $type: 'success' | 'error' }>`
   z-index: 999;
 
   animation: ${fadeIn} 0.5s;
+
+  @media ${breakPoints.mobile} {
+    width: 80%;
+  }
 `;
 
 const IconButton = styled.button`
