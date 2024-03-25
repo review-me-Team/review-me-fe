@@ -4,6 +4,7 @@ import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchFeedback } from '@apis/feedbackApi';
 import { usePatchQuestion } from '@apis/questionApi';
+import { validateContent } from '@utils';
 import { ButtonsContainer, ReplyFormLayout } from '../style';
 
 interface Props {
@@ -33,9 +34,7 @@ const ReplyEditForm = ({ type, resumeId, parentId, id, initContent, onCancelEdit
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
@@ -67,7 +66,7 @@ const ReplyEditForm = ({ type, resumeId, parentId, id, initContent, onCancelEdit
 
   return (
     <ReplyFormLayout onSubmit={handleSubmit}>
-      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value.trim())} />
       <ButtonsContainer>
         <Button
           variant="outline"
