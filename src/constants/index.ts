@@ -50,4 +50,5 @@ export const FAILURE_MESSAGE = {
 
 export const SUCCESS_MESSAGE = {
   UPLOAD_RESUME: '이력서가 성공적으로 업로드되었습니다.',
+  UPDATE_RESUME: '이력서가 성공적으로 수정되었습니다.',
 };

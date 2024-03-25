@@ -6,11 +6,13 @@ import PdfViewer from '@components/PdfViewer';
 import Select from '@components/Select';
 import useMediaQuery from '@hooks/useMediaQuery';
 import usePdf from '@hooks/usePdf';
+import { useToastContext } from '@contexts/toastContext';
 import { useUserContext } from '@contexts/userContext';
 import { useUpdateResume } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
 import { breakPoints } from '@styles/common';
-import { ROUTE_PATH } from '@constants';
+import { FAILURE_MESSAGE, ROUTE_PATH, SUCCESS_MESSAGE } from '@constants';
+import { validateTitle, validateYear } from '@utils';
 import { Field, FieldContainer, Form, ResumeFormLayout, Label } from '../style';
 
 interface Props {
@@ -24,6 +26,7 @@ interface Props {
 
 const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initScopeId, initYear }: Props) => {
   const navigate = useNavigate();
+  const { openToast } = useToastContext();
 
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
@@ -45,7 +48,17 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !occupationId || !scopeId || title.length === 0 || year < 0) return;
+    if (!jwt) return;
+
+    if (!validateTitle(title)) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.EMPTY_TITLE });
+      return;
+    }
+
+    if (!(year && validateYear(year))) {
+      openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.INVALID_YEAR });
+      return;
+    }
 
     updateResume(
       {
@@ -59,6 +72,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
       {
         onSuccess: () => {
           navigate(`${ROUTE_PATH.RESUME}/${resumeId}`);
+          openToast({ type: 'success', message: SUCCESS_MESSAGE.UPDATE_RESUME });
         },
       },
     );
