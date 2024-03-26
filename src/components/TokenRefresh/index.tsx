@@ -1,44 +1,36 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '@hooks/useAuth';
+import { useToastContext } from '@contexts/toastContext';
 import { useUserContext } from '@contexts/userContext';
-import { ROUTE_PATH } from '@constants';
+import { useRenewJwt } from '@apis/login';
+import { API_CUSTOM_ERROR_CODE, ROUTE_PATH } from '@constants';
 
 interface Props {
   children: React.ReactNode;
 }
 
 const TokenRefresh = ({ children }: Props) => {
-  const { getRenewedJwtQuery } = useAuth();
-  const { refetch, data, isError, isSuccess, isFetched } = getRenewedJwtQuery;
-  const { login, logout, isLoggedIn, jwt } = useUserContext();
+  const { data, status, error, isFetched } = useRenewJwt();
+  const { login, logout, isLoggedIn } = useUserContext();
+  const { openToast } = useToastContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const shouldRefreshJwt = isLoggedIn;
+    if (isLoggedIn) return;
 
-    if (!shouldRefreshJwt) return;
-
-    if (!isFetched) {
-      refetch();
-      return;
-    }
-
-    if (isSuccess && data) {
+    if (status === 'success' && data) {
       login(data.jwt);
     }
-    if (isError) {
-      logout();
-      alert('다시 로그인해주세요!');
-      navigate(ROUTE_PATH.ROOT);
+    if (status === 'error') {
+      if (error.code === 1003 || error.code === 1004) {
+        openToast({ type: 'error', message: API_CUSTOM_ERROR_CODE[error.code] });
+        logout();
+        navigate(ROUTE_PATH.ROOT);
+      }
     }
-  }, [isSuccess, isError, isFetched, data, isLoggedIn]);
+  }, [isFetched, isLoggedIn, data, status, error]);
 
-  const isRenewedJwtNotReceived = isLoggedIn && !jwt;
-
-  if (isRenewedJwtNotReceived) {
-    return <></>;
-  }
+  if (status === 'pending') return <></>;
 
   return <>{children}</>;
 };
