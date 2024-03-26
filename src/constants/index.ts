@@ -36,6 +36,12 @@ export const FRIEND_LIST_SIZE = 7;
 
 export const RESUME_FILE_NAME_LIMIT = 30;
 
+export const API_CUSTOM_ERROR_CODE = {
+  1001: '인증에 실패했습니다.',
+  1003: '재로그인에 실패했습니다. 다시 로그인해주세요.',
+  1004: '토큰이 유효하지 않습니다.',
+} as const;
+
 export const FAILURE_MESSAGE = {
   RESUME: {
     NOT_SELECTED_FILE: '파일을 선택해주세요.',
