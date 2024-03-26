@@ -21,6 +21,7 @@ export const REQUEST_URL = {
   SCOPE: `${BASE_URL}/scope`,
   OAUTH: `${BASE_URL}/login/oauth`,
   RENEW_JWT: `${BASE_URL}/user/refresh`,
+  LOGOUT: `${BASE_URL}/logout`,
 } as const;
 
 export const PDF_VIEWER_SCALE = {
@@ -28,8 +29,6 @@ export const PDF_VIEWER_SCALE = {
   MIN_SCALE: 0.6,
   SCALE_STEP: 0.2,
 } as const;
-
-export const IS_LOGGED_IN_KEY = 'isLoggedIn';
 
 export const REPLY_LIST_SIZE = 4;
 
