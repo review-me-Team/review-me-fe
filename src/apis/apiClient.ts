@@ -1,4 +1,4 @@
-import { ApiResponse } from './response.types';
+import { ApiErrorResponse, ApiResponse } from './response.types';
 
 const fetcher = async <DataType>(url: string, method: string, options: RequestInit = {}) => {
   const response = await fetch(url, {
@@ -7,7 +7,9 @@ const fetcher = async <DataType>(url: string, method: string, options: RequestIn
   });
 
   if (!response.ok) {
-    throw response;
+    const errResponse: ApiErrorResponse = await response.json();
+
+    throw errResponse;
   }
 
   const { data }: ApiResponse<DataType> = await response.json();
