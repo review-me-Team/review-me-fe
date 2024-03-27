@@ -4,6 +4,7 @@ import { Outlet, createBrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import DelayedComponent from '@components/DelayedComponent';
 import Layout from '@components/Layout';
+import PrivateRoute from '@components/PrivateRoute';
 import Spinner from '@components/Spinner';
 import TokenRefresh from '@components/TokenRefresh';
 import { UserProvider } from '@contexts/userContext';
@@ -54,7 +55,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATH.MY_PAGE,
-        element: <MyPage />,
+        element: (
+          <PrivateRoute>
+            <MyPage />
+          </PrivateRoute>
+        ),
       },
       {
         path: ROUTE_PATH.RESUME,
@@ -66,15 +71,27 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATH.MY_RESUME,
-        element: <MyResume />,
+        element: (
+          <PrivateRoute>
+            <MyResume />
+          </PrivateRoute>
+        ),
       },
       {
         path: ROUTE_PATH.RESUME_UPLOAD,
-        element: <ResumeUpload />,
+        element: (
+          <PrivateRoute>
+            <ResumeUpload />
+          </PrivateRoute>
+        ),
       },
       {
         path: `${ROUTE_PATH.RESUME_UPDATE}/:resumeId`,
-        element: <ResumeUpdate />,
+        element: (
+          <PrivateRoute>
+            <ResumeUpdate />
+          </PrivateRoute>
+        ),
       },
     ],
   },
