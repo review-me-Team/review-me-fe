@@ -1,19 +1,30 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet, createBrowserRouter } from 'react-router-dom';
 
+import styled from 'styled-components';
+import DelayedComponent from '@components/DelayedComponent';
 import Layout from '@components/Layout';
+import Spinner from '@components/Spinner';
 import TokenRefresh from '@components/TokenRefresh';
 import { UserProvider } from '@contexts/userContext';
-import MainPage from '@pages/MainPage';
-import MyPage from '@pages/MyPage';
-import MyResume from '@pages/MyResume';
-import NotFound from '@pages/NotFound';
-import Resume from '@pages/Resume';
-import ResumeDetail from '@pages/ResumeDetail';
-import ResumeUpdate from '@pages/ResumeUpdate';
-import ResumeUpload from '@pages/ResumeUpload';
-import SocialLogin from '@pages/SocialLogin';
 import { ROUTE_PATH } from '@constants';
+
+const MainPage = React.lazy(() => import(/* webpackChunkName: "mainPage" */ '@pages/MainPage'));
+const MyPage = React.lazy(() => import(/* webpackChunkName: "myPage" */ '@pages/MyPage'));
+const MyResume = React.lazy(() => import(/* webpackChunkName: "myResume" */ '@pages/MyResume'));
+const NotFound = React.lazy(() => import(/* webpackChunkName: "notFound" */ '@pages/NotFound'));
+const Resume = React.lazy(() => import(/* webpackChunkName: "resume" */ '@pages/Resume'));
+const ResumeDetail = React.lazy(() => import(/* webpackChunkName: "resumeDetail" */ '@pages/ResumeDetail'));
+const ResumeUpdate = React.lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
+const ResumeUpload = React.lazy(() => import(/* webpackChunkName: "resumeUpload" */ '@pages/ResumeUpload'));
+const SocialLogin = React.lazy(() => import(/* webpackChunkName: "socialLogin" */ '@pages/SocialLogin'));
+
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 
 const router = createBrowserRouter([
   {
@@ -22,7 +33,17 @@ const router = createBrowserRouter([
     element: (
       <UserProvider>
         <TokenRefresh>
-          <Layout />
+          <Suspense
+            fallback={
+              <DelayedComponent>
+                <SpinnerWrapper>
+                  <Spinner size="6.25rem" />
+                </SpinnerWrapper>
+              </DelayedComponent>
+            }
+          >
+            <Layout />
+          </Suspense>
         </TokenRefresh>
       </UserProvider>
     ),
