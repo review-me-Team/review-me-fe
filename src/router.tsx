@@ -18,6 +18,9 @@ const ResumeDetail = React.lazy(() => import(/* webpackChunkName: "resumeDetail"
 const ResumeUpdate = React.lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
 const ResumeUpload = React.lazy(() => import(/* webpackChunkName: "resumeUpload" */ '@pages/ResumeUpload'));
 const SocialLogin = React.lazy(() => import(/* webpackChunkName: "socialLogin" */ '@pages/SocialLogin'));
+const PrivateRoute = React.lazy(
+  () => import(/* webpackChunkName: "privateRoute" */ '@components/PrivateRoute'),
+);
 
 const SpinnerWrapper = styled.div`
   display: flex;
@@ -54,7 +57,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATH.MY_PAGE,
-        element: <MyPage />,
+        element: (
+          <PrivateRoute>
+            <MyPage />
+          </PrivateRoute>
+        ),
       },
       {
         path: ROUTE_PATH.RESUME,
@@ -66,15 +73,27 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTE_PATH.MY_RESUME,
-        element: <MyResume />,
+        element: (
+          <PrivateRoute>
+            <MyResume />
+          </PrivateRoute>
+        ),
       },
       {
         path: ROUTE_PATH.RESUME_UPLOAD,
-        element: <ResumeUpload />,
+        element: (
+          <PrivateRoute>
+            <ResumeUpload />
+          </PrivateRoute>
+        ),
       },
       {
         path: `${ROUTE_PATH.RESUME_UPDATE}/:resumeId`,
-        element: <ResumeUpdate />,
+        element: (
+          <PrivateRoute>
+            <ResumeUpdate />
+          </PrivateRoute>
+        ),
       },
     ],
   },
