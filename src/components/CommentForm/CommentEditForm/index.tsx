@@ -41,7 +41,7 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
       {
         resumeId,
         commentId,
-        content,
+        content: content.trim(),
         jwt,
       },
       {
@@ -59,7 +59,7 @@ const CommentEditForm = ({ resumeId, commentId, initContent, onCancelEdit }: Pro
 
   return (
     <CommentFormLayout $type="edit" onSubmit={handleSubmit}>
-      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value.trim())} />
+      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
       <ButtonWrapper $type="edit">
         <Button
           variant="outline"

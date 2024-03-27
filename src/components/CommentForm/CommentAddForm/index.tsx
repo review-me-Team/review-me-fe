@@ -37,7 +37,7 @@ const CommentAddForm = ({ resumeId }: Props) => {
     addComment(
       {
         resumeId,
-        content,
+        content: content.trim(),
         jwt,
       },
       {
@@ -58,7 +58,7 @@ const CommentAddForm = ({ resumeId }: Props) => {
         ref={contentRef}
         placeholder="댓글"
         value={content}
-        onChange={(e) => setContent(e.target.value.trim())}
+        onChange={(e) => setContent(e.target.value)}
         disabled={!isLoggedIn}
       />
       <ButtonWrapper $type="add">
