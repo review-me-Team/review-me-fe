@@ -4,7 +4,6 @@ import { Outlet, createBrowserRouter } from 'react-router-dom';
 import styled from 'styled-components';
 import DelayedComponent from '@components/DelayedComponent';
 import Layout from '@components/Layout';
-import PrivateRoute from '@components/PrivateRoute';
 import Spinner from '@components/Spinner';
 import TokenRefresh from '@components/TokenRefresh';
 import { UserProvider } from '@contexts/userContext';
@@ -19,6 +18,9 @@ const ResumeDetail = React.lazy(() => import(/* webpackChunkName: "resumeDetail"
 const ResumeUpdate = React.lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
 const ResumeUpload = React.lazy(() => import(/* webpackChunkName: "resumeUpload" */ '@pages/ResumeUpload'));
 const SocialLogin = React.lazy(() => import(/* webpackChunkName: "socialLogin" */ '@pages/SocialLogin'));
+const PrivateRoute = React.lazy(
+  () => import(/* webpackChunkName: "privateRoute" */ '@components/PrivateRoute'),
+);
 
 const SpinnerWrapper = styled.div`
   display: flex;
