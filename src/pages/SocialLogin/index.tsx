@@ -1,32 +1,33 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import useAuth from '@hooks/useAuth';
+import { useToastContext } from '@contexts/toastContext';
 import { useUserContext } from '@contexts/userContext';
-import { IS_LOGGED_IN_KEY, ROUTE_PATH } from '@constants';
+import { usePostRefreshToken } from '@apis/login';
+import { API_CUSTOM_ERROR_CODE, ROUTE_PATH } from '@constants';
 
 const SocialLogin = () => {
   const [searchParams] = useSearchParams();
   const code = searchParams.get('code');
 
-  const { createRefreshTokenQuery } = useAuth();
+  const { mutate: createRefreshToken, status } = usePostRefreshToken();
   const { logout } = useUserContext();
+  const { openToast } = useToastContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (code)
-      createRefreshTokenQuery.mutate(code, {
-        onSuccess: () => {
-          localStorage.setItem(IS_LOGGED_IN_KEY, 'true');
-        },
-        onError: () => {
-          alert('로그인에 실패했습니다.');
+    if (code && status === 'idle')
+      createRefreshToken(code, {
+        onError: (error) => {
+          if (error.code === 1001) {
+            openToast({ type: 'error', message: API_CUSTOM_ERROR_CODE[error.code] });
+          }
           logout();
         },
         onSettled: () => {
           navigate(ROUTE_PATH.ROOT);
         },
       });
-  }, [code]);
+  }, [code, status]);
 
   return <></>;
 };

@@ -21,6 +21,7 @@ export const REQUEST_URL = {
   SCOPE: `${BASE_URL}/scope`,
   OAUTH: `${BASE_URL}/login/oauth`,
   RENEW_JWT: `${BASE_URL}/user/refresh`,
+  LOGOUT: `${BASE_URL}/logout`,
 } as const;
 
 export const PDF_VIEWER_SCALE = {
@@ -29,13 +30,17 @@ export const PDF_VIEWER_SCALE = {
   SCALE_STEP: 0.2,
 } as const;
 
-export const IS_LOGGED_IN_KEY = 'isLoggedIn';
-
 export const REPLY_LIST_SIZE = 4;
 
 export const FRIEND_LIST_SIZE = 7;
 
 export const RESUME_FILE_NAME_LIMIT = 30;
+
+export const API_CUSTOM_ERROR_CODE = {
+  1001: '인증에 실패했습니다.',
+  1003: '재로그인에 실패했습니다. 다시 로그인해주세요.',
+  1004: '토큰이 유효하지 않습니다.',
+} as const;
 
 export const FAILURE_MESSAGE = {
   RESUME: {
