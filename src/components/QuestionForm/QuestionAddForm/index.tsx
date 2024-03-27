@@ -42,8 +42,8 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
     addQuestion(
       {
         resumeId,
-        content,
-        labelContent: hasLabelContent ? labelContent : null,
+        content: content.trim(),
+        labelContent: hasLabelContent ? labelContent.trim() : null,
         resumePage,
         jwt,
       },
@@ -65,14 +65,14 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
       <Input
         placeholder="예상질문 키워드"
         value={labelContent}
-        onChange={(e) => setLabelContent(e.target.value.trim())}
+        onChange={(e) => setLabelContent(e.target.value)}
         disabled={!isLoggedIn}
       />
       <Textarea
         ref={contentRef}
         placeholder="예상질문"
         value={content}
-        onChange={(e) => setContent(e.target.value.trim())}
+        onChange={(e) => setContent(e.target.value)}
         disabled={!isLoggedIn}
       />
       <ButtonWrapper $type="add">
