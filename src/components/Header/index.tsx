@@ -172,7 +172,13 @@ const Header = () => {
           </RightContainer>
         </NavContainer>
       </HeaderLayout>
-      <LoginRequestModal isOpen={isOpenLoginRequestModal} onClose={closeLoginRequestModal} />
+      <LoginRequestModal
+        isOpen={isOpenLoginRequestModal}
+        onClose={() => {
+          closeLoginRequestModal();
+          manageBodyScroll(true);
+        }}
+      />
     </>
   );
 };
