@@ -63,7 +63,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
     updateResume(
       {
         resumeId,
-        title,
+        title: title.trim(),
         scopeId,
         occupationId,
         year,
