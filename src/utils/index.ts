@@ -53,7 +53,7 @@ export const validateFileName = (file: File) => {
 };
 
 export const validateTitle = (title: string) => {
-  return title.length > 0;
+  return title.trim().length > 0;
 };
 
 export const validateYear = (year: number) => {
@@ -61,5 +61,5 @@ export const validateYear = (year: number) => {
 };
 
 export const validateContent = (content: string) => {
-  return content.length > 0;
+  return content.trim().length > 0;
 };
