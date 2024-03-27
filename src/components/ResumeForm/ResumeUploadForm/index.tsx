@@ -78,7 +78,7 @@ const ResumeUploadForm = () => {
 
     addResume(
       {
-        title,
+        title: title.trim(),
         pdf: file,
         scopeId,
         occupationId,
@@ -148,7 +148,7 @@ const ResumeUploadForm = () => {
 
           <Field>
             <Label htmlFor="title">제목</Label>
-            <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value.trim())} />
+            <Input id="title" name="title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </Field>
 
           <Field>

@@ -1,5 +1,4 @@
 import React, { FormEvent, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedbackReply } from '@apis/feedbackApi';
@@ -48,7 +47,7 @@ const ReplyAddForm = ({ type, resumeId, parentId }: Props) => {
       <Textarea
         ref={contentRef}
         value={content}
-        onChange={(e) => setContent(e.target.value.trim())}
+        onChange={(e) => setContent(e.target.value)}
         disabled={!isLoggedIn}
       />
       <Button type="submit" variant="default" size="s" disabled={!isLoggedIn}>

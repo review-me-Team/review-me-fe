@@ -66,7 +66,7 @@ const ReplyEditForm = ({ type, resumeId, parentId, id, initContent, onCancelEdit
 
   return (
     <ReplyFormLayout onSubmit={handleSubmit}>
-      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value.trim())} />
+      <Textarea ref={contentRef} value={content} onChange={(e) => setContent(e.target.value)} />
       <ButtonsContainer>
         <Button
           variant="outline"

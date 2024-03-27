@@ -54,8 +54,8 @@ const QuestionEditForm = ({
       {
         resumeId,
         questionId,
-        labelContent: hasLabelContent ? labelContent : null,
-        content,
+        labelContent: hasLabelContent ? labelContent.trim() : null,
+        content: content.trim(),
         jwt,
       },
       {
@@ -77,13 +77,13 @@ const QuestionEditForm = ({
       <Input
         placeholder="예상질문 키워드"
         value={labelContent}
-        onChange={(e) => setLabelContent(e.target.value.trim())}
+        onChange={(e) => setLabelContent(e.target.value)}
       />
       <Textarea
         ref={contentRef}
         placeholder="예상질문"
         value={content}
-        onChange={(e) => setContent(e.target.value.trim())}
+        onChange={(e) => setContent(e.target.value)}
       />
       <ButtonWrapper $type="edit">
         <Button
