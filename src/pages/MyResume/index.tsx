@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
 import MyResumeItem from '@components/MyResumeItem';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useMyResumeList } from '@apis/resumeApi';
 import { PageMain } from '@styles/common';
@@ -12,7 +13,13 @@ const MyResume = () => {
   const navigate = useNavigate();
   const { jwt } = useUserContext();
 
-  const { data: myResumeListData } = useMyResumeList({ jwt });
+  const { data: myResumeListData, fetchNextPage } = useMyResumeList({ jwt });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => fetchNextPage(),
+    options: {
+      threshold: 0.5,
+    },
+  });
 
   const myResumeList = myResumeListData?.pages.map((page) => page.resumes).flat() ?? [];
 
@@ -31,6 +38,7 @@ const MyResume = () => {
           );
         })}
       </MyResumeList>
+      <div ref={setTarget}></div>
     </PageMain>
   );
 };

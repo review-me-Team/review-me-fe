@@ -1,6 +1,7 @@
 import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 // GET 피드백 목록 조회
 interface Emoji {
@@ -46,16 +47,10 @@ export const getFeedbackList = async ({
     headers,
   };
 
-  const response = await fetch(
+  const data = apiClient.get<GetFeedbackList>(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
     requestOptions,
   );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetFeedbackList> = await response.json();
 
   return data;
 };
@@ -116,16 +111,10 @@ export const getFeedbackReplyList = async ({
     headers,
   };
 
-  const response = await fetch(
+  const data = apiClient.get<GetFeedbackReplyList>(
     `${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}?page=${pageParam}&size=${REPLY_LIST_SIZE}`,
     requestOptions,
   );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetFeedbackReplyList> = await response.json();
 
   return data;
 };
@@ -179,20 +168,13 @@ export const postFeedback = async ({
   };
   if (labelId) newFeedback['labelId'] = labelId;
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback`, {
-    method: 'POST',
+  const data = apiClient.post<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(newFeedback),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -211,18 +193,11 @@ export const deleteFeedback = async ({
   feedbackId: number;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
-    method: 'DELETE',
+  const data = apiClient.delete<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -250,20 +225,13 @@ export const patchFeedback = async ({
   };
   if (labelId) requestBody.labelId = labelId;
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify(requestBody),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -284,20 +252,13 @@ export const patchFeedbackCheck = async ({
   checked: boolean;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/check`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/check`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ checked }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -368,20 +329,13 @@ export const patchEmojiAboutFeedback = async ({
   emojiId: number | null;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/emoji`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${feedbackId}/emoji`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ id: emojiId }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -402,20 +356,13 @@ export const postFeedbackReply = async ({
   content: string;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}`, {
-    method: 'POST',
+  const data = apiClient.post<null>(`${REQUEST_URL.RESUME}/${resumeId}/feedback/${parentFeedbackId}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
     body: JSON.stringify({ content }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };

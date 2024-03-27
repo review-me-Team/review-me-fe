@@ -1,6 +1,13 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 // GET 이력서 목록 조회
 export interface Resume {
@@ -46,13 +53,7 @@ export const getResumeList = async ({
   queryString += `&startYear=${startYear}`;
   if (endYear < 10) queryString += `&endYear=${endYear}`;
 
-  const response = await fetch(`${REQUEST_URL.RESUME}?${queryString}`, requestOptions);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetResumeList> = await response.json();
+  const data = apiClient.get<GetResumeList>(`${REQUEST_URL.RESUME}?${queryString}`, requestOptions);
 
   return data;
 };
@@ -67,7 +68,7 @@ interface UseResumeListProps {
 export const useResumeList = ({ jwt, occupationId, startYear, endYear }: UseResumeListProps) => {
   const yearFilter = { startYear, endYear };
 
-  return useInfiniteQuery({
+  return useSuspenseInfiniteQuery({
     queryKey: ['resumeList', occupationId, yearFilter],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getResumeList({ pageParam, jwt, occupationId, startYear, endYear }),
@@ -95,18 +96,11 @@ interface GetMyResumeList extends PageNationData {
 
 // ! jwt가 없을 경우 401 에러 발생 (custom hook을 최상단에서 호출해야 하기 때문에 undefined도 허용)
 export const getMyResumeList = async ({ pageParam, jwt }: { pageParam: number; jwt?: string }) => {
-  const response = await fetch(`${REQUEST_URL.MY_RESUME}?page=${pageParam}`, {
-    method: 'GET',
+  const data = apiClient.get<GetMyResumeList>(`${REQUEST_URL.MY_RESUME}?page=${pageParam}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetMyResumeList> = await response.json();
 
   return data;
 };
@@ -148,13 +142,7 @@ export const getResumeDetail = async ({ resumeId, jwt }: { resumeId: number; jwt
     headers,
   };
 
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, requestOptions);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetResumeDetail> = await response.json();
+  const data = apiClient.get<GetResumeDetail>(`${REQUEST_URL.RESUME}/${resumeId}`, requestOptions);
 
   return data;
 };
@@ -190,19 +178,12 @@ export const postResume = async ({
   formData.append('occupationId', String(occupationId));
   formData.append('year', String(year));
 
-  const response = await fetch(REQUEST_URL.RESUME, {
-    method: 'POST',
+  const data = apiClient.post<PostResume>(REQUEST_URL.RESUME, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
     body: formData,
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<PostResume> = await response.json();
 
   return data;
 };
@@ -213,18 +194,11 @@ export const usePostResume = () => {
 
 // DELETE 이력서 삭제
 export const deleteResume = async ({ resumeId, jwt }: { resumeId: number; jwt: string }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, {
-    method: 'DELETE',
+  const data = apiClient.delete<null>(`${REQUEST_URL.RESUME}/${resumeId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -256,20 +230,13 @@ export const updateResume = async ({
   year: number;
   jwt: string;
 }) => {
-  const response = await fetch(`${REQUEST_URL.RESUME}/${resumeId}`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.RESUME}/${resumeId}`, {
     body: JSON.stringify({ title, scopeId, occupationId, year }),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };

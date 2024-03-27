@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostQuestion } from '@apis/questionApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 
 const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
-  const { jwt } = useUserContext();
+  const { jwt, isLoggedIn } = useUserContext();
 
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -31,19 +32,17 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
 
     if (!jwt || !resumeId) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
 
-    const hasLabelContent = labelContent.trim().length > 0;
+    const hasLabelContent = labelContent.length > 0;
 
     addQuestion(
       {
         resumeId,
-        content,
+        content: content.trim(),
         labelContent: hasLabelContent ? labelContent.trim() : null,
         resumePage,
         jwt,
@@ -67,15 +66,17 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
         placeholder="예상질문 키워드"
         value={labelContent}
         onChange={(e) => setLabelContent(e.target.value)}
+        disabled={!isLoggedIn}
       />
       <Textarea
         ref={contentRef}
         placeholder="예상질문"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        disabled={!isLoggedIn}
       />
       <ButtonWrapper $type="add">
-        <Button variant="default" size="s">
+        <Button variant="default" size="s" disabled={!isLoggedIn}>
           작성
         </Button>
       </ButtonWrapper>

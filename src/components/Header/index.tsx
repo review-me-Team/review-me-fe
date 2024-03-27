@@ -139,6 +139,7 @@ const Header = () => {
                   onClick={() => {
                     if (!isLoggedIn) {
                       openLoginRequestModal();
+                      manageBodyScroll(false);
                       return;
                     }
                     navigate(ROUTE_PATH.MY_RESUME);
@@ -153,9 +154,12 @@ const Header = () => {
           <RightContainer>
             <IconButton
               onClick={() => {
-                // * 로그인 된 상태일 경우 마이페이지로 이동
+                if (!isLoggedIn) {
+                  openLoginRequestModal();
+                  manageBodyScroll(false);
+                  return;
+                }
                 navigate(ROUTE_PATH.MY_PAGE);
-                // todo: 로그인하지 않았을 경우 로그인 유도하는 로직 구현하기
               }}
             >
               <Icon iconName="person" color={theme.color.accent.text.strong} width={32} height={32} />
@@ -168,7 +172,13 @@ const Header = () => {
           </RightContainer>
         </NavContainer>
       </HeaderLayout>
-      <LoginRequestModal isOpen={isOpenLoginRequestModal} onClose={closeLoginRequestModal} />
+      <LoginRequestModal
+        isOpen={isOpenLoginRequestModal}
+        onClose={() => {
+          closeLoginRequestModal();
+          manageBodyScroll(true);
+        }}
+      />
     </>
   );
 };

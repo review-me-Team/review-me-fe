@@ -1,3 +1,5 @@
+import { RESUME_FILE_NAME_LIMIT } from '@constants';
+
 export const formatDate = (date: string) => {
   const dateObj = new Date(date);
   const formattedDate = `
@@ -44,4 +46,20 @@ export const getRangeText = ({ min, max }: { min: number; max: number }) => {
   const maxText = max === 10 ? '10년 +' : `${max}년`;
 
   return `${minText} ~ ${maxText}`;
+};
+
+export const validateFileName = (file: File) => {
+  return file.name.length <= RESUME_FILE_NAME_LIMIT;
+};
+
+export const validateTitle = (title: string) => {
+  return title.trim().length > 0;
+};
+
+export const validateYear = (year: number) => {
+  return year >= 0;
+};
+
+export const validateContent = (content: string) => {
+  return content.trim().length > 0;
 };

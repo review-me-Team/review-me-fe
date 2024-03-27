@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Input, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchQuestion } from '@apis/questionApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 
 interface Props {
@@ -42,18 +43,18 @@ const QuestionEditForm = ({
 
     if (!jwt) return;
 
-    const hasContent = content.trim().length > 0;
-
-    if (!hasContent) {
+    if (!validateContent(content)) {
       contentRef.current?.focus();
       return;
     }
+
+    const hasLabelContent = labelContent.length > 0;
 
     editQuestion(
       {
         resumeId,
         questionId,
-        labelContent: labelContent.trim(),
+        labelContent: hasLabelContent ? labelContent.trim() : null,
         content: content.trim(),
         jwt,
       },

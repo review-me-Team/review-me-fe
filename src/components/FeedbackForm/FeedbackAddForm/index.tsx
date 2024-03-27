@@ -1,9 +1,10 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedback } from '@apis/feedbackApi';
 import { useLabelList } from '@apis/utilApi';
+import { validateContent } from '@utils';
 import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 
 interface Props {
@@ -13,10 +14,12 @@ interface Props {
 
 const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
   const queryClient = useQueryClient();
-  const { jwt } = useUserContext();
+  const { jwt, isLoggedIn } = useUserContext();
 
   const [labelId, setLabelId] = useState<number | undefined>();
   const [content, setContent] = useState<string>('');
+
+  const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate: addFeedback } = usePostFeedback();
   const { data: labelList } = useLabelList();
@@ -29,12 +32,17 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!jwt || !resumeId || !content) return;
+    if (!jwt || !resumeId) return;
+
+    if (!validateContent(content)) {
+      contentRef.current?.focus();
+      return;
+    }
 
     addFeedback(
       {
         resumeId,
-        content: content,
+        content: content.trim(),
         labelId,
         resumePage,
         jwt,
@@ -62,6 +70,8 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
               py="0.25rem"
               px="0.75rem"
               onClick={() => {
+                if (!isLoggedIn) return;
+
                 const isLabelIdSameAsSelected = labelId === id;
 
                 if (isLabelIdSameAsSelected) {
@@ -77,9 +87,15 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
           );
         })}
       </LabelList>
-      <Textarea placeholder="피드백" value={content} onChange={(e) => setContent(e.target.value)} />
+      <Textarea
+        ref={contentRef}
+        placeholder="피드백"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        disabled={!isLoggedIn}
+      />
       <ButtonWrapper $type="add">
-        <Button variant="default" size="s">
+        <Button type="submit" variant="default" size="s" disabled={!isLoggedIn}>
           작성
         </Button>
       </ButtonWrapper>

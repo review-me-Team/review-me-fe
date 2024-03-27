@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { REQUEST_URL } from '@constants';
-import { ApiResponse, PageNationData } from './response.types';
+import { FRIEND_LIST_SIZE, REQUEST_URL } from '@constants';
+import { apiClient } from './apiClient';
+import { PageNationData } from './response.types';
 
 // GET 친구 목록 조회
 export interface User {
@@ -17,43 +18,34 @@ interface GetFriendList extends PageNationData {
 export const getFriendList = async ({
   pageParam,
   jwt,
-  size,
   start,
 }: {
   pageParam: number;
   jwt?: string;
-  size: number;
   start?: string;
 }) => {
-  const queryString = `page=${pageParam}&size=${size || 10}${start && `&start=${start}`}`;
-  const response = await fetch(`${REQUEST_URL.FRIEND}?${queryString}`, {
-    method: 'GET',
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
+
+  const data = apiClient.get<GetFriendList>(`${REQUEST_URL.FRIEND}?${queryString}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetFriendList> = await response.json();
 
   return data;
 };
 
 interface UseFriendListProps {
   jwt?: string;
-  size?: number;
   start?: string;
   enabled?: boolean;
 }
 
-export const useFriendList = ({ jwt, size = 7, start = '', enabled = true }: UseFriendListProps) => {
+export const useFriendList = ({ jwt, start = '', enabled = true }: UseFriendListProps) => {
   return useInfiniteQuery({
     queryKey: ['friendList', start],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, size, start }),
+    queryFn: ({ pageParam }) => getFriendList({ pageParam, jwt, start }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
@@ -65,18 +57,11 @@ export const useFriendList = ({ jwt, size = 7, start = '', enabled = true }: Use
 
 // DELETE 친구 삭제
 export const deleteFriend = async ({ friendId, jwt }: { friendId: number; jwt: string }) => {
-  const response = await fetch(`${REQUEST_URL.FRIEND}/${friendId}`, {
-    method: 'DELETE',
+  const data = apiClient.delete<null>(`${REQUEST_URL.FRIEND}/${friendId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -94,20 +79,13 @@ export const useDeleteFriend = () => {
 
 // POST 친구 요청
 const postFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
-  const response = await fetch(`${REQUEST_URL.FRIEND}`, {
-    method: 'POST',
+  const data = apiClient.post<null>(`${REQUEST_URL.FRIEND}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ userId }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -125,29 +103,18 @@ interface GetFollowingList extends PageNationData {
 const getFollowingList = async ({
   pageParam,
   start,
-  size,
   jwt,
 }: {
   pageParam: number;
   start: string;
-  size: number;
   jwt?: string;
 }) => {
-  const response = await fetch(
-    `${REQUEST_URL.FRIEND}/following?page=${pageParam}&size=${size}${start && `&start=${start}`}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
+  const data = apiClient.get<GetFollowingList>(`${REQUEST_URL.FRIEND}/following?${queryString}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
     },
-  );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetFollowingList> = await response.json();
+  });
 
   return data;
 };
@@ -155,15 +122,14 @@ const getFollowingList = async ({
 interface UseFollowingListProps {
   jwt?: string;
   start?: string;
-  size?: number;
   enabled?: boolean;
 }
 
-export const useFollowingList = ({ jwt, start = '', size = 7, enabled = true }: UseFollowingListProps) => {
+export const useFollowingList = ({ jwt, start = '', enabled = true }: UseFollowingListProps) => {
   return useInfiniteQuery({
     queryKey: ['followingList', start],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFollowingList({ pageParam, start, size, jwt }),
+    queryFn: ({ pageParam }) => getFollowingList({ pageParam, start, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
@@ -187,21 +153,12 @@ const getFollowerList = async ({
   pageParam: number;
   start: string;
 }) => {
-  const response = await fetch(
-    `${REQUEST_URL.FRIEND}/follower?page=${pageParam}&size=7${start && `&start=${start}`}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
+  const queryString = `page=${pageParam}&size=${FRIEND_LIST_SIZE}${start && `&start=${start}`}`;
+  const data = apiClient.get<GetFollowerList>(`${REQUEST_URL.FRIEND}/follower?${queryString}`, {
+    headers: {
+      Authorization: `Bearer ${jwt}`,
     },
-  );
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<GetFollowerList> = await response.json();
+  });
 
   return data;
 };
@@ -221,18 +178,11 @@ export const useFollowerList = ({ jwt, start = '' }: { jwt?: string; start?: str
 
 // DELETE 친구 요청 취소
 const deleteFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
-  const response = await fetch(`${REQUEST_URL.FRIEND}/following/${userId}`, {
-    method: 'DELETE',
+  const data = apiClient.delete<null>(`${REQUEST_URL.FRIEND}/following/${userId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -245,20 +195,13 @@ export const useDeleteFriendRequest = () => {
 
 // PATCH 친구 요청 수락
 const acceptFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
-  const response = await fetch(REQUEST_URL.FRIEND, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(REQUEST_URL.FRIEND, {
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ userId }),
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };
@@ -269,25 +212,21 @@ export const useAcceptFriendRequest = () => {
   return useMutation({
     mutationFn: acceptFriendRequest,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['followerList'] });
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['followerList'] }),
+        queryClient.invalidateQueries({ queryKey: ['friendList'] }),
+      ]);
     },
   });
 };
 
 // PATCH 친구 요청 거절
 const rejectFriendRequest = async ({ userId, jwt }: { userId: number; jwt: string }) => {
-  const response = await fetch(`${REQUEST_URL.FRIEND}/${userId}`, {
-    method: 'PATCH',
+  const data = apiClient.patch<null>(`${REQUEST_URL.FRIEND}/${userId}`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const { data }: ApiResponse<null> = await response.json();
 
   return data;
 };

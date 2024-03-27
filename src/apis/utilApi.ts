@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
-import { ApiResponse } from './response.types';
+import { apiClient } from './apiClient';
 
 // GET 직군 목록 조회
 export interface Occupation {
@@ -13,15 +13,8 @@ interface GetOccupationList {
 }
 
 export const getOccupationList = async () => {
-  const response = await fetch(REQUEST_URL.OCCUPATION);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const {
-    data: { occupations },
-  }: ApiResponse<GetOccupationList> = await response.json();
+  const data = apiClient.get<GetOccupationList>(REQUEST_URL.OCCUPATION);
+  const { occupations } = await data;
 
   return occupations;
 };
@@ -46,15 +39,8 @@ interface GetScopeList {
 }
 
 export const getScopeList = async () => {
-  const response = await fetch(REQUEST_URL.SCOPE);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const {
-    data: { scopes },
-  }: ApiResponse<GetScopeList> = await response.json();
+  const data = apiClient.get<GetScopeList>(REQUEST_URL.SCOPE);
+  const { scopes } = await data;
 
   return scopes;
 };
@@ -74,15 +60,8 @@ interface GetEmojiList {
 }
 
 export const getEmojiList = async () => {
-  const response = await fetch(REQUEST_URL.EMOJI);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const {
-    data: { emojis },
-  }: ApiResponse<GetEmojiList> = await response.json();
+  const data = apiClient.get<GetEmojiList>(REQUEST_URL.EMOJI);
+  const { emojis } = await data;
 
   return emojis;
 };
@@ -102,15 +81,8 @@ interface GetLabelList {
 }
 
 export const getLabelList = async () => {
-  const response = await fetch(REQUEST_URL.LABEL);
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  const {
-    data: { labels },
-  }: ApiResponse<GetLabelList> = await response.json();
+  const data = apiClient.get<GetLabelList>(REQUEST_URL.LABEL);
+  const { labels } = await data;
 
   return labels;
 };
