@@ -105,7 +105,7 @@ const FeedbackEditForm = ({
         ref={contentRef}
         placeholder="피드백"
         value={content}
-        onChange={(e) => setContent(e.target.value.trim())}
+        onChange={(e) => setContent(e.target.value)}
         disabled={!isLoggedIn}
       />
       <ButtonWrapper $type="edit">
