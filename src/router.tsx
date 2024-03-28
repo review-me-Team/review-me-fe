@@ -3,16 +3,17 @@ import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import styled from 'styled-components';
 import DelayedComponent from '@components/DelayedComponent';
+import ErrorBoundary from '@components/ErrorBoundary/ErrorBoundary';
 import Layout from '@components/Layout';
 import Spinner from '@components/Spinner';
 import TokenRefresh from '@components/TokenRefresh';
 import { UserProvider } from '@contexts/userContext';
+import ErrorPage from '@pages/ErrorPage';
 import { ROUTE_PATH } from '@constants';
 
 const MainPage = React.lazy(() => import(/* webpackChunkName: "mainPage" */ '@pages/MainPage'));
 const MyPage = React.lazy(() => import(/* webpackChunkName: "myPage" */ '@pages/MyPage'));
 const MyResume = React.lazy(() => import(/* webpackChunkName: "myResume" */ '@pages/MyResume'));
-const NotFound = React.lazy(() => import(/* webpackChunkName: "notFound" */ '@pages/NotFound'));
 const Resume = React.lazy(() => import(/* webpackChunkName: "resume" */ '@pages/Resume'));
 const ResumeDetail = React.lazy(() => import(/* webpackChunkName: "resumeDetail" */ '@pages/ResumeDetail'));
 const ResumeUpdate = React.lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
@@ -32,21 +33,28 @@ const SpinnerWrapper = styled.div`
 const router = createBrowserRouter([
   {
     path: ROUTE_PATH.ROOT,
-    errorElement: <NotFound />,
+    errorElement: (
+      <ErrorPage
+        title="페이지를 찾을 수 없습니다."
+        description="올바른 주소를 입력했는지 다시 확인해주세요."
+      />
+    ),
     element: (
       <UserProvider>
         <TokenRefresh>
-          <Suspense
-            fallback={
-              <DelayedComponent>
-                <SpinnerWrapper>
-                  <Spinner size="6.25rem" />
-                </SpinnerWrapper>
-              </DelayedComponent>
-            }
-          >
-            <Layout />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense
+              fallback={
+                <DelayedComponent>
+                  <SpinnerWrapper>
+                    <Spinner size="6.25rem" />
+                  </SpinnerWrapper>
+                </DelayedComponent>
+              }
+            >
+              <Layout />
+            </Suspense>
+          </ErrorBoundary>
         </TokenRefresh>
       </UserProvider>
     ),
