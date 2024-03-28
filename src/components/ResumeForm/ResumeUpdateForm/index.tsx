@@ -55,7 +55,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
       return;
     }
 
-    if (!(year && validateYear(year))) {
+    if (!(typeof year === 'number' && validateYear(year))) {
       openToast({ type: 'error', message: FAILURE_MESSAGE.RESUME.INVALID_YEAR });
       return;
     }
