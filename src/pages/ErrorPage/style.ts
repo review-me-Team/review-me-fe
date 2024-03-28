@@ -2,7 +2,7 @@ import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 import { breakPoints } from '@styles/common';
 
-const NotFoundLayout = styled.div`
+const ErrorPageLayout = styled.div`
   display: flex;
   align-items: center;
   width: 80%;
@@ -14,7 +14,7 @@ const NotFoundLayout = styled.div`
   }
 `;
 
-const NotFoundSection = styled.section`
+const ErrorSection = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -22,7 +22,7 @@ const NotFoundSection = styled.section`
   width: 100%;
   height: 50%;
   padding: 1rem;
-  gap: 1rem;
+  gap: 2rem;
 
   background-color: ${theme.color.neutral.bg.default};
   border-radius: 1rem;
@@ -30,11 +30,17 @@ const NotFoundSection = styled.section`
 `;
 
 const Title = styled.h1`
-  ${theme.font.title.strong}
+  ${theme.font.title.medium}
 `;
 
 const Description = styled.h3`
-  ${theme.font.title.default}
+  ${theme.font.body.medium}
 `;
 
-export { NotFoundLayout, NotFoundSection, Title, Description };
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+export { ErrorPageLayout, ErrorSection, Title, Description, ButtonContainer };

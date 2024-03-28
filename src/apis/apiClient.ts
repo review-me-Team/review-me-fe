@@ -1,3 +1,4 @@
+import CustomError from './customError';
 import { ApiErrorResponse, ApiResponse } from './response.types';
 
 const fetcher = async <DataType>(url: string, method: string, options: RequestInit = {}) => {
@@ -7,9 +8,9 @@ const fetcher = async <DataType>(url: string, method: string, options: RequestIn
   });
 
   if (!response.ok) {
-    const errResponse: ApiErrorResponse = await response.json();
+    const { code, message }: ApiErrorResponse = await response.json();
 
-    throw errResponse;
+    throw new CustomError(code, message);
   }
 
   const { data }: ApiResponse<DataType> = await response.json();
