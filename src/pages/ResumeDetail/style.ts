@@ -119,6 +119,29 @@ const CommentList = styled.ul<{ $isMobile: boolean }>`
   height: ${({ $isMobile }) => ($isMobile ? '43.75rem' : '100%')};
 `;
 
+const CommentHeader = styled.header`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+
+  background-color: rgb(216, 243, 220, 0.7);
+  opacity: 0.8;
+  backdrop-filter: blur(0.25rem);
+
+  ${theme.font.title.weak}
+
+  z-index: 99;
+`;
+
+const SwitchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export {
   Main,
   ResumeViewer,
@@ -134,4 +157,6 @@ export {
   TabList,
   Tab,
   CommentList,
+  CommentHeader,
+  SwitchContainer,
 };

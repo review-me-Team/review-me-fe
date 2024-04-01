@@ -1,6 +1,6 @@
 import React, { MouseEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Icon } from 'review-me-design-system';
+import { Icon, Switch } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
@@ -33,12 +33,14 @@ import {
   WriterInfo,
   WriterInfoContainer,
   ResumeViewer,
+  CommentHeader,
+  SwitchContainer,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const { jwt, isLoggedIn } = useUserContext();
+  const { jwt, isLoggedIn, user } = useUserContext();
   const { resumeId } = useParams();
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
@@ -53,6 +55,11 @@ const ResumeDetail = () => {
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
+  const [filter, setFilter] = useState<{ checked: boolean; bookmarked: boolean }>({
+    checked: false,
+    bookmarked: false,
+  });
+
   const enabledAboutFeedbackList = isLoggedIn
     ? currentTab === 'feedback' && !!jwt
     : currentTab === 'feedback';
@@ -60,12 +67,15 @@ const ResumeDetail = () => {
   const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
+    checked: filter.checked,
     enabled: enabledAboutFeedbackList,
     jwt,
   });
   const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
+    checked: filter.checked,
+    bookmarked: filter.bookmarked,
     enabled: currentTab === 'question',
     jwt,
   });
@@ -92,6 +102,7 @@ const ResumeDetail = () => {
 
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
+    setFilter({ checked: false, bookmarked: false });
   };
 
   return (
@@ -159,6 +170,29 @@ const ResumeDetail = () => {
           </TabList>
 
           <CommentList $isMobile={isMobile}>
+            {currentTab !== 'comment' && (
+              <CommentHeader>
+                <span>필터</span>
+                <SwitchContainer>
+                  <Switch
+                    label="check"
+                    checked={filter.checked}
+                    onChange={() => {
+                      setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                    }}
+                  />
+                  {currentTab === 'question' && resumeDetail.writerId === user?.id && (
+                    <Switch
+                      label="bookmark"
+                      checked={filter.bookmarked}
+                      onChange={() => {
+                        setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
+                      }}
+                    />
+                  )}
+                </SwitchContainer>
+              </CommentHeader>
+            )}
             {currentTab === 'feedback' &&
               resumeDetail &&
               feedbackList?.map((feedback) => {
