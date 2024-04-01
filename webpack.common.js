@@ -16,7 +16,7 @@ module.exports = {
     clean: true,
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.mp4'],
     alias: {
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@components': path.resolve(__dirname, 'src/components'),
@@ -46,6 +46,18 @@ module.exports = {
         use: {
           loader: '@svgr/webpack',
         },
+      },
+      {
+        test: /\.mp4$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'assets',
+            },
+          },
+        ],
       },
     ],
   },
