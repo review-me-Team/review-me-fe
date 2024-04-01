@@ -161,9 +161,11 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
             <Button variant="default" size="s" onClick={onClose}>
               닫기
             </Button>
-            <IconButton onClick={handleNextGuide} disabled={currentGuide === MAX_GUIDE}>
-              <Icon iconName="rightArrow" width={24} height={24} />
-            </IconButton>
+            {currentGuide < MAX_GUIDE && (
+              <IconButton onClick={handleNextGuide} disabled={currentGuide === MAX_GUIDE}>
+                <Icon iconName="rightArrow" width={24} height={24} />
+              </IconButton>
+            )}
           </ButtonContainer>
         </GuideSection>
       )}
