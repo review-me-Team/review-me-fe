@@ -33,11 +33,13 @@ export const getFeedbackList = async ({
   resumeId,
   pageParam,
   resumePage,
+  checked,
   jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  checked: boolean;
   jwt?: string;
 }) => {
   const headers = new Headers();
@@ -47,8 +49,11 @@ export const getFeedbackList = async ({
     headers,
   };
 
+  let queryString = `page=${pageParam}&resumePage=${resumePage}`;
+  if (checked) queryString += '&checked=true';
+
   const data = apiClient.get<GetFeedbackList>(
-    `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/feedback?${queryString}`,
     requestOptions,
   );
 
@@ -58,15 +63,16 @@ export const getFeedbackList = async ({
 interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
+  checked: boolean;
   enabled: boolean;
   jwt?: string;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage, enabled, jwt }: UseFeedbackListProps) => {
+export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }: UseFeedbackListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackList', resumeId, resumePage],
+    queryKey: ['feedbackList', resumeId, resumePage, checked],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, jwt }),
+    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, checked, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
