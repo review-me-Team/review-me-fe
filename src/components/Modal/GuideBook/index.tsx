@@ -49,7 +49,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
               skip
             </Button>
             <Button variant="default" size="s" onClick={handleNextGuide}>
-              시작하기
+              next
             </Button>
           </ButtonContainer>
         </>
@@ -159,7 +159,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
               </IconButton>
             )}
             <Button variant="default" size="s" onClick={onClose}>
-              닫기
+              {currentGuide === MAX_GUIDE ? 'start!' : '닫기'}
             </Button>
             {currentGuide < MAX_GUIDE && (
               <IconButton onClick={handleNextGuide} disabled={currentGuide === MAX_GUIDE}>
