@@ -153,9 +153,11 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
             </div>
           )}
           <ButtonContainer>
-            <IconButton onClick={handlePrevGuide} disabled={currentGuide === MIN_GUIDE}>
-              <Icon iconName="leftArrow" width={24} height={24} />
-            </IconButton>
+            {currentGuide > MIN_GUIDE && (
+              <IconButton onClick={handlePrevGuide} disabled={currentGuide === MIN_GUIDE}>
+                <Icon iconName="leftArrow" width={24} height={24} />
+              </IconButton>
+            )}
             <Button variant="default" size="s" onClick={onClose}>
               닫기
             </Button>
