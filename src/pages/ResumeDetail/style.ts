@@ -63,7 +63,6 @@ const WriterImg = styled.img`
   flex-shrink: 0;
 
   border-radius: 50%;
-  border: 0.0625rem solid ${theme.color.accent.bd.strong};
 `;
 
 const WriterInfo = styled.div`
@@ -95,11 +94,17 @@ const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
 `;
 
+const ResumeDetailAsideHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+`;
+
 const TabList = styled.div`
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  padding: 1rem;
 `;
 
 const Tab = styled.button<{ $isActive: boolean }>`
@@ -133,7 +138,7 @@ const CommentHeader = styled.header`
 
   ${theme.font.title.weak}
 
-  z-index: 99;
+  z-index: 9;
 `;
 
 const SwitchContainer = styled.div`
@@ -154,6 +159,7 @@ export {
   Career,
   ResumeContentWrapper,
   ResumeDetailAside,
+  ResumeDetailAsideHeader,
   TabList,
   Tab,
   CommentList,
