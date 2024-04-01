@@ -35,11 +35,15 @@ export const getQuestionList = async ({
   resumeId,
   pageParam,
   resumePage,
+  checked,
+  bookmarked,
   jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  checked: boolean;
+  bookmarked: boolean;
   jwt?: string;
 }) => {
   const headers = new Headers();
@@ -49,8 +53,12 @@ export const getQuestionList = async ({
     headers,
   };
 
+  let queryString = `page=${pageParam}&resumePage=${resumePage}`;
+  if (checked) queryString += '&checked=true';
+  if (bookmarked) queryString += '&bookmarked=true';
+
   const data = apiClient.get<GetQuestionList>(
-    `${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}&resumePage=${resumePage}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/question?${queryString}`,
     requestOptions,
   );
 
@@ -60,15 +68,25 @@ export const getQuestionList = async ({
 interface UseQuestionListProps {
   resumeId: number;
   resumePage: number;
+  checked: boolean;
+  bookmarked: boolean;
   enabled: boolean;
   jwt?: string;
 }
 
-export const useQuestionList = ({ resumeId, resumePage, enabled, jwt }: UseQuestionListProps) => {
+export const useQuestionList = ({
+  resumeId,
+  resumePage,
+  checked,
+  bookmarked,
+  enabled,
+  jwt,
+}: UseQuestionListProps) => {
   return useInfiniteQuery({
-    queryKey: ['questionList', resumeId, resumePage],
+    queryKey: ['questionList', resumeId, resumePage, checked, bookmarked],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage, jwt }),
+    queryFn: ({ pageParam }) =>
+      getQuestionList({ resumeId, pageParam, resumePage, jwt, checked, bookmarked }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
