@@ -99,7 +99,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
             <div>
               <Description>
                 <Modal.Title>예상질문</Modal.Title>
-                <Modal.Description>현재 이력서 페이지에 대한 피드백 목록이 표시됩니다.</Modal.Description>
+                <Modal.Description>현재 이력서 페이지에 대한 예상질문 목록이 표시됩니다.</Modal.Description>
                 <SubDescription>
                   ex&#41; 현재 이력서가 1페이지라면, 1페이지에 달린 예상질문이 보입니다.
                 </SubDescription>
@@ -138,7 +138,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
             <div>
               <Description>
                 <Modal.Title>예상질문 bookmark</Modal.Title>
-                <Modal.Description>기억하고 싶은 예상 질문은 bookmark 아이콘을 눌러주세요.</Modal.Description>
+                <Modal.Description>기억하고 싶은 예상질문은 bookmark 아이콘을 눌러주세요.</Modal.Description>
               </Description>
               <video
                 src={questionBookMarkVideo}
