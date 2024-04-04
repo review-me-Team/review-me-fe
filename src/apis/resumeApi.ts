@@ -1,9 +1,9 @@
 import {
   useInfiniteQuery,
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseInfiniteQuery,
+  useSuspenseQuery,
 } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
@@ -150,7 +150,10 @@ export const getResumeDetail = async ({ resumeId, jwt }: { resumeId: number; jwt
 };
 
 export const useResumeDetail = ({ resumeId, jwt }: { resumeId: number; jwt?: string }) => {
-  return useQuery({ queryKey: ['resume', resumeId], queryFn: () => getResumeDetail({ resumeId, jwt }) });
+  return useSuspenseQuery({
+    queryKey: ['resume', resumeId],
+    queryFn: () => getResumeDetail({ resumeId, jwt }),
+  });
 };
 
 // POST 이력서 업로드

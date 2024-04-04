@@ -137,15 +137,15 @@ const ResumeDetail = () => {
           <ResumeViewer $isMobile={isMobile}>
             <ResumeViewerHeader>
               <ResumeInfo>
-                <Title>{resumeDetail?.title}</Title>
+                <Title>{resumeDetail.title}</Title>
 
                 <WriterInfoContainer>
-                  <WriterImg src={resumeDetail?.writerProfileUrl} />
+                  <WriterImg src={resumeDetail.writerProfileUrl} />
                   <WriterInfo>
-                    <span>{resumeDetail?.writerName}</span>
+                    <span>{resumeDetail.writerName}</span>
                     <Career>
-                      {resumeDetail?.occupation} |{' '}
-                      {resumeDetail?.year === 0 ? '신입' : `${resumeDetail?.year}년차`}
+                      {resumeDetail.occupation} |{' '}
+                      {resumeDetail.year === 0 ? '신입' : `${resumeDetail.year}년차`}
                     </Career>
                   </WriterInfo>
                 </WriterInfoContainer>
@@ -154,7 +154,7 @@ const ResumeDetail = () => {
 
             <PdfViewer
               showAllPages={false}
-              file={resumeDetail?.resumeUrl}
+              file={resumeDetail.resumeUrl}
               totalPages={totalPages}
               scale={scale}
               pageNum={currentPageNum}
@@ -212,7 +212,7 @@ const ResumeDetail = () => {
                         setFilter((prev) => ({ ...prev, checked: !prev.checked }));
                       }}
                     />
-                    {currentTab === 'question' && resumeDetail?.writerId === user?.id && (
+                    {currentTab === 'question' && resumeDetail.writerId === user?.id && (
                       <Switch
                         label="bookmark"
                         checked={filter.bookmarked}
