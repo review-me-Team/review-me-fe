@@ -68,7 +68,7 @@ const MyPage = () => {
         onClose={() => {
           closeFriendRequestModal();
           manageBodyScroll(true);
-          refetchFollowingList();
+          window.location.reload();
         }}
       />
 
