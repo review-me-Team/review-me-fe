@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 
@@ -67,26 +67,36 @@ export const getEmojiList = async () => {
 };
 
 export const useEmojiList = () => {
-  return useQuery({ queryKey: ['emojiList'], queryFn: getEmojiList });
+  return useSuspenseQuery({
+    queryKey: ['emojiList'],
+    queryFn: getEmojiList,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 // GET 라벨 목록 조회
-export interface Label {
+export interface FeedbackLabel {
   id: number;
   label: string;
 }
 
-interface GetLabelList {
-  labels: Label[];
+interface GetFeedbackLabelList {
+  labels: FeedbackLabel[];
 }
 
-export const getLabelList = async () => {
-  const data = apiClient.get<GetLabelList>(REQUEST_URL.LABEL);
+export const getFeedbackLabelList = async () => {
+  const data = apiClient.get<GetFeedbackLabelList>(REQUEST_URL.LABEL);
   const { labels } = await data;
 
   return labels;
 };
 
-export const useLabelList = () => {
-  return useQuery({ queryKey: ['labelList'], queryFn: getLabelList });
+export const useFeedbackLabelList = () => {
+  return useQuery({
+    queryKey: ['feedbackLabelList'],
+    queryFn: getFeedbackLabelList,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };

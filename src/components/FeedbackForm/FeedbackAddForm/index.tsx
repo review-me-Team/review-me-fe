@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedback } from '@apis/feedbackApi';
-import { useLabelList } from '@apis/utilApi';
+import { useFeedbackLabelList } from '@apis/utilApi';
 import { validateContent } from '@utils';
 import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 
@@ -22,7 +22,7 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate: addFeedback } = usePostFeedback();
-  const { data: labelList } = useLabelList();
+  const { data: labelList } = useFeedbackLabelList();
 
   const resetForm = () => {
     setLabelId(undefined);

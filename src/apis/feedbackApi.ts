@@ -1,4 +1,4 @@
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -277,47 +277,8 @@ interface UsePatchFeedbackCheckProps {
 export const usePatchFeedbackCheck = ({ resumePage }: UsePatchFeedbackCheckProps) => {
   const queryClient = useQueryClient();
 
-  // * optimistic update
   return useMutation({
     mutationFn: patchFeedbackCheck,
-    onMutate: async (newData) => {
-      const { resumeId, feedbackId } = newData;
-      await queryClient.cancelQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
-
-      const previousFeedbackListData = queryClient.getQueryData<InfiniteData<GetFeedbackList>>([
-        'feedbackList',
-        resumeId,
-        resumePage,
-      ]);
-
-      queryClient.setQueryData<InfiniteData<GetFeedbackList>>(
-        ['feedbackList', resumeId, resumePage],
-        (oldData) => {
-          if (!oldData) return previousFeedbackListData;
-
-          const newPages = oldData.pages.map((page) => ({
-            ...page,
-            feedbacks: page.feedbacks.map((feedback) => {
-              if (feedback.id === feedbackId) return { ...feedback, checked: newData.checked };
-
-              return { ...feedback };
-            }),
-          }));
-
-          return { ...oldData, pages: newPages };
-        },
-      );
-
-      return { previousFeedbackListData };
-    },
-    onError: (err, newData, context) => {
-      if (!context) return;
-
-      queryClient.setQueryData(
-        ['feedbackList', newData.resumeId, resumePage],
-        context.previousFeedbackListData,
-      );
-    },
     onSettled: (_, _error, newData) => {
       queryClient.invalidateQueries({ queryKey: ['feedbackList', newData.resumeId, resumePage] });
     },
