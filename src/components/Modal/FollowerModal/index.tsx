@@ -20,15 +20,13 @@ const FollowerModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: followerListData, refetch, fetchNextPage } = useFollowerList({ jwt, start: name });
+  const { data: followerList, refetch, fetchNextPage } = useFollowerList({ jwt, start: name });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
     },
     options: { threshold: 0.5 },
   });
-
-  const followerList = followerListData?.pages.map((page) => page.users).flat();
 
   const handleClose = () => {
     onClose();

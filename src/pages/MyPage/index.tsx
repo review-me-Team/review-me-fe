@@ -25,13 +25,9 @@ const MyPage = () => {
 
   const { data: friendList, refetch: refetchFriendList } = useFriendList({ jwt });
   const { data: followingList, refetch: refetchFollowingList } = useFollowingList({ jwt });
-  const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
+  const { data: followerList, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
   const ITEM_COUNT = 2;
-  const followerList = followerListData?.pages
-    .map((page) => page.users)
-    .flat()
-    .slice(0, ITEM_COUNT);
 
   const {
     isOpen: isFriendRequestModalOpen,
@@ -172,15 +168,17 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            {followerList?.map((user) => (
-              <UserItem
-                key={user.id}
-                type="follower"
-                userId={user.id}
-                userName={user.name}
-                userImg={user.profileUrl}
-              />
-            ))}
+            {followerList
+              ?.slice(0, ITEM_COUNT)
+              .map((user) => (
+                <UserItem
+                  key={user.id}
+                  type="follower"
+                  userId={user.id}
+                  userName={user.name}
+                  userImg={user.profileUrl}
+                />
+              ))}
           </ul>
         </FriendSection>
       </FriendSectionContainer>

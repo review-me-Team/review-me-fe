@@ -177,6 +177,8 @@ export const useFollowerList = ({ jwt, start = '' }: { jwt?: string; start?: str
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.users),
+    placeholderData: keepPreviousData,
   });
 };
 
