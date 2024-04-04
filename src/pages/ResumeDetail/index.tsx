@@ -39,12 +39,13 @@ import {
   CommentHeader,
   SwitchContainer,
   ResumeDetailAsideHeader,
+  TitleContainer,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const { jwt } = useUserContext();
+  const { jwt, user } = useUserContext();
   const { resumeId } = useParams();
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
@@ -138,6 +139,8 @@ const ResumeDetail = () => {
     }
   }, [isOpenGuideBook]);
 
+  const isMyResume = resumeDetail.writerId === user?.id;
+
   return (
     <>
       <Main $isMobile={isMobile}>
@@ -145,7 +148,21 @@ const ResumeDetail = () => {
           <ResumeViewer $isMobile={isMobile}>
             <ResumeViewerHeader>
               <ResumeInfo>
-                <Title>{resumeDetail.title}</Title>
+                <TitleContainer>
+                  {isMyResume && (
+                    <a
+                      href={`${process.env.BASE_PDF_URL}/${resumeDetail.resumeUrl}`}
+                      download={resumeDetail.title}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <Icon iconName="download" color={theme.color.accent.bd.weak} />
+                      </IconButton>
+                    </a>
+                  )}
+                  <Title>{resumeDetail.title}</Title>
+                </TitleContainer>
 
                 <WriterInfoContainer>
                   <WriterImg src={resumeDetail.writerProfileUrl} />
