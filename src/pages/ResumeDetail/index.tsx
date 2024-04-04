@@ -68,7 +68,7 @@ const ResumeDetail = () => {
     ? currentTab === 'feedback' && !!jwt
     : currentTab === 'feedback';
 
-  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
+  const { data: feedbackList, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     checked: filter.checked,
@@ -89,7 +89,6 @@ const ResumeDetail = () => {
     jwt,
   });
 
-  const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
   const questionList = questionListData?.pages.map((page) => page.questions).flat();
 
   const { setTarget } = useIntersectionObserver({

@@ -78,6 +78,7 @@ export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }:
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.feedbacks),
     enabled,
   });
 };
