@@ -137,6 +137,8 @@ export const useFollowingList = ({ jwt, start = '', enabled = true }: UseFollowi
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.users),
+    placeholderData: keepPreviousData,
     enabled,
   });
 };

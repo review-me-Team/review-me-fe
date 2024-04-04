@@ -24,14 +24,10 @@ const MyPage = () => {
   const { user, jwt } = useUserContext();
 
   const { data: friendList, refetch: refetchFriendList } = useFriendList({ jwt });
-  const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt });
+  const { data: followingList, refetch: refetchFollowingList } = useFollowingList({ jwt });
   const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
   const ITEM_COUNT = 2;
-  const followingList = followingListData?.pages
-    .map((page) => page.users)
-    .flat()
-    .slice(0, ITEM_COUNT);
   const followerList = followerListData?.pages
     .map((page) => page.users)
     .flat()
@@ -139,15 +135,17 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            {followingList?.map((user) => (
-              <UserItem
-                key={user.id}
-                type="following"
-                userId={user.id}
-                userName={user.name}
-                userImg={user.profileUrl}
-              />
-            ))}
+            {followingList
+              ?.slice(0, ITEM_COUNT)
+              .map((user) => (
+                <UserItem
+                  key={user.id}
+                  type="following"
+                  userId={user.id}
+                  userName={user.name}
+                  userImg={user.profileUrl}
+                />
+              ))}
           </ul>
         </FriendSection>
 
