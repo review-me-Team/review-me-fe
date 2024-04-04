@@ -93,5 +93,5 @@ export const getLabelList = async () => {
 };
 
 export const useLabelList = () => {
-  return useQuery({ queryKey: ['labelList'], queryFn: getLabelList });
+  return useQuery({ queryKey: ['labelList'], queryFn: getLabelList, staleTime: Infinity, gcTime: Infinity });
 };
