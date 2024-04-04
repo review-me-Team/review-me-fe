@@ -75,7 +75,7 @@ const ResumeDetail = () => {
     enabled: enabledAboutFeedbackList,
     jwt,
   });
-  const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
+  const { data: questionList, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     checked: filter.checked,
@@ -88,8 +88,6 @@ const ResumeDetail = () => {
     enabled: currentTab === 'comment',
     jwt,
   });
-
-  const questionList = questionListData?.pages.map((page) => page.questions).flat();
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {

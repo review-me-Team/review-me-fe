@@ -92,6 +92,7 @@ export const useQuestionList = ({
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.questions),
     enabled,
   });
 };
