@@ -76,22 +76,27 @@ export const useEmojiList = () => {
 };
 
 // GET 라벨 목록 조회
-export interface Label {
+export interface FeedbackLabel {
   id: number;
   label: string;
 }
 
-interface GetLabelList {
-  labels: Label[];
+interface GetFeedbackLabelList {
+  labels: FeedbackLabel[];
 }
 
-export const getLabelList = async () => {
-  const data = apiClient.get<GetLabelList>(REQUEST_URL.LABEL);
+export const getFeedbackLabelList = async () => {
+  const data = apiClient.get<GetFeedbackLabelList>(REQUEST_URL.LABEL);
   const { labels } = await data;
 
   return labels;
 };
 
-export const useLabelList = () => {
-  return useQuery({ queryKey: ['labelList'], queryFn: getLabelList, staleTime: Infinity, gcTime: Infinity });
+export const useFeedbackLabelList = () => {
+  return useQuery({
+    queryKey: ['feedbackLabelList'],
+    queryFn: getFeedbackLabelList,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
