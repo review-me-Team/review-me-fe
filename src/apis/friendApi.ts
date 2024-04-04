@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { FRIEND_LIST_SIZE, REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -51,6 +51,8 @@ export const useFriendList = ({ jwt, start = '', enabled = true }: UseFriendList
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.users),
+    placeholderData: keepPreviousData,
     enabled,
   });
 };

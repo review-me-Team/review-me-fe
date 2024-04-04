@@ -23,15 +23,11 @@ import {
 const MyPage = () => {
   const { user, jwt } = useUserContext();
 
-  const { data: friendListData, refetch: refetchFriendList } = useFriendList({ jwt });
+  const { data: friendList, refetch: refetchFriendList } = useFriendList({ jwt });
   const { data: followingListData, refetch: refetchFollowingList } = useFollowingList({ jwt });
   const { data: followerListData, refetch: refetchFollowerList } = useFollowerList({ jwt });
 
   const ITEM_COUNT = 2;
-  const friendList = friendListData?.pages
-    .map((page) => page.users)
-    .flat()
-    .slice(0, ITEM_COUNT);
   const followingList = followingListData?.pages
     .map((page) => page.users)
     .flat()
@@ -106,15 +102,17 @@ const MyPage = () => {
           </Title>
 
           <ul>
-            {friendList?.map((friend) => (
-              <UserItem
-                type="friend"
-                key={friend.id}
-                userId={friend.id}
-                userName={friend.name}
-                userImg={friend.profileUrl}
-              />
-            ))}
+            {(friendList || [])
+              ?.slice(0, ITEM_COUNT)
+              .map((friend) => (
+                <UserItem
+                  type="friend"
+                  key={friend.id}
+                  userId={friend.id}
+                  userName={friend.name}
+                  userImg={friend.profileUrl}
+                />
+              ))}
           </ul>
         </FriendSection>
 
