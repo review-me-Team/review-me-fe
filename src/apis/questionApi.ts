@@ -157,10 +157,10 @@ export const useQuestionReplyList = ({ resumeId, parentQuestionId, jwt }: UseQue
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => {
-      return {
-        pages: [...data.pages].reverse(),
-        pageParams: [...data.pageParams].reverse(),
-      };
+      const reversedPages = [...data.pages].reverse();
+      const questionComments = reversedPages.flatMap((page) => page.questionComments);
+
+      return questionComments;
     },
   });
 };
