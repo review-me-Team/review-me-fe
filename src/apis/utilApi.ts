@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 
@@ -67,7 +67,12 @@ export const getEmojiList = async () => {
 };
 
 export const useEmojiList = () => {
-  return useQuery({ queryKey: ['emojiList'], queryFn: getEmojiList });
+  return useSuspenseQuery({
+    queryKey: ['emojiList'],
+    queryFn: getEmojiList,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 // GET 라벨 목록 조회
