@@ -119,6 +119,7 @@ export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.resumes),
   });
 };
 
