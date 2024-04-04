@@ -43,9 +43,15 @@ const ResumeInfo = styled.div`
   }
 `;
 
-const Title = styled.span`
-  margin-right: 0.25rem;
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 
+  margin-right: 0.25rem;
+`;
+
+const Title = styled.span`
   ${theme.font.title.default}
   color: ${theme.color.neutral.text.strong};
 `;
@@ -152,6 +158,7 @@ export {
   ResumeViewer,
   ResumeViewerHeader,
   ResumeInfo,
+  TitleContainer,
   Title,
   WriterInfoContainer,
   WriterImg,
