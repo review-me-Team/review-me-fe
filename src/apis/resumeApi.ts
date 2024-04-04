@@ -77,6 +77,7 @@ export const useResumeList = ({ jwt, occupationId, startYear, endYear }: UseResu
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.resumes),
   });
 };
 
@@ -119,6 +120,7 @@ export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.resumes),
   });
 };
 

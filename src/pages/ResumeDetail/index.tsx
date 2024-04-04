@@ -68,14 +68,14 @@ const ResumeDetail = () => {
     ? currentTab === 'feedback' && !!jwt
     : currentTab === 'feedback';
 
-  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
+  const { data: feedbackList, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     checked: filter.checked,
     enabled: enabledAboutFeedbackList,
     jwt,
   });
-  const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
+  const { data: questionList, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
     checked: filter.checked,
@@ -83,15 +83,11 @@ const ResumeDetail = () => {
     enabled: currentTab === 'question',
     jwt,
   });
-  const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
+  const { data: commentList, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
     jwt,
   });
-
-  const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
-  const questionList = questionListData?.pages.map((page) => page.questions).flat();
-  const commentList = commentListData?.pages.map((page) => page.comments).flat();
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
@@ -216,7 +212,7 @@ const ResumeDetail = () => {
                         setFilter((prev) => ({ ...prev, checked: !prev.checked }));
                       }}
                     />
-                    {currentTab === 'question' && resumeDetail.writerId === user?.id && (
+                    {currentTab === 'question' && resumeDetail?.writerId === user?.id && (
                       <Switch
                         label="bookmark"
                         checked={filter.bookmarked}

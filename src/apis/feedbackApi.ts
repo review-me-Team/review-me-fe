@@ -78,6 +78,7 @@ export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }:
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.feedbacks),
     enabled,
   });
 };
@@ -142,10 +143,10 @@ export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, jwt }: UseFee
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => {
-      return {
-        pages: [...data.pages].reverse(),
-        pageParams: [...data.pageParams].reverse(),
-      };
+      const reversedPages = [...data.pages].reverse();
+      const feedbackComments = reversedPages.flatMap((page) => page.feedbackComments);
+
+      return feedbackComments;
     },
   });
 };

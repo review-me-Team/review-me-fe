@@ -65,6 +65,7 @@ export const useCommentList = ({ resumeId, enabled, jwt }: UseCommentListProps) 
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.comments),
     enabled,
   });
 };

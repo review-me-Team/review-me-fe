@@ -13,15 +13,13 @@ const MyResume = () => {
   const navigate = useNavigate();
   const { jwt } = useUserContext();
 
-  const { data: myResumeListData, fetchNextPage } = useMyResumeList({ jwt });
+  const { data: myResumeList, fetchNextPage } = useMyResumeList({ jwt });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
     options: {
       threshold: 0.5,
     },
   });
-
-  const myResumeList = myResumeListData?.pages.map((page) => page.resumes).flat() ?? [];
 
   return (
     <PageMain>
@@ -30,7 +28,7 @@ const MyResume = () => {
       </Button>
 
       <MyResumeList>
-        {myResumeList.map((resume) => {
+        {myResumeList?.map((resume) => {
           return (
             <li key={resume.id}>
               <MyResumeItem {...resume} />
