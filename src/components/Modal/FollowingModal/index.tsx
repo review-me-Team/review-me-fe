@@ -21,7 +21,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
   const [name, setName] = useState<string>('');
 
   const {
-    data: followingListData,
+    data: followingList,
     refetch,
     fetchNextPage,
   } = useFollowingList({ jwt, start: name, enabled: name.length === 0 });
@@ -31,8 +31,6 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
     },
     options: { threshold: 0.5 },
   });
-
-  const followingList = followingListData?.pages.map((page) => page.users).flat();
 
   const handleClose = () => {
     onClose();

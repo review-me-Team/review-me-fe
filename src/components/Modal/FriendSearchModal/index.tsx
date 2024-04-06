@@ -19,19 +19,13 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const {
-    data: friendListData,
-    refetch,
-    fetchNextPage,
-  } = useFriendList({ jwt, start: name, enabled: false });
+  const { data: friendList, refetch, fetchNextPage } = useFriendList({ jwt, start: name, enabled: false });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
     },
     options: { threshold: 0.5 },
   });
-
-  const friendList = friendListData?.pages.map((page) => page.users).flat();
 
   useEffect(() => {
     if (name.length === 0) return;
@@ -44,6 +38,8 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
       clearTimeout(timer);
     };
   }, [name]);
+
+  const isNameEntered = name.length > 0;
 
   return (
     <Modal
@@ -68,7 +64,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
         }}
       />
 
-      {name.length === 0 && (
+      {!isNameEntered && (
         <FriendList>
           {friendList?.map((friend) => (
             <UserItem
@@ -82,7 +78,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
           <div ref={setTarget}></div>
         </FriendList>
       )}
-      {name.length > 0 && friendList && friendList.length > 0 && (
+      {isNameEntered && friendList && friendList.length > 0 && (
         <FriendList>
           {friendList.map((friend) => (
             <UserItem
@@ -96,7 +92,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
           <div ref={setTarget}></div>
         </FriendList>
       )}
-      {name.length > 0 && friendList && friendList.length === 0 && (
+      {isNameEntered && friendList && friendList.length === 0 && (
         <SearchUserInstruction>검색어와 일치하는 친구가 없습니다.</SearchUserInstruction>
       )}
     </Modal>

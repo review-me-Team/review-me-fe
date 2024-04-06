@@ -1,4 +1,4 @@
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -33,11 +33,13 @@ export const getFeedbackList = async ({
   resumeId,
   pageParam,
   resumePage,
+  checked,
   jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  checked: boolean;
   jwt?: string;
 }) => {
   const headers = new Headers();
@@ -47,8 +49,11 @@ export const getFeedbackList = async ({
     headers,
   };
 
+  let queryString = `page=${pageParam}&resumePage=${resumePage}`;
+  if (checked) queryString += '&checked=true';
+
   const data = apiClient.get<GetFeedbackList>(
-    `${REQUEST_URL.RESUME}/${resumeId}/feedback?page=${pageParam}&resumePage=${resumePage}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/feedback?${queryString}`,
     requestOptions,
   );
 
@@ -58,20 +63,22 @@ export const getFeedbackList = async ({
 interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
+  checked: boolean;
   enabled: boolean;
   jwt?: string;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage, enabled, jwt }: UseFeedbackListProps) => {
+export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }: UseFeedbackListProps) => {
   return useInfiniteQuery({
-    queryKey: ['feedbackList', resumeId, resumePage],
+    queryKey: ['feedbackList', resumeId, resumePage, checked],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, jwt }),
+    queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, checked, jwt }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.feedbacks),
     enabled,
   });
 };
@@ -136,10 +143,10 @@ export const useFeedbackReplyList = ({ resumeId, parentFeedbackId, jwt }: UseFee
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => {
-      return {
-        pages: [...data.pages].reverse(),
-        pageParams: [...data.pageParams].reverse(),
-      };
+      const reversedPages = [...data.pages].reverse();
+      const feedbackComments = reversedPages.flatMap((page) => page.feedbackComments);
+
+      return feedbackComments;
     },
   });
 };
@@ -270,47 +277,8 @@ interface UsePatchFeedbackCheckProps {
 export const usePatchFeedbackCheck = ({ resumePage }: UsePatchFeedbackCheckProps) => {
   const queryClient = useQueryClient();
 
-  // * optimistic update
   return useMutation({
     mutationFn: patchFeedbackCheck,
-    onMutate: async (newData) => {
-      const { resumeId, feedbackId } = newData;
-      await queryClient.cancelQueries({ queryKey: ['feedbackList', resumeId, resumePage] });
-
-      const previousFeedbackListData = queryClient.getQueryData<InfiniteData<GetFeedbackList>>([
-        'feedbackList',
-        resumeId,
-        resumePage,
-      ]);
-
-      queryClient.setQueryData<InfiniteData<GetFeedbackList>>(
-        ['feedbackList', resumeId, resumePage],
-        (oldData) => {
-          if (!oldData) return previousFeedbackListData;
-
-          const newPages = oldData.pages.map((page) => ({
-            ...page,
-            feedbacks: page.feedbacks.map((feedback) => {
-              if (feedback.id === feedbackId) return { ...feedback, checked: newData.checked };
-
-              return { ...feedback };
-            }),
-          }));
-
-          return { ...oldData, pages: newPages };
-        },
-      );
-
-      return { previousFeedbackListData };
-    },
-    onError: (err, newData, context) => {
-      if (!context) return;
-
-      queryClient.setQueryData(
-        ['feedbackList', newData.resumeId, resumePage],
-        context.previousFeedbackListData,
-      );
-    },
     onSettled: (_, _error, newData) => {
       queryClient.invalidateQueries({ queryKey: ['feedbackList', newData.resumeId, resumePage] });
     },

@@ -23,9 +23,6 @@ const QuestionReplyList = ({ parentId, resumeId }: Props) => {
     jwt,
   });
 
-  const replies: QuestionReplyType[] =
-    questionReplyList?.pages.map((page) => page.questionComments).flat() || [];
-
   return (
     <ReplyListLayout>
       {hasNextPage && (
@@ -38,7 +35,7 @@ const QuestionReplyList = ({ parentId, resumeId }: Props) => {
         </MoreButton>
       )}
       <ul>
-        {replies.map((reply) => (
+        {questionReplyList?.map((reply) => (
           <li key={reply.id}>
             <QuestionReply resumeId={resumeId} {...reply} />
           </li>

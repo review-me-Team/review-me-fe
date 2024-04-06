@@ -13,14 +13,12 @@ interface Props {
 
 const ResumeList = ({ occupationId, startYear, endYear }: Props) => {
   const { jwt } = useUserContext();
-  const { data: resumeListData, fetchNextPage } = useResumeList({
+  const { data: resumeList, fetchNextPage } = useResumeList({
     jwt,
     occupationId,
     startYear,
     endYear,
   });
-
-  const resumeList = resumeListData?.pages.flatMap((page) => page.resumes);
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),

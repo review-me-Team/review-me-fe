@@ -35,11 +35,15 @@ export const getQuestionList = async ({
   resumeId,
   pageParam,
   resumePage,
+  checked,
+  bookmarked,
   jwt,
 }: {
   resumeId: number;
   pageParam: number;
   resumePage: number;
+  checked: boolean;
+  bookmarked: boolean;
   jwt?: string;
 }) => {
   const headers = new Headers();
@@ -49,8 +53,12 @@ export const getQuestionList = async ({
     headers,
   };
 
+  let queryString = `page=${pageParam}&resumePage=${resumePage}`;
+  if (checked) queryString += '&checked=true';
+  if (bookmarked) queryString += '&bookmarked=true';
+
   const data = apiClient.get<GetQuestionList>(
-    `${REQUEST_URL.RESUME}/${resumeId}/question?page=${pageParam}&resumePage=${resumePage}`,
+    `${REQUEST_URL.RESUME}/${resumeId}/question?${queryString}`,
     requestOptions,
   );
 
@@ -60,20 +68,31 @@ export const getQuestionList = async ({
 interface UseQuestionListProps {
   resumeId: number;
   resumePage: number;
+  checked: boolean;
+  bookmarked: boolean;
   enabled: boolean;
   jwt?: string;
 }
 
-export const useQuestionList = ({ resumeId, resumePage, enabled, jwt }: UseQuestionListProps) => {
+export const useQuestionList = ({
+  resumeId,
+  resumePage,
+  checked,
+  bookmarked,
+  enabled,
+  jwt,
+}: UseQuestionListProps) => {
   return useInfiniteQuery({
-    queryKey: ['questionList', resumeId, resumePage],
+    queryKey: ['questionList', resumeId, resumePage, checked, bookmarked],
     initialPageParam: 0,
-    queryFn: ({ pageParam }) => getQuestionList({ resumeId, pageParam, resumePage, jwt }),
+    queryFn: ({ pageParam }) =>
+      getQuestionList({ resumeId, pageParam, resumePage, jwt, checked, bookmarked }),
     getNextPageParam: (lastPage) => {
       const { pageNumber, lastPage: lastPageNum } = lastPage;
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.questions),
     enabled,
   });
 };
@@ -138,10 +157,10 @@ export const useQuestionReplyList = ({ resumeId, parentQuestionId, jwt }: UseQue
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => {
-      return {
-        pages: [...data.pages].reverse(),
-        pageParams: [...data.pageParams].reverse(),
-      };
+      const reversedPages = [...data.pages].reverse();
+      const questionComments = reversedPages.flatMap((page) => page.questionComments);
+
+      return questionComments;
     },
   });
 };
@@ -271,47 +290,8 @@ interface UsePatchQuestionCheckProps {
 export const usePatchQuestionCheck = ({ resumePage }: UsePatchQuestionCheckProps) => {
   const queryClient = useQueryClient();
 
-  // * optimistic update
   return useMutation({
     mutationFn: patchQuestionCheck,
-    onMutate: async (newData) => {
-      const { resumeId, questionId } = newData;
-      await queryClient.cancelQueries({ queryKey: ['questionList', resumeId, resumePage] });
-
-      const previousQuestionListData = queryClient.getQueryData<InfiniteData<GetQuestionList>>([
-        'feedbackList',
-        resumeId,
-        resumePage,
-      ]);
-
-      queryClient.setQueryData<InfiniteData<GetQuestionList>>(
-        ['questionList', resumeId, resumePage],
-        (oldData) => {
-          if (!oldData) return previousQuestionListData;
-
-          const newPages = oldData.pages.map((page) => ({
-            ...page,
-            questions: page.questions.map((question) => {
-              if (question.id === questionId) return { ...question, checked: newData.checked };
-
-              return { ...question };
-            }),
-          }));
-
-          return { ...oldData, pages: newPages };
-        },
-      );
-
-      return { previousQuestionListData: previousQuestionListData };
-    },
-    onError: (err, newData, context) => {
-      if (!context) return;
-
-      queryClient.setQueryData(
-        ['questionList', newData.resumeId, resumePage],
-        context.previousQuestionListData,
-      );
-    },
     onSettled: (_, _error, newData) => {
       queryClient.invalidateQueries({ queryKey: ['questionList', newData.resumeId, resumePage] });
     },
@@ -348,47 +328,8 @@ interface UsePatchBookMarkProps {
 export const usePatchBookMark = ({ resumePage }: UsePatchBookMarkProps) => {
   const queryClient = useQueryClient();
 
-  // * optimistic update
   return useMutation({
     mutationFn: patchBookMark,
-    onMutate: async (newData) => {
-      const { resumeId, questionId } = newData;
-      await queryClient.cancelQueries({ queryKey: ['questionList', resumeId, resumePage] });
-
-      const previousQuestionListData = queryClient.getQueryData<InfiniteData<GetQuestionList>>([
-        'feedbackList',
-        resumeId,
-        resumePage,
-      ]);
-
-      queryClient.setQueryData<InfiniteData<GetQuestionList>>(
-        ['questionList', resumeId, resumePage],
-        (oldData) => {
-          if (!oldData) return previousQuestionListData;
-
-          const newPages = oldData.pages.map((page) => ({
-            ...page,
-            questions: page.questions.map((question) => {
-              if (question.id === questionId) return { ...question, bookmarked: newData.bookmarked };
-
-              return { ...question };
-            }),
-          }));
-
-          return { ...oldData, pages: newPages };
-        },
-      );
-
-      return { previousQuestionListData: previousQuestionListData };
-    },
-    onError: (err, newData, context) => {
-      if (!context) return;
-
-      queryClient.setQueryData(
-        ['questionList', newData.resumeId, resumePage],
-        context.previousQuestionListData,
-      );
-    },
     onSettled: (_, _error, newData) => {
       queryClient.invalidateQueries({ queryKey: ['questionList', newData.resumeId, resumePage] });
     },

@@ -43,9 +43,15 @@ const ResumeInfo = styled.div`
   }
 `;
 
-const Title = styled.span`
-  margin-right: 0.25rem;
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 
+  margin-right: 0.25rem;
+`;
+
+const Title = styled.span`
   ${theme.font.title.default}
   color: ${theme.color.neutral.text.strong};
 `;
@@ -63,7 +69,6 @@ const WriterImg = styled.img`
   flex-shrink: 0;
 
   border-radius: 50%;
-  border: 0.0625rem solid ${theme.color.accent.bd.strong};
 `;
 
 const WriterInfo = styled.div`
@@ -95,11 +100,17 @@ const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
 `;
 
+const ResumeDetailAsideHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+`;
+
 const TabList = styled.div`
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  padding: 1rem;
 `;
 
 const Tab = styled.button<{ $isActive: boolean }>`
@@ -119,11 +130,35 @@ const CommentList = styled.ul<{ $isMobile: boolean }>`
   height: ${({ $isMobile }) => ($isMobile ? '43.75rem' : '100%')};
 `;
 
+const CommentHeader = styled.header`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  position: sticky;
+  top: 0;
+
+  background-color: rgb(216, 243, 220, 0.7);
+  opacity: 0.8;
+  backdrop-filter: blur(0.25rem);
+
+  ${theme.font.title.weak}
+
+  z-index: 9;
+`;
+
+const SwitchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
 export {
   Main,
   ResumeViewer,
   ResumeViewerHeader,
   ResumeInfo,
+  TitleContainer,
   Title,
   WriterInfoContainer,
   WriterImg,
@@ -131,7 +166,10 @@ export {
   Career,
   ResumeContentWrapper,
   ResumeDetailAside,
+  ResumeDetailAsideHeader,
   TabList,
   Tab,
   CommentList,
+  CommentHeader,
+  SwitchContainer,
 };

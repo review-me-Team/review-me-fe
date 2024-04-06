@@ -1,11 +1,12 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Icon } from 'review-me-design-system';
+import { Icon, Switch, theme, useModal } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
 import Feedback from '@components/Feedback';
 import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
+import GuideBook from '@components/Modal/GuideBook';
 import PdfViewer from '@components/PdfViewer';
 import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
@@ -18,6 +19,8 @@ import { useFeedbackList } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { breakPoints } from '@styles/common';
+import { IconButton } from '@styles/iconButton';
+import { manageBodyScroll } from '@utils';
 import {
   Career,
   CommentList,
@@ -33,12 +36,16 @@ import {
   WriterInfo,
   WriterInfoContainer,
   ResumeViewer,
+  CommentHeader,
+  SwitchContainer,
+  ResumeDetailAsideHeader,
+  TitleContainer,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
 
 const ResumeDetail = () => {
-  const { jwt, isLoggedIn } = useUserContext();
+  const { jwt, user } = useUserContext();
   const { resumeId } = useParams();
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
@@ -53,31 +60,43 @@ const ResumeDetail = () => {
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 
-  const enabledAboutFeedbackList = isLoggedIn
-    ? currentTab === 'feedback' && !!jwt
-    : currentTab === 'feedback';
+  const [filter, setFilter] = useState<{ checked: boolean; bookmarked: boolean }>({
+    checked: false,
+    bookmarked: false,
+  });
 
-  const { data: feedbackListData, fetchNextPage: fetchNextPageAboutFeedback } = useFeedbackList({
+  const {
+    data: feedbackList,
+    fetchNextPage: fetchNextPageAboutFeedback,
+    hasNextPage: hasNextPageAboutFeedback,
+  } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
-    enabled: enabledAboutFeedbackList,
+    checked: filter.checked,
+    enabled: currentTab === 'feedback',
     jwt,
   });
-  const { data: questionListData, fetchNextPage: fetchNextPageAboutQuestion } = useQuestionList({
+  const {
+    data: questionList,
+    fetchNextPage: fetchNextPageAboutQuestion,
+    hasNextPage: hasNextPageAboutQuestion,
+  } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
+    checked: filter.checked,
+    bookmarked: filter.bookmarked,
     enabled: currentTab === 'question',
     jwt,
   });
-  const { data: commentListData, fetchNextPage: fetchNextPageAboutComment } = useCommentList({
+  const {
+    data: commentList,
+    fetchNextPage: fetchNextPageAboutComment,
+    hasNextPage: hasNextPageAboutComment,
+  } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
     jwt,
   });
-
-  const feedbackList = feedbackListData?.pages.map((page) => page.feedbacks).flat();
-  const questionList = questionListData?.pages.map((page) => page.questions).flat();
-  const commentList = commentListData?.pages.map((page) => page.comments).flat();
 
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
@@ -92,122 +111,212 @@ const ResumeDetail = () => {
 
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
+    setFilter({ checked: false, bookmarked: false });
   };
 
+  const initIsOpenGuideBook = localStorage.getItem('skip') !== 'true';
+  const {
+    isOpen: isOpenGuideBook,
+    open: openGuideBook,
+    close: closeGuideBook,
+  } = useModal(initIsOpenGuideBook);
+
+  const handleOpenGuideBook = () => {
+    openGuideBook();
+    manageBodyScroll(false);
+    localStorage.removeItem('skip');
+  };
+
+  const handleCloseGuideBook = () => {
+    closeGuideBook();
+    manageBodyScroll(true);
+    localStorage.setItem('skip', 'true');
+  };
+
+  useEffect(() => {
+    if (isOpenGuideBook) {
+      manageBodyScroll(false);
+    }
+  }, [isOpenGuideBook]);
+
+  const isMyResume = resumeDetail.writerId === user?.id;
+
   return (
-    <Main $isMobile={isMobile}>
-      <ResumeContentWrapper $isMobile={isMobile}>
-        <ResumeViewer $isMobile={isMobile}>
-          <ResumeViewerHeader>
-            <ResumeInfo>
-              <Title>{resumeDetail?.title}</Title>
+    <>
+      <Main $isMobile={isMobile}>
+        <ResumeContentWrapper $isMobile={isMobile}>
+          <ResumeViewer $isMobile={isMobile}>
+            <ResumeViewerHeader>
+              <ResumeInfo>
+                <TitleContainer>
+                  {isMyResume && (
+                    <a
+                      href={`${process.env.BASE_PDF_URL}/${resumeDetail.resumeUrl}`}
+                      download={resumeDetail.title}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconButton>
+                        <Icon iconName="download" color={theme.color.accent.bd.weak} />
+                      </IconButton>
+                    </a>
+                  )}
+                  <Title>{resumeDetail.title}</Title>
+                </TitleContainer>
 
-              <WriterInfoContainer>
-                <WriterImg src={resumeDetail?.writerProfileUrl} />
-                <WriterInfo>
-                  <span>{resumeDetail?.writerName}</span>
-                  <Career>
-                    {resumeDetail?.occupation} |{' '}
-                    {resumeDetail?.year === 0 ? '신입' : `${resumeDetail?.year}년차`}
-                  </Career>
-                </WriterInfo>
-              </WriterInfoContainer>
-            </ResumeInfo>
-          </ResumeViewerHeader>
+                <WriterInfoContainer>
+                  <WriterImg src={resumeDetail.writerProfileUrl} />
+                  <WriterInfo>
+                    <span>{resumeDetail.writerName}</span>
+                    <Career>
+                      {resumeDetail.occupation} |{' '}
+                      {resumeDetail.year === 0 ? '신입' : `${resumeDetail.year}년차`}
+                    </Career>
+                  </WriterInfo>
+                </WriterInfoContainer>
+              </ResumeInfo>
+            </ResumeViewerHeader>
 
-          <PdfViewer
-            showAllPages={false}
-            file={resumeDetail?.resumeUrl}
-            totalPages={totalPages}
-            scale={scale}
-            pageNum={currentPageNum}
-            onLoadSuccess={setTotalPages}
-            width="100%"
-            height="100%"
-          >
-            <PdfViewer.PdfPagesInfo>
-              current: {currentPageNum} / {totalPages}
-            </PdfViewer.PdfPagesInfo>
-            <ButtonGroup height="2rem">
-              <ButtonGroup.Button onClick={prevPage}>
-                <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button onClick={zoomIn}>
-                <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button onClick={zoomOut}>
-                <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button onClick={nextPage}>
-                <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-            </ButtonGroup>
-          </PdfViewer>
-        </ResumeViewer>
+            <PdfViewer
+              showAllPages={false}
+              file={resumeDetail.resumeUrl}
+              totalPages={totalPages}
+              scale={scale}
+              pageNum={currentPageNum}
+              onLoadSuccess={setTotalPages}
+              width="100%"
+              height="100%"
+            >
+              <PdfViewer.PdfPagesInfo>
+                current: {currentPageNum} / {totalPages}
+              </PdfViewer.PdfPagesInfo>
+              <ButtonGroup height="2rem">
+                <ButtonGroup.Button onClick={prevPage}>
+                  <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button onClick={zoomIn}>
+                  <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button onClick={zoomOut}>
+                  <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+                </ButtonGroup.Button>
+                <ButtonGroup.Button onClick={nextPage}>
+                  <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+                </ButtonGroup.Button>
+              </ButtonGroup>
+            </PdfViewer>
+          </ResumeViewer>
 
-        <ResumeDetailAside $isMobile={isMobile}>
-          <TabList>
-            <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
-              피드백
-            </Tab>
-            <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
-              예상질문
-            </Tab>
-            <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
-              댓글
-            </Tab>
-          </TabList>
+          <ResumeDetailAside $isMobile={isMobile}>
+            <ResumeDetailAsideHeader>
+              <TabList>
+                <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
+                  피드백
+                </Tab>
+                <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
+                  예상질문
+                </Tab>
+                <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
+                  댓글
+                </Tab>
+              </TabList>
+              <IconButton onClick={handleOpenGuideBook}>
+                <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
+              </IconButton>
+            </ResumeDetailAsideHeader>
 
-          <CommentList $isMobile={isMobile}>
-            {currentTab === 'feedback' &&
-              resumeDetail &&
-              feedbackList?.map((feedback) => {
-                return (
-                  <li key={feedback.id}>
-                    <Feedback
-                      resumeId={Number(resumeId)}
-                      resumePage={currentPageNum}
-                      resumeWriterId={resumeDetail.writerId}
-                      {...feedback}
+            {currentTab === 'feedback' && (
+              <CommentList $isMobile={isMobile}>
+                <CommentHeader>
+                  <span>필터</span>
+                  <Switch
+                    label="check"
+                    checked={filter.checked}
+                    onChange={() => {
+                      setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                    }}
+                  />
+                </CommentHeader>
+
+                {feedbackList?.map((feedback) => {
+                  return (
+                    <li key={feedback.id}>
+                      <Feedback
+                        resumeId={Number(resumeId)}
+                        resumePage={currentPageNum}
+                        resumeWriterId={resumeDetail.writerId}
+                        {...feedback}
+                      />
+                    </li>
+                  );
+                })}
+                {hasNextPageAboutFeedback && <div ref={setTarget}></div>}
+              </CommentList>
+            )}
+
+            {currentTab === 'question' && (
+              <CommentList $isMobile={isMobile}>
+                <CommentHeader>
+                  <span>필터</span>
+                  <SwitchContainer>
+                    <Switch
+                      label="check"
+                      checked={filter.checked}
+                      onChange={() => {
+                        setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                      }}
                     />
-                  </li>
-                );
-              })}
-            {currentTab === 'question' &&
-              resumeDetail &&
-              questionList?.map((question) => {
-                return (
-                  <li key={question.id}>
-                    <Question
-                      resumeId={Number(resumeId)}
-                      resumePage={currentPageNum}
-                      resumeWriterId={resumeDetail.writerId}
-                      {...question}
+                    <Switch
+                      label="bookmark"
+                      checked={filter.bookmarked}
+                      onChange={() => {
+                        setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
+                      }}
                     />
-                  </li>
-                );
-              })}
-            {currentTab === 'comment' &&
-              commentList?.map((comment) => {
-                return (
-                  <li key={comment.id}>
-                    <Comment resumeId={Number(resumeId)} {...comment} />
-                  </li>
-                );
-              })}
-            <div ref={setTarget}></div>
-          </CommentList>
+                  </SwitchContainer>
+                </CommentHeader>
 
-          {currentTab === 'feedback' && resumeId && (
-            <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
-          )}
-          {currentTab === 'question' && resumeId && (
-            <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
-          )}
-          {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
-        </ResumeDetailAside>
-      </ResumeContentWrapper>
-    </Main>
+                {questionList?.map((question) => {
+                  return (
+                    <li key={question.id}>
+                      <Question
+                        resumeId={Number(resumeId)}
+                        resumePage={currentPageNum}
+                        resumeWriterId={resumeDetail.writerId}
+                        {...question}
+                      />
+                    </li>
+                  );
+                })}
+                {hasNextPageAboutQuestion && <div ref={setTarget}></div>}
+              </CommentList>
+            )}
+
+            {currentTab === 'comment' && (
+              <CommentList $isMobile={isMobile}>
+                {commentList?.map((comment) => {
+                  return (
+                    <li key={comment.id}>
+                      <Comment resumeId={Number(resumeId)} {...comment} />
+                    </li>
+                  );
+                })}
+                {hasNextPageAboutComment && <div ref={setTarget}></div>}
+              </CommentList>
+            )}
+
+            {currentTab === 'feedback' && resumeId && (
+              <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+            )}
+            {currentTab === 'question' && resumeId && (
+              <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+            )}
+            {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
+          </ResumeDetailAside>
+        </ResumeContentWrapper>
+      </Main>
+      <GuideBook isOpen={isOpenGuideBook} onClose={handleCloseGuideBook} />
+    </>
   );
 };
 

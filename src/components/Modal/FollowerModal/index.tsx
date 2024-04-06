@@ -6,6 +6,7 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useFollowerList } from '@apis/friendApi';
 import { breakPoints } from '@styles/common';
+import { FRIEND_LIST_SIZE } from '@constants';
 import { Header, IconButton, SearchUserInstruction, UserList } from './style';
 
 interface Props {
@@ -14,21 +15,18 @@ interface Props {
 }
 
 const FollowerModal = ({ isOpen, onClose }: Props) => {
-  const SIZE = 7;
   const { jwt } = useUserContext();
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const [name, setName] = useState<string>('');
 
-  const { data: followerListData, refetch, fetchNextPage } = useFollowerList({ jwt, start: name });
+  const { data: followerList, refetch, fetchNextPage } = useFollowerList({ jwt, start: name });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
     },
     options: { threshold: 0.5 },
   });
-
-  const followerList = followerListData?.pages.map((page) => page.users).flat();
 
   const handleClose = () => {
     onClose();
@@ -74,7 +72,7 @@ const FollowerModal = ({ isOpen, onClose }: Props) => {
               userName={user.name}
             />
           ))}
-          {followerList.length >= SIZE && <div ref={setTarget}></div>}
+          {followerList.length >= FRIEND_LIST_SIZE && <div ref={setTarget}></div>}
         </UserList>
       )}
       {name.length > 0 && followerList && followerList.length === 0 && (

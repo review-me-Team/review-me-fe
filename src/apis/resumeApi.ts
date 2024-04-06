@@ -1,9 +1,9 @@
 import {
   useInfiniteQuery,
   useMutation,
-  useQuery,
   useQueryClient,
   useSuspenseInfiniteQuery,
+  useSuspenseQuery,
 } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
@@ -77,6 +77,7 @@ export const useResumeList = ({ jwt, occupationId, startYear, endYear }: UseResu
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.resumes),
   });
 };
 
@@ -119,6 +120,7 @@ export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
+    select: (data) => data.pages.flatMap((page) => page.resumes),
   });
 };
 
@@ -148,7 +150,10 @@ export const getResumeDetail = async ({ resumeId, jwt }: { resumeId: number; jwt
 };
 
 export const useResumeDetail = ({ resumeId, jwt }: { resumeId: number; jwt?: string }) => {
-  return useQuery({ queryKey: ['resume', resumeId], queryFn: () => getResumeDetail({ resumeId, jwt }) });
+  return useSuspenseQuery({
+    queryKey: ['resume', resumeId],
+    queryFn: () => getResumeDetail({ resumeId, jwt }),
+  });
 };
 
 // POST 이력서 업로드

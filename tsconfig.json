@@ -25,6 +25,6 @@
       "@apis/*": ["./apis/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "./declaration.d.ts"],
   "exclude": ["node_modules"]
 }

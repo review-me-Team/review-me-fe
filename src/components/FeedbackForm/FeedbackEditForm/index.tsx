@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePatchFeedback } from '@apis/feedbackApi';
-import { useLabelList } from '@apis/utilApi';
+import { useFeedbackLabelList } from '@apis/utilApi';
 import { validateContent } from '@utils';
 import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 
@@ -27,7 +27,7 @@ const FeedbackEditForm = ({
   const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
 
-  const { data: labelList } = useLabelList();
+  const { data: labelList } = useFeedbackLabelList();
   const initLabelId = labelList?.find(({ label }) => label === initLabelContent)?.id;
 
   const [labelId, setLabelId] = useState<number | undefined>(initLabelId);
