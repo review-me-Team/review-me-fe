@@ -1,5 +1,6 @@
 import React from 'react';
 import ResumeItem from '@components/ResumeItem';
+import Spinner from '@components/Spinner';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useResumeList } from '@apis/resumeApi';
@@ -13,7 +14,12 @@ interface Props {
 
 const ResumeList = ({ occupationId, startYear, endYear }: Props) => {
   const { jwt } = useUserContext();
-  const { data: resumeList, fetchNextPage } = useResumeList({
+  const {
+    data: resumeList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useResumeList({
     jwt,
     occupationId,
     startYear,
@@ -38,7 +44,8 @@ const ResumeList = ({ occupationId, startYear, endYear }: Props) => {
           );
         })}
       </ResumeListLayout>
-      <div ref={setTarget}></div>
+      {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
+      {isFetchingNextPage && <Spinner size="4rem" />}
     </>
   );
 };

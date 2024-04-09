@@ -20,7 +20,13 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: userList, refetch, fetchNextPage } = useUserList({ jwt, start: name });
+  const {
+    data: userList,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useUserList({ jwt, start: name });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
@@ -73,7 +79,7 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
               userName={user.name}
             />
           ))}
-          <div ref={setTarget}></div>
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </UserList>
       )}
       {name.length > 0 && userList && userList.length === 0 && (

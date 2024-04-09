@@ -25,6 +25,8 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
     data: followingList,
     refetch,
     fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useFollowingList({ jwt, start: name, enabled: name.length === 0 });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
@@ -77,7 +79,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
               userName={user.name}
             />
           ))}
-          {followingList.length >= FRIEND_LIST_SIZE && <div ref={setTarget}></div>}
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </UserList>
       )}
       {name.length > 0 && followingList && followingList.length === 0 && (
