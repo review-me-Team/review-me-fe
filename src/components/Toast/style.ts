@@ -30,14 +30,4 @@ const ToastLayout = styled.li<{ $isOpen: boolean; $type: 'success' | 'error' }>`
   }
 `;
 
-const IconButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: transparent;
-  margin-left: 1rem;
-
-  cursor: pointer;
-`;
-
-export { ToastLayout, IconButton };
+export { ToastLayout };

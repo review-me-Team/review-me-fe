@@ -66,16 +66,6 @@ const RightContainer = styled.div`
   flex-shrink: 0;
 `;
 
-const IconButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: transparent;
-
-  cursor: pointer;
-`;
-
 const MobileMenu = styled.aside`
   display: flex;
   flex-direction: column;
@@ -155,7 +145,6 @@ export {
   MenuList,
   MenuItem,
   LeftContainer,
-  IconButton,
   MobileMenu,
   MobileMenuTop,
   MobileMenuList,
