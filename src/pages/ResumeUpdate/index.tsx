@@ -6,7 +6,8 @@ import { useUserContext } from '@contexts/userContext';
 import { useResumeDetail } from '@apis/resumeApi';
 import { useOccupationList, useScopeList } from '@apis/utilApi';
 import { PageMain } from '@styles/common';
-import { ResumeUploadContainer, IconButton, Description, MainDescription, SubDescription } from './style';
+import { IconButton } from '@styles/iconButton';
+import { ResumeUploadContainer, Description, MainDescription, SubDescription } from './style';
 
 const ResumeUpdate = () => {
   const { resumeId } = useParams();

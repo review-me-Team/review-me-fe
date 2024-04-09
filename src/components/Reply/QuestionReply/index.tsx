@@ -23,7 +23,6 @@ import {
   Bottom,
   EmojiButton,
   Top,
-  IconButton,
   EmojiModal,
   EmojiButtonContainer,
   EmojiLabelList,
@@ -32,6 +31,7 @@ import {
   CommentInfo,
   MoreIconContainer,
 } from '@styles/comment';
+import { IconButton } from '@styles/iconButton';
 import { formatDate } from '@utils';
 
 interface Props extends QuestionReplyType {
