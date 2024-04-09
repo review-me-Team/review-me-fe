@@ -156,9 +156,7 @@ const ResumeDetail = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <IconButton>
-                        <Icon iconName="download" color={theme.color.accent.bd.weak} />
-                      </IconButton>
+                      <Icon iconName="download" color={theme.color.accent.bd.weak} />
                     </a>
                   )}
                   <Title>{resumeDetail.title}</Title>
@@ -185,7 +183,7 @@ const ResumeDetail = () => {
               pageNum={currentPageNum}
               onLoadSuccess={setTotalPages}
               width="100%"
-              height="100%"
+              height={isMobile ? '100vh' : '100%'}
             >
               <PdfViewer.PdfPagesInfo>
                 current: {currentPageNum} / {totalPages}
