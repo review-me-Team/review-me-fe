@@ -7,12 +7,6 @@ const Header = styled.header`
   width: 100%;
 `;
 
-const IconButton = styled.button`
-  background-color: transparent;
-
-  cursor: pointer;
-`;
-
 const FriendList = styled.ul`
   width: 100%;
   max-height: 28.875rem;
@@ -24,4 +18,4 @@ const SearchUserInstruction = styled.span`
   color: ${theme.color.neutral.text.sub}
 `;
 
-export { Header, IconButton, FriendList, SearchUserInstruction };
+export { Header, FriendList, SearchUserInstruction };

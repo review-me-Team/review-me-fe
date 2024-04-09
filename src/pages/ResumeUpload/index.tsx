@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Icon } from 'review-me-design-system';
 import ResumeUploadForm from '@components/ResumeForm/ResumeUploadForm';
 import { PageMain } from '@styles/common';
-import { ResumeUploadContainer, IconButton, Description, MainDescription, SubDescription } from './style';
+import { IconButton } from '@styles/iconButton';
+import { ResumeUploadContainer, Description, MainDescription, SubDescription } from './style';
 
 const ResumeUpload = () => {
   const navigate = useNavigate();

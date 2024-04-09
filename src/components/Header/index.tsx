@@ -5,6 +5,7 @@ import LoginRequestModal from '@components/Modal/LoginRequestModal';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { breakPoints } from '@styles/common';
+import { IconButton } from '@styles/iconButton';
 import { ROUTE_PATH } from '@constants';
 import { manageBodyScroll } from '@utils';
 import {
@@ -15,7 +16,6 @@ import {
   NavContainer,
   ReviewMe,
   RightContainer,
-  IconButton,
   MobileMenu,
   MobileMenuList,
   MobileMenuItem,

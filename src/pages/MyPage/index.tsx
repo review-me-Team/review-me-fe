@@ -9,16 +9,9 @@ import UserItem from '@components/UserItem';
 import { useUserContext } from '@contexts/userContext';
 import { useFollowerList, useFollowingList, useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
+import { IconButton } from '@styles/iconButton';
 import { manageBodyScroll } from '@utils';
-import {
-  FriendSectionContainer,
-  FriendSection,
-  OpenModalButton,
-  Title,
-  UserImg,
-  UserInfo,
-  UserName,
-} from './style';
+import { FriendSectionContainer, FriendSection, Title, UserImg, UserInfo, UserName } from './style';
 
 const MyPage = () => {
   const { user, jwt } = useUserContext();
@@ -76,14 +69,14 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>내 친구</span>
-            <OpenModalButton
+            <IconButton
               onClick={() => {
                 openFriendSearchModal();
                 manageBodyScroll(false);
               }}
             >
               <Icon iconName="rightArrow" />
-            </OpenModalButton>
+            </IconButton>
             <FriendSearchModal
               isOpen={isFriendSearchModalOpen}
               onClose={() => {
@@ -111,7 +104,7 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>전송한 친구 요청 보기</span>
-            <OpenModalButton
+            <IconButton
               onClick={() => {
                 openFollowingModal();
                 manageBodyScroll(false);
@@ -119,7 +112,7 @@ const MyPage = () => {
               }}
             >
               <Icon iconName="rightArrow" />
-            </OpenModalButton>
+            </IconButton>
             <FollowingModal
               isOpen={isFollowingModalOpen}
               onClose={() => {
@@ -148,14 +141,14 @@ const MyPage = () => {
         <FriendSection>
           <Title>
             <span>친구 요청에 응답하기</span>
-            <OpenModalButton
+            <IconButton
               onClick={() => {
                 openFollowerModal();
                 manageBodyScroll(false);
               }}
             >
               <Icon iconName="rightArrow" />
-            </OpenModalButton>
+            </IconButton>
             <FollowerModal
               isOpen={isFollowerModalOpen}
               onClose={() => {

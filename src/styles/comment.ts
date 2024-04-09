@@ -30,17 +30,6 @@ const MoreIconContainer = styled.div`
   position: relative;
 `;
 
-const IconButton = styled.button`
-  height: 1.5rem;
-  background-color: transparent;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-`;
-
 const CommentInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -171,7 +160,6 @@ export {
   CommentLayout,
   Top,
   Info,
-  IconButton,
   ButtonsContainer,
   MoreIconContainer,
   CommentInfo,

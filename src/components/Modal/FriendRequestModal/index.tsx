@@ -6,7 +6,8 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useUserList } from '@apis/userApi';
 import { breakPoints } from '@styles/common';
-import { UserList, Header, IconButton, SearchUserInstruction } from './style';
+import { IconButton } from '@styles/iconButton';
+import { UserList, Header, SearchUserInstruction } from './style';
 
 interface Props {
   isOpen: boolean;

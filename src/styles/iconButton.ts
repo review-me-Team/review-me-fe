@@ -12,6 +12,7 @@ const IconButton = styled.button`
   cursor: pointer;
 
   &:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 `;
