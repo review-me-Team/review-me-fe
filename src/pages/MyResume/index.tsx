@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
 import MyResumeItem from '@components/MyResumeItem';
+import Spinner from '@components/Spinner';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import { useUserContext } from '@contexts/userContext';
 import { useMyResumeList } from '@apis/resumeApi';
@@ -13,7 +14,7 @@ const MyResume = () => {
   const navigate = useNavigate();
   const { jwt } = useUserContext();
 
-  const { data: myResumeList, fetchNextPage } = useMyResumeList({ jwt });
+  const { data: myResumeList, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyResumeList({ jwt });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
     options: {
@@ -36,7 +37,8 @@ const MyResume = () => {
           );
         })}
       </MyResumeList>
-      <div ref={setTarget}></div>
+      {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
+      {isFetchingNextPage && <Spinner size="4rem" />}
     </PageMain>
   );
 };

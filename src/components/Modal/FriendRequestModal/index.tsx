@@ -6,7 +6,8 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useUserList } from '@apis/userApi';
 import { breakPoints } from '@styles/common';
-import { UserList, Header, IconButton, SearchUserInstruction } from './style';
+import { IconButton } from '@styles/iconButton';
+import { UserList, Header, SearchUserInstruction } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -19,7 +20,13 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: userList, refetch, fetchNextPage } = useUserList({ jwt, start: name });
+  const {
+    data: userList,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useUserList({ jwt, start: name });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
@@ -72,7 +79,7 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
               userName={user.name}
             />
           ))}
-          <div ref={setTarget}></div>
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </UserList>
       )}
       {name.length > 0 && userList && userList.length === 0 && (

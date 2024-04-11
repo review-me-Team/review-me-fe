@@ -59,10 +59,4 @@ const Title = styled.header`
   color: ${theme.color.neutral.text.strong};
 `;
 
-const OpenModalButton = styled.button`
-  background-color: transparent;
-
-  cursor: pointer;
-`;
-
-export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title, OpenModalButton };
+export { UserInfo, UserImg, UserName, FriendSectionContainer, FriendSection, Title };

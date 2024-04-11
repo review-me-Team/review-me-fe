@@ -9,7 +9,7 @@ const Main = styled.main<{ $isMobile: boolean }>`
   background-color: ${theme.color.neutral.bg.default};
 `;
 
-const ResumeContentWrapper = styled.section<{ $isMobile: boolean }>`
+const ResumeContentWrapper = styled.div<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: ${({ $isMobile }) => ($isMobile ? 'column' : 'row')};
   height: 100%;

@@ -19,7 +19,6 @@ import {
   Bottom,
   EmojiButton,
   Top,
-  IconButton,
   EmojiModal,
   EmojiButtonContainer,
   EmojiLabelList,
@@ -28,6 +27,7 @@ import {
   MoreIconContainer,
   ButtonsContainer,
 } from '@styles/comment';
+import { IconButton } from '@styles/iconButton';
 import { formatDate } from '@utils';
 
 interface Props extends CommentType {
@@ -59,7 +59,7 @@ const Comment = ({
   const { mutate: toggleEmojiAboutComment } = usePatchEmojiAboutComment();
   const queryClient = useQueryClient();
 
-  const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
+  const handleEmojiLabelClick = (e: MouseEvent<HTMLButtonElement>, clickedEmojiId: number) => {
     if (!jwt) return;
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;

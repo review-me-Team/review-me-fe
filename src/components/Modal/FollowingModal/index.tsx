@@ -6,8 +6,9 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useFollowingList } from '@apis/friendApi';
 import { breakPoints } from '@styles/common';
+import { IconButton } from '@styles/iconButton';
 import { FRIEND_LIST_SIZE } from '@constants';
-import { Header, IconButton, SearchUserInstruction, UserList } from './style';
+import { Header, SearchUserInstruction, UserList } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -24,6 +25,8 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
     data: followingList,
     refetch,
     fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useFollowingList({ jwt, start: name, enabled: name.length === 0 });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
@@ -76,7 +79,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
               userName={user.name}
             />
           ))}
-          {followingList.length >= FRIEND_LIST_SIZE && <div ref={setTarget}></div>}
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </UserList>
       )}
       {name.length > 0 && followingList && followingList.length === 0 && (

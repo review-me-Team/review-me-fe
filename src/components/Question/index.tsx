@@ -28,7 +28,6 @@ import {
   OpenReplyButton,
   EmojiButton,
   Top,
-  IconButton,
   EmojiModal,
   EmojiButtonContainer,
   EmojiLabelList,
@@ -38,6 +37,7 @@ import {
   MoreIconContainer,
   ButtonsContainer,
 } from '@styles/comment';
+import { IconButton } from '@styles/iconButton';
 import { formatDate } from '@utils';
 
 interface Props extends QuestionType {
@@ -84,7 +84,7 @@ const Question = ({
   const { mutate: toggleEmoji } = usePatchEmojiAboutQuestion();
   const queryClient = useQueryClient();
 
-  const handleEmojiLabelClick = (e: MouseEvent<HTMLDivElement>, clickedEmojiId: number) => {
+  const handleEmojiLabelClick = (e: MouseEvent<HTMLButtonElement>, clickedEmojiId: number) => {
     if (!jwt) return;
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;

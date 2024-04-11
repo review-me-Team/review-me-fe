@@ -69,6 +69,7 @@ const ResumeDetail = () => {
     data: feedbackList,
     fetchNextPage: fetchNextPageAboutFeedback,
     hasNextPage: hasNextPageAboutFeedback,
+    isFetchingNextPage: isFetchingNextPageAboutFeedback,
   } = useFeedbackList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
@@ -80,6 +81,7 @@ const ResumeDetail = () => {
     data: questionList,
     fetchNextPage: fetchNextPageAboutQuestion,
     hasNextPage: hasNextPageAboutQuestion,
+    isFetchingNextPage: isFetchingNextPageAboutQuestion,
   } = useQuestionList({
     resumeId: Number(resumeId),
     resumePage: currentPageNum,
@@ -92,6 +94,7 @@ const ResumeDetail = () => {
     data: commentList,
     fetchNextPage: fetchNextPageAboutComment,
     hasNextPage: hasNextPageAboutComment,
+    isFetchingNextPage: isFetchingNextPageAboutComment,
   } = useCommentList({
     resumeId: Number(resumeId),
     enabled: currentTab === 'comment',
@@ -156,9 +159,7 @@ const ResumeDetail = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <IconButton>
-                        <Icon iconName="download" color={theme.color.accent.bd.weak} />
-                      </IconButton>
+                      <Icon iconName="download" color={theme.color.accent.bd.weak} />
                     </a>
                   )}
                   <Title>{resumeDetail.title}</Title>
@@ -185,7 +186,7 @@ const ResumeDetail = () => {
               pageNum={currentPageNum}
               onLoadSuccess={setTotalPages}
               width="100%"
-              height="100%"
+              height={isMobile ? '100vh' : '100%'}
             >
               <PdfViewer.PdfPagesInfo>
                 current: {currentPageNum} / {totalPages}
@@ -250,7 +251,7 @@ const ResumeDetail = () => {
                     </li>
                   );
                 })}
-                {hasNextPageAboutFeedback && <div ref={setTarget}></div>}
+                {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && <div ref={setTarget}></div>}
               </CommentList>
             )}
 
@@ -288,7 +289,7 @@ const ResumeDetail = () => {
                     </li>
                   );
                 })}
-                {hasNextPageAboutQuestion && <div ref={setTarget}></div>}
+                {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && <div ref={setTarget}></div>}
               </CommentList>
             )}
 
@@ -301,7 +302,7 @@ const ResumeDetail = () => {
                     </li>
                   );
                 })}
-                {hasNextPageAboutComment && <div ref={setTarget}></div>}
+                {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
               </CommentList>
             )}
 

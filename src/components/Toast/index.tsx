@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon, theme } from 'review-me-design-system';
 import { useToastContext } from '@contexts/toastContext';
-import { ToastLayout, IconButton } from './style';
+import { IconButton } from '@styles/iconButton';
+import { ToastLayout } from './style';
 
 const Toast = () => {
   const { toast, closeToast } = useToastContext();

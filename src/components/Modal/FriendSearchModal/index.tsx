@@ -6,7 +6,8 @@ import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useFriendList } from '@apis/friendApi';
 import { breakPoints } from '@styles/common';
-import { FriendList, Header, IconButton, SearchUserInstruction } from './style';
+import { IconButton } from '@styles/iconButton';
+import { FriendList, Header, SearchUserInstruction } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -19,7 +20,13 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
 
   const [name, setName] = useState<string>('');
 
-  const { data: friendList, refetch, fetchNextPage } = useFriendList({ jwt, start: name, enabled: false });
+  const {
+    data: friendList,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useFriendList({ jwt, start: name, enabled: false });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => {
       fetchNextPage();
@@ -75,7 +82,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
               userName={friend.name}
             />
           ))}
-          <div ref={setTarget}></div>
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </FriendList>
       )}
       {isNameEntered && friendList && friendList.length > 0 && (
@@ -89,7 +96,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
               userName={friend.name}
             />
           ))}
-          <div ref={setTarget}></div>
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
         </FriendList>
       )}
       {isNameEntered && friendList && friendList.length === 0 && (
