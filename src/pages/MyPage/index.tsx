@@ -42,7 +42,7 @@ const MyPage = () => {
       `}
     >
       <UserInfo>
-        <UserImg src={user?.avatarUrl} />
+        <UserImg src={user?.avatarUrl} alt={user?.name} />
         <UserName>{user?.name}</UserName>
       </UserInfo>
 

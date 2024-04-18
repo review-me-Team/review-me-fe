@@ -166,7 +166,7 @@ const ResumeDetail = () => {
                 </TitleContainer>
 
                 <WriterInfoContainer>
-                  <WriterImg src={resumeDetail.writerProfileUrl} />
+                  <WriterImg src={resumeDetail.writerProfileUrl} alt={resumeDetail.writerName} />
                   <WriterInfo>
                     <span>{resumeDetail.writerName}</span>
                     <Career>
