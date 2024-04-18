@@ -18,7 +18,7 @@ const ResumeItem = ({ id, title, writerName, writerProfileUrl, createdAt, occupa
     <ResumeItemLayout to={`${ROUTE_PATH.RESUME}/${id}`}>
       <Title>{title}</Title>
       <User>
-        <UserImg src={writerProfileUrl} alt="user-image" />
+        <UserImg src={writerProfileUrl} alt={writerName} />
         <span>{writerName}</span>
       </User>
       <UserInfo>

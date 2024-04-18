@@ -160,7 +160,7 @@ const Question = ({
       <QuestionLayout>
         <Top>
           <Info>
-            <UserImg src={commenterProfileUrl} />
+            <UserImg src={commenterProfileUrl} alt={commenterName} />
             <CommentInfo>
               <UserName>{commenterName}</UserName>
               <Time>{formatDate(createdAt)}</Time>
