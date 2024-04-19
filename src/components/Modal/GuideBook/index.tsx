@@ -154,7 +154,11 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           )}
           <ButtonContainer>
             {currentGuide > MIN_GUIDE && (
-              <IconButton onClick={handlePrevGuide} disabled={currentGuide === MIN_GUIDE}>
+              <IconButton
+                aria-label="이전 가이드 보기"
+                onClick={handlePrevGuide}
+                disabled={currentGuide === MIN_GUIDE}
+              >
                 <Icon iconName="leftArrow" width={24} height={24} />
               </IconButton>
             )}
@@ -162,7 +166,11 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
               {currentGuide === MAX_GUIDE ? 'start!' : '닫기'}
             </Button>
             {currentGuide < MAX_GUIDE && (
-              <IconButton onClick={handleNextGuide} disabled={currentGuide === MAX_GUIDE}>
+              <IconButton
+                aria-label="다음 가이드 보기"
+                onClick={handleNextGuide}
+                disabled={currentGuide === MAX_GUIDE}
+              >
                 <Icon iconName="rightArrow" width={24} height={24} />
               </IconButton>
             )}

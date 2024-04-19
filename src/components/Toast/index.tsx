@@ -23,7 +23,7 @@ const Toast = () => {
   return createPortal(
     <ToastLayout $isOpen={!!toast} $type={toast.type}>
       {toast.message}
-      <IconButton onClick={closeToast}>
+      <IconButton aria-label="토스트 메세지 닫기" onClick={closeToast}>
         <Icon iconName="xMark" color={theme.color.neutral.text.weak} width={16} height={16} />
       </IconButton>
     </ToastLayout>,

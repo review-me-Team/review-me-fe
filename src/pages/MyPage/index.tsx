@@ -70,6 +70,7 @@ const MyPage = () => {
           <Title>
             <span>내 친구</span>
             <IconButton
+              aria-label="친구 모달 열기"
               onClick={() => {
                 openFriendSearchModal();
                 manageBodyScroll(false);
@@ -105,6 +106,7 @@ const MyPage = () => {
           <Title>
             <span>전송한 친구 요청 보기</span>
             <IconButton
+              aria-label="전송한 친구 요청 보기 모달 열기"
               onClick={() => {
                 openFollowingModal();
                 manageBodyScroll(false);
@@ -142,6 +144,7 @@ const MyPage = () => {
           <Title>
             <span>친구 요청에 응답하기</span>
             <IconButton
+              aria-label="친구 요청에 응답하기 모달 열기"
               onClick={() => {
                 openFollowerModal();
                 manageBodyScroll(false);

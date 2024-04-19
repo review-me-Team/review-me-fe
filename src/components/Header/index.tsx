@@ -70,12 +70,12 @@ const Header = () => {
         <NavContainer>
           {isMobile && (
             <>
-              <IconButton onClick={handleOpenMobileMenu}>
+              <IconButton aria-label="메뉴 열기" onClick={handleOpenMobileMenu}>
                 <Icon iconName="menu" color={theme.color.accent.text.strong} width={28} height={28} />
               </IconButton>
               <MobileMenu className={isOpenMobileMenu ? 'open' : ''}>
                 <MobileMenuTop>
-                  <IconButton onClick={handleCloseMobileMenu}>
+                  <IconButton aria-label="메뉴 닫기" onClick={handleCloseMobileMenu}>
                     <Icon iconName="xMark" width={28} height={28} />
                   </IconButton>
                 </MobileMenuTop>
@@ -153,6 +153,7 @@ const Header = () => {
 
           <RightContainer>
             <IconButton
+              aria-label="마이페이지로 이동"
               onClick={() => {
                 if (!isLoggedIn) {
                   openLoginRequestModal();
