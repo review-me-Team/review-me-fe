@@ -118,7 +118,11 @@ const Comment = ({
             <ButtonsContainer>
               {isCommenterUser && (
                 <MoreIconContainer>
-                  <IconButton onClick={openDropdown} disabled={content === null}>
+                  <IconButton
+                    aria-label="댓글 옵션 메뉴 열기"
+                    onClick={openDropdown}
+                    disabled={content === null}
+                  >
                     <Icon
                       iconName="more"
                       width={ICON_SIZE}

@@ -153,7 +153,11 @@ const Feedback = ({
 
           {!isEdited && (
             <ButtonsContainer>
-              <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
+              <IconButton
+                aria-label={checked ? '체크 표시 취소' : '체크 표시'}
+                onClick={handleCheckMarkClick}
+                disabled={content === null}
+              >
                 {checked ? (
                   <Icon
                     iconName="filledCheckMark"
@@ -172,7 +176,11 @@ const Feedback = ({
               </IconButton>
               {isCommenterUser && (
                 <MoreIconContainer>
-                  <IconButton onClick={openDropdown} disabled={content === null}>
+                  <IconButton
+                    aria-label="피드백 옵션 메뉴 열기"
+                    onClick={openDropdown}
+                    disabled={content === null}
+                  >
                     <Icon
                       iconName="more"
                       width={ICON_SIZE}

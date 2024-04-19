@@ -59,7 +59,7 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
     >
       <Header>
         <Modal.Title>친구</Modal.Title>
-        <IconButton onClick={onClose}>
+        <IconButton aria-label="친구 모달 닫기" onClick={onClose}>
           <Icon iconName="xMark" />
         </IconButton>
       </Header>
