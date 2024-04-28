@@ -111,6 +111,7 @@ const FeedbackEditForm = ({
       />
       <ButtonWrapper $type="edit">
         <Button
+          type="button"
           variant="outline"
           size="s"
           onClick={(e) => {
