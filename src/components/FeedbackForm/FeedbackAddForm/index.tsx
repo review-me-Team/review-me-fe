@@ -65,6 +65,7 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
         {labelList?.map(({ id, label }) => {
           return (
             <Label
+              type="button"
               key={id}
               isActive={labelId === id}
               py="0.25rem"
