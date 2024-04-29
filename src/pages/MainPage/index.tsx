@@ -6,7 +6,7 @@ import feedbackJpg from '@assets/feedback.jpg';
 import feedbackWebp from '@assets/feedback_1000w.webp';
 import mainJpg from '@assets/main.jpg';
 import mainSmallWebp from '@assets/main_1040w.webp';
-import mainLargeWebp from '@assets/main_1680w.webp';
+import mainLargeWebp from '@assets/main_1400w.webp';
 import questionJpg from '@assets/question.jpg';
 import questionWebp from '@assets/question_1000w.webp';
 import { Button } from 'review-me-design-system';
