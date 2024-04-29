@@ -1,11 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import commentImg from '@assets/comment.png';
-import feedbackImg from '@assets/feedback.png';
+import commentJpg from '@assets/comment.jpg';
+import commentWebp from '@assets/comment_1000w.webp';
+import feedbackJpg from '@assets/feedback.jpg';
+import feedbackWebp from '@assets/feedback_1000w.webp';
 import mainJpg from '@assets/main.jpg';
 import mainSmallWebp from '@assets/main_1040w.webp';
 import mainLargeWebp from '@assets/main_1680w.webp';
-import questionImg from '@assets/question.png';
+import questionJpg from '@assets/question.jpg';
+import questionWebp from '@assets/question_1000w.webp';
 import { Button } from 'review-me-design-system';
 import { ROUTE_PATH } from '@constants';
 import { Description, DescriptionText, Guide, Img, Main, MainPageLayout, ReviewMe, Title } from './style';
@@ -15,6 +18,7 @@ interface Description {
   title: string;
   description: string;
   imgSrc: string;
+  imgSrcSet: string;
 }
 
 const description: Description[] = [
@@ -22,25 +26,29 @@ const description: Description[] = [
     id: 'feedback',
     title: '피드백',
     description: '사람들의 피드백을 통해 이력서를 다듬어보세요.',
-    imgSrc: feedbackImg,
+    imgSrcSet: `${feedbackWebp} 1000w`,
+    imgSrc: feedbackJpg,
   },
   {
     id: 'question',
     title: '예상질문',
     description: '면접에서 나올 수 있는 다양한 예상 질문들을 공유하고, 이에 대한 답변을 준비해보세요.',
-    imgSrc: questionImg,
+    imgSrcSet: `${questionWebp} 1000w`,
+    imgSrc: questionJpg,
   },
   {
     id: 'comment',
     title: '댓글',
     description: '이력서에 대한 다양한 의견을 공유할 수 있어요.',
-    imgSrc: commentImg,
+    imgSrcSet: `${commentWebp} 1000w`,
+    imgSrc: commentJpg,
   },
 ];
 
 const MainPage = () => {
   const navigate = useNavigate();
   const mainImgBreakPoint = '(max-width: 768px)';
+  const descriptionImgSizes = '(max-width: 600px) 90vw, (max-width: 768px) 300px, 416px';
 
   return (
     <MainPageLayout>
@@ -56,7 +64,7 @@ const MainPage = () => {
             srcSet={`${mainSmallWebp} 1040w, ${mainLargeWebp} 1680w`}
             sizes={`${mainImgBreakPoint} 90vw, 700px`}
           />
-          <img src={mainJpg} alt="main" />
+          <Img src={mainJpg} alt="main" />
         </picture>
       </Main>
 
@@ -65,7 +73,7 @@ const MainPage = () => {
         <DescriptionText>사람들과 이력서에 대한 피드백, 예상질문, 댓글을 공유할 수 있습니다.</DescriptionText>
       </Guide>
 
-      {description.map(({ id, title, description, imgSrc }, index) => (
+      {description.map(({ id, title, description, imgSrc, imgSrcSet }, index) => (
         <Description key={id} $index={index}>
           {index % 2 === 0 ? (
             <>
@@ -73,11 +81,17 @@ const MainPage = () => {
                 <Title>{title}</Title>
                 <DescriptionText>{description}</DescriptionText>
               </div>
-              <Img src={imgSrc} alt={id} />
+              <picture>
+                <source type="image/webp" srcSet={imgSrcSet} sizes={descriptionImgSizes} />
+                <Img src={imgSrc} alt={id} />
+              </picture>
             </>
           ) : (
             <>
-              <Img src={imgSrc} alt={id} />
+              <picture>
+                <source type="image/webp" srcSet={imgSrcSet} sizes={descriptionImgSizes} />
+                <Img src={imgSrc} alt={id} />
+              </picture>
               <div>
                 <Title>{title}</Title>
                 <DescriptionText>{description}</DescriptionText>
