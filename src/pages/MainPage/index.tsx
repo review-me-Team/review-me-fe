@@ -2,7 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import commentImg from '@assets/comment.png';
 import feedbackImg from '@assets/feedback.png';
-import mainImg from '@assets/main.png';
+import mainJpg from '@assets/main.jpg';
+import mainSmallWebp from '@assets/main_1040w.webp';
+import mainLargeWebp from '@assets/main_1680w.webp';
 import questionImg from '@assets/question.png';
 import { Button } from 'review-me-design-system';
 import { ROUTE_PATH } from '@constants';
@@ -38,6 +40,7 @@ const description: Description[] = [
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const mainImgBreakPoint = '(max-width: 768px)';
 
   return (
     <MainPageLayout>
@@ -47,7 +50,14 @@ const MainPage = () => {
           <br />
           이력서로 성장의 길을 함께 걸어요.
         </Title>
-        <Img src={mainImg} alt="main" />
+        <picture>
+          <source
+            type="image/webp"
+            srcSet={`${mainSmallWebp} 1040w, ${mainLargeWebp} 1680w`}
+            sizes={`${mainImgBreakPoint} 90vw, 700px`}
+          />
+          <img src={mainJpg} alt="main" />
+        </picture>
       </Main>
 
       <Guide>
