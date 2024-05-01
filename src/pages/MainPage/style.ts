@@ -41,14 +41,8 @@ const ReviewMe = styled.span`
 `;
 
 const Img = styled.img`
-  max-width: 50%;
-
   border-radius: 1.25rem;
   box-shadow: 0.875rem 1.75rem 2.5rem rgba(0, 0, 0, 0.05);
-
-  @media ${breakPoints.mobile} {
-    max-width: 100%;
-  }
 `;
 
 const Guide = styled.div`

@@ -105,7 +105,7 @@ const QuestionReply = ({
     <CommentLayout>
       <Top>
         <Info>
-          <UserImg src={commenterProfileUrl} />
+          <UserImg src={commenterProfileUrl} alt={commenterName} />
           <CommentInfo>
             <UserName>{commenterName}</UserName>
             <Time>{formatDate(createdAt)}</Time>
@@ -114,7 +114,7 @@ const QuestionReply = ({
 
         {!isEdited && isCommenterUser && (
           <MoreIconContainer>
-            <IconButton onClick={openDropdown}>
+            <IconButton aria-label="예상질문 대댓글 옵션 메뉴 열기" onClick={openDropdown}>
               <Icon
                 iconName="more"
                 width={ICON_SIZE}

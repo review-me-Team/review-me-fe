@@ -79,6 +79,7 @@ const FeedbackEditForm = ({
         {labelList?.map(({ id, label }) => {
           return (
             <Label
+              type="button"
               key={id}
               isActive={labelId === id}
               py="0.25rem"
@@ -110,6 +111,7 @@ const FeedbackEditForm = ({
       />
       <ButtonWrapper $type="edit">
         <Button
+          type="button"
           variant="outline"
           size="s"
           onClick={(e) => {

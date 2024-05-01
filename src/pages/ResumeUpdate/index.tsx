@@ -25,7 +25,7 @@ const ResumeUpdate = () => {
 
   return (
     <PageMain>
-      <IconButton onClick={() => navigate(-1)}>
+      <IconButton aria-label="이전 페이지로 이동" onClick={() => navigate(-1)}>
         <Icon iconName="leftArrow" />
         <span>뒤로</span>
       </IconButton>

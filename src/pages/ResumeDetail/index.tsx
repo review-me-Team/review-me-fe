@@ -166,7 +166,7 @@ const ResumeDetail = () => {
                 </TitleContainer>
 
                 <WriterInfoContainer>
-                  <WriterImg src={resumeDetail.writerProfileUrl} />
+                  <WriterImg src={resumeDetail.writerProfileUrl} alt={resumeDetail.writerName} />
                   <WriterInfo>
                     <span>{resumeDetail.writerName}</span>
                     <Career>
@@ -221,7 +221,7 @@ const ResumeDetail = () => {
                   댓글
                 </Tab>
               </TabList>
-              <IconButton onClick={handleOpenGuideBook}>
+              <IconButton aria-label="가이드북 열기" onClick={handleOpenGuideBook}>
                 <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
               </IconButton>
             </ResumeDetailAsideHeader>

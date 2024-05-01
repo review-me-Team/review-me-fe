@@ -56,7 +56,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
     <Modal modalRootId="modal-root" isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
       <Header>
         <Modal.Title>전송한 친구 요청 보기</Modal.Title>
-        <IconButton onClick={handleClose}>
+        <IconButton aria-label="전송한 친구 요청 보기 모달 닫기" onClick={handleClose}>
           <Icon iconName="xMark" />
         </IconButton>
       </Header>

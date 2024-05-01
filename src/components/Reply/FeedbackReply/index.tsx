@@ -105,7 +105,7 @@ const FeedbackReply = ({
     <ReplyLayout>
       <Top>
         <Info>
-          <UserImg src={commenterProfileUrl} />
+          <UserImg src={commenterProfileUrl} alt={commenterName} />
           <CommentInfo>
             <UserName>{commenterName}</UserName>
             <Time>{formatDate(createdAt)}</Time>
@@ -114,7 +114,7 @@ const FeedbackReply = ({
 
         {!isEdited && isCommenterUser && (
           <MoreIconContainer>
-            <IconButton onClick={openDropdown}>
+            <IconButton aria-label="피드백 대댓글 옵션 메뉴 열기" onClick={openDropdown}>
               <Icon
                 iconName="more"
                 width={ICON_SIZE}

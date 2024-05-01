@@ -160,7 +160,7 @@ const Question = ({
       <QuestionLayout>
         <Top>
           <Info>
-            <UserImg src={commenterProfileUrl} />
+            <UserImg src={commenterProfileUrl} alt={commenterName} />
             <CommentInfo>
               <UserName>{commenterName}</UserName>
               <Time>{formatDate(createdAt)}</Time>
@@ -170,7 +170,11 @@ const Question = ({
           {!isEdited && (
             <ButtonsContainer>
               {isResumeWriterUser && (
-                <IconButton onClick={handleBookMarkClick} disabled={content === null}>
+                <IconButton
+                  aria-label={bookmarked ? '북마크 취소' : '북마크'}
+                  onClick={handleBookMarkClick}
+                  disabled={content === null}
+                >
                   {bookmarked ? (
                     <Icon
                       iconName="filledBookMark"
@@ -188,7 +192,11 @@ const Question = ({
                   )}
                 </IconButton>
               )}
-              <IconButton onClick={handleCheckMarkClick} disabled={content === null}>
+              <IconButton
+                aria-label={checked ? '체크 표시 취소' : '체크 표시'}
+                onClick={handleCheckMarkClick}
+                disabled={content === null}
+              >
                 {checked ? (
                   <Icon
                     iconName="filledCheckMark"
@@ -207,7 +215,11 @@ const Question = ({
               </IconButton>
               {isCommenterUser && (
                 <MoreIconContainer>
-                  <IconButton onClick={openDropdown} disabled={content === null}>
+                  <IconButton
+                    aria-label="예상질문 옵션 메뉴 열기"
+                    onClick={openDropdown}
+                    disabled={content === null}
+                  >
                     <Icon
                       iconName="more"
                       width={ICON_SIZE}
