@@ -277,7 +277,7 @@ const ResumeDetail = () => {
             {currentTab === 'question' && isValidResumeId && (
               <>
                 <CommentListWrapper>
-                  <CommentList>
+                  <CommentList ref={commentListRef}>
                     <CommentHeader>
                       <span>필터</span>
                       <SwitchContainer>
@@ -315,7 +315,11 @@ const ResumeDetail = () => {
                     )}
                   </CommentList>
                 </CommentListWrapper>
-                <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+                <QuestionAddForm
+                  resumeId={Number(resumeId)}
+                  resumePage={currentPageNum}
+                  onSubmitSuccess={scrollToTopOfCommentList}
+                />
               </>
             )}
 
