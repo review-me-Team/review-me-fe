@@ -8,10 +8,18 @@ export const ellipsisStyles = css`
   word-break: break-all;
 `;
 
+export const screenSize = {
+  mobile: 600,
+  smallTablet: 768,
+  tablet: 1199,
+  desktop: 1200,
+};
+
 export const breakPoints = {
-  mobile: 'screen and (max-width: 600px)',
-  tablet: 'screen and (max-width: 1199px)',
-  desktop: 'screen and (min-width: 1200px)',
+  mobile: `screen and (max-width: ${screenSize.mobile}px)`,
+  smallTablet: `screen and (max-width: ${screenSize.smallTablet}px)`,
+  tablet: `screen and (max-width: ${screenSize.tablet}px)`,
+  desktop: `screen and (min-width: ${screenSize.desktop}px)`,
 };
 
 export const PageMain = styled.main<{ $css?: CSSProp }>`
