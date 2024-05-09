@@ -20,7 +20,7 @@ import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
-import { manageBodyScroll } from '@utils';
+import { isNumeric, manageBodyScroll } from '@utils';
 import {
   Career,
   CommentList,
@@ -47,6 +47,7 @@ type ActiveTab = 'feedback' | 'question' | 'comment';
 const ResumeDetail = () => {
   const { jwt, user } = useUserContext();
   const { resumeId } = useParams();
+  const isValidResumeId = isNumeric(resumeId);
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
@@ -226,40 +227,11 @@ const ResumeDetail = () => {
               </IconButton>
             </ResumeDetailAsideHeader>
 
-            {currentTab === 'feedback' && (
-              <CommentList $isMobile={isMobile}>
-                <CommentHeader>
-                  <span>필터</span>
-                  <Switch
-                    label="check"
-                    checked={filter.checked}
-                    onChange={() => {
-                      setFilter((prev) => ({ ...prev, checked: !prev.checked }));
-                    }}
-                  />
-                </CommentHeader>
-
-                {feedbackList?.map((feedback) => {
-                  return (
-                    <li key={feedback.id}>
-                      <Feedback
-                        resumeId={Number(resumeId)}
-                        resumePage={currentPageNum}
-                        resumeWriterId={resumeDetail.writerId}
-                        {...feedback}
-                      />
-                    </li>
-                  );
-                })}
-                {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && <div ref={setTarget}></div>}
-              </CommentList>
-            )}
-
-            {currentTab === 'question' && (
-              <CommentList $isMobile={isMobile}>
-                <CommentHeader>
-                  <span>필터</span>
-                  <SwitchContainer>
+            {currentTab === 'feedback' && isValidResumeId && (
+              <>
+                <CommentList $isMobile={isMobile}>
+                  <CommentHeader>
+                    <span>필터</span>
                     <Switch
                       label="check"
                       checked={filter.checked}
@@ -267,52 +239,86 @@ const ResumeDetail = () => {
                         setFilter((prev) => ({ ...prev, checked: !prev.checked }));
                       }}
                     />
-                    <Switch
-                      label="bookmark"
-                      checked={filter.bookmarked}
-                      onChange={() => {
-                        setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
-                      }}
-                    />
-                  </SwitchContainer>
-                </CommentHeader>
+                  </CommentHeader>
 
-                {questionList?.map((question) => {
-                  return (
-                    <li key={question.id}>
-                      <Question
-                        resumeId={Number(resumeId)}
-                        resumePage={currentPageNum}
-                        resumeWriterId={resumeDetail.writerId}
-                        {...question}
+                  {feedbackList?.map((feedback) => {
+                    return (
+                      <li key={feedback.id}>
+                        <Feedback
+                          resumeId={Number(resumeId)}
+                          resumePage={currentPageNum}
+                          resumeWriterId={resumeDetail.writerId}
+                          {...feedback}
+                        />
+                      </li>
+                    );
+                  })}
+                  {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
+                    <div ref={setTarget}></div>
+                  )}
+                </CommentList>
+                <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+              </>
+            )}
+
+            {currentTab === 'question' && isValidResumeId && (
+              <>
+                <CommentList $isMobile={isMobile}>
+                  <CommentHeader>
+                    <span>필터</span>
+                    <SwitchContainer>
+                      <Switch
+                        label="check"
+                        checked={filter.checked}
+                        onChange={() => {
+                          setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                        }}
                       />
-                    </li>
-                  );
-                })}
-                {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && <div ref={setTarget}></div>}
-              </CommentList>
+                      <Switch
+                        label="bookmark"
+                        checked={filter.bookmarked}
+                        onChange={() => {
+                          setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
+                        }}
+                      />
+                    </SwitchContainer>
+                  </CommentHeader>
+
+                  {questionList?.map((question) => {
+                    return (
+                      <li key={question.id}>
+                        <Question
+                          resumeId={Number(resumeId)}
+                          resumePage={currentPageNum}
+                          resumeWriterId={resumeDetail.writerId}
+                          {...question}
+                        />
+                      </li>
+                    );
+                  })}
+                  {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
+                    <div ref={setTarget}></div>
+                  )}
+                </CommentList>
+                <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+              </>
             )}
 
-            {currentTab === 'comment' && (
-              <CommentList $isMobile={isMobile}>
-                {commentList?.map((comment) => {
-                  return (
-                    <li key={comment.id}>
-                      <Comment resumeId={Number(resumeId)} {...comment} />
-                    </li>
-                  );
-                })}
-                {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
-              </CommentList>
+            {currentTab === 'comment' && isValidResumeId && (
+              <>
+                <CommentList $isMobile={isMobile}>
+                  {commentList?.map((comment) => {
+                    return (
+                      <li key={comment.id}>
+                        <Comment resumeId={Number(resumeId)} {...comment} />
+                      </li>
+                    );
+                  })}
+                  {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
+                </CommentList>
+                <CommentAddForm resumeId={Number(resumeId)} />
+              </>
             )}
-
-            {currentTab === 'feedback' && resumeId && (
-              <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
-            )}
-            {currentTab === 'question' && resumeId && (
-              <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
-            )}
-            {currentTab === 'comment' && resumeId && <CommentAddForm resumeId={Number(resumeId)} />}
           </ResumeDetailAside>
         </ResumeContentWrapper>
       </Main>

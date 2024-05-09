@@ -48,6 +48,10 @@ export const getRangeText = ({ min, max }: { min: number; max: number }) => {
   return `${minText} ~ ${maxText}`;
 };
 
+export const isNumeric = (parameter: unknown): boolean => {
+  return !Number.isNaN(Number(parameter));
+};
+
 export const validateFileName = (file: File) => {
   return file.name.length <= RESUME_FILE_NAME_LIMIT;
 };
