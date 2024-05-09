@@ -326,7 +326,7 @@ const ResumeDetail = () => {
             {currentTab === 'comment' && isValidResumeId && (
               <>
                 <CommentListWrapper>
-                  <CommentList>
+                  <CommentList ref={commentListRef}>
                     {commentList?.map((comment) => {
                       return (
                         <li key={comment.id}>
@@ -339,7 +339,7 @@ const ResumeDetail = () => {
                     )}
                   </CommentList>
                 </CommentListWrapper>
-                <CommentAddForm resumeId={Number(resumeId)} />
+                <CommentAddForm resumeId={Number(resumeId)} onSubmitSuccess={scrollToTopOfCommentList} />
               </>
             )}
           </ResumeDetailAside>
