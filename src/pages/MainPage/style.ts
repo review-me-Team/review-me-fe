@@ -27,7 +27,7 @@ const Main = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 4rem;
 `;
 
