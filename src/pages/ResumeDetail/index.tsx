@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Icon, Switch, theme, useModal } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
@@ -138,6 +138,12 @@ const ResumeDetail = () => {
     localStorage.setItem('skip', 'true');
   };
 
+  const commentListRef = useRef<HTMLUListElement>(null);
+
+  const scrollToTopOfCommentList = () => {
+    commentListRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     if (isOpenGuideBook) {
       manageBodyScroll(false);
@@ -231,7 +237,7 @@ const ResumeDetail = () => {
             {currentTab === 'feedback' && isValidResumeId && (
               <>
                 <CommentListWrapper>
-                  <CommentList>
+                  <CommentList ref={commentListRef}>
                     <CommentHeader>
                       <span>필터</span>
                       <Switch
@@ -260,7 +266,11 @@ const ResumeDetail = () => {
                     )}
                   </CommentList>
                 </CommentListWrapper>
-                <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+                <FeedbackAddForm
+                  resumeId={Number(resumeId)}
+                  resumePage={currentPageNum}
+                  onSubmitSuccess={scrollToTopOfCommentList}
+                />
               </>
             )}
 

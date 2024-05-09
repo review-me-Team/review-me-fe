@@ -10,9 +10,10 @@ import { ButtonWrapper, FeedbackFormLayout, LabelList } from '../style';
 interface Props {
   resumeId: number;
   resumePage: number;
+  onSubmitSuccess?: () => void;
 }
 
-const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
+const FeedbackAddForm = ({ resumeId, resumePage, onSubmitSuccess }: Props) => {
   const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
 
@@ -54,6 +55,7 @@ const FeedbackAddForm = ({ resumeId, resumePage }: Props) => {
           });
 
           resetForm();
+          if (onSubmitSuccess) onSubmitSuccess();
         },
       },
     );
