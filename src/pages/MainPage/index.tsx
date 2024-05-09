@@ -16,7 +16,7 @@ import {
   Description,
   DescriptionText,
   Guide,
-  Img,
+  DescriptionImg,
   Main,
   MainImg,
   MainPageLayout,
@@ -58,7 +58,6 @@ const description: Description[] = [
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const descriptionImgSizes = '(max-width: 600px) 90vw, (max-width: 768px) 300px, 416px';
 
   return (
     <MainPageLayout>
@@ -97,15 +96,15 @@ const MainPage = () => {
                 <DescriptionText>{description}</DescriptionText>
               </div>
               <picture>
-                <source type="image/webp" srcSet={imgSrcSet} sizes={descriptionImgSizes} />
-                <Img src={imgSrc} alt={id} />
+                <source type="image/webp" srcSet={imgSrcSet} />
+                <DescriptionImg src={imgSrc} alt={id} />
               </picture>
             </>
           ) : (
             <>
               <picture>
-                <source type="image/webp" srcSet={imgSrcSet} sizes={descriptionImgSizes} />
-                <Img src={imgSrc} alt={id} />
+                <source type="image/webp" srcSet={imgSrcSet} />
+                <DescriptionImg src={imgSrc} alt={id} />
               </picture>
               <div>
                 <Title>{title}</Title>

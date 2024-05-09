@@ -51,8 +51,14 @@ const MainImg = styled.img`
   max-width: 700px;
 `;
 
-const Img = styled.img`
+const DescriptionImg = styled.img`
   ${imageStyles}
+  width: 100%;
+  max-width: 416px;
+
+  @media ${breakPoints.mobile} {
+    max-width: 100%;
+  }
 `;
 
 const Guide = styled.div`
@@ -85,4 +91,14 @@ const DescriptionText = styled.span`
   color: ${theme.palette.gray500};
 `;
 
-export { MainPageLayout, Main, Title, ReviewMe, MainImg, Img, Guide, Description, DescriptionText };
+export {
+  MainPageLayout,
+  Main,
+  Title,
+  ReviewMe,
+  MainImg,
+  DescriptionImg,
+  Guide,
+  Description,
+  DescriptionText,
+};
