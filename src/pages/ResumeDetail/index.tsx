@@ -40,6 +40,7 @@ import {
   SwitchContainer,
   ResumeDetailAsideHeader,
   TitleContainer,
+  CommentListWrapper,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
@@ -229,44 +230,10 @@ const ResumeDetail = () => {
 
             {currentTab === 'feedback' && isValidResumeId && (
               <>
-                <CommentList $isMobile={isMobile}>
-                  <CommentHeader>
-                    <span>필터</span>
-                    <Switch
-                      label="check"
-                      checked={filter.checked}
-                      onChange={() => {
-                        setFilter((prev) => ({ ...prev, checked: !prev.checked }));
-                      }}
-                    />
-                  </CommentHeader>
-
-                  {feedbackList?.map((feedback) => {
-                    return (
-                      <li key={feedback.id}>
-                        <Feedback
-                          resumeId={Number(resumeId)}
-                          resumePage={currentPageNum}
-                          resumeWriterId={resumeDetail.writerId}
-                          {...feedback}
-                        />
-                      </li>
-                    );
-                  })}
-                  {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
-                    <div ref={setTarget}></div>
-                  )}
-                </CommentList>
-                <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
-              </>
-            )}
-
-            {currentTab === 'question' && isValidResumeId && (
-              <>
-                <CommentList $isMobile={isMobile}>
-                  <CommentHeader>
-                    <span>필터</span>
-                    <SwitchContainer>
+                <CommentListWrapper>
+                  <CommentList>
+                    <CommentHeader>
+                      <span>필터</span>
                       <Switch
                         label="check"
                         checked={filter.checked}
@@ -274,48 +241,90 @@ const ResumeDetail = () => {
                           setFilter((prev) => ({ ...prev, checked: !prev.checked }));
                         }}
                       />
-                      <Switch
-                        label="bookmark"
-                        checked={filter.bookmarked}
-                        onChange={() => {
-                          setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
-                        }}
-                      />
-                    </SwitchContainer>
-                  </CommentHeader>
+                    </CommentHeader>
 
-                  {questionList?.map((question) => {
-                    return (
-                      <li key={question.id}>
-                        <Question
-                          resumeId={Number(resumeId)}
-                          resumePage={currentPageNum}
-                          resumeWriterId={resumeDetail.writerId}
-                          {...question}
+                    {feedbackList?.map((feedback) => {
+                      return (
+                        <li key={feedback.id}>
+                          <Feedback
+                            resumeId={Number(resumeId)}
+                            resumePage={currentPageNum}
+                            resumeWriterId={resumeDetail.writerId}
+                            {...feedback}
+                          />
+                        </li>
+                      );
+                    })}
+                    {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
+                      <div ref={setTarget}></div>
+                    )}
+                  </CommentList>
+                </CommentListWrapper>
+                <FeedbackAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
+              </>
+            )}
+
+            {currentTab === 'question' && isValidResumeId && (
+              <>
+                <CommentListWrapper>
+                  <CommentList>
+                    <CommentHeader>
+                      <span>필터</span>
+                      <SwitchContainer>
+                        <Switch
+                          label="check"
+                          checked={filter.checked}
+                          onChange={() => {
+                            setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                          }}
                         />
-                      </li>
-                    );
-                  })}
-                  {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
-                    <div ref={setTarget}></div>
-                  )}
-                </CommentList>
+                        <Switch
+                          label="bookmark"
+                          checked={filter.bookmarked}
+                          onChange={() => {
+                            setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
+                          }}
+                        />
+                      </SwitchContainer>
+                    </CommentHeader>
+
+                    {questionList?.map((question) => {
+                      return (
+                        <li key={question.id}>
+                          <Question
+                            resumeId={Number(resumeId)}
+                            resumePage={currentPageNum}
+                            resumeWriterId={resumeDetail.writerId}
+                            {...question}
+                          />
+                        </li>
+                      );
+                    })}
+                    {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
+                      <div ref={setTarget}></div>
+                    )}
+                  </CommentList>
+                </CommentListWrapper>
                 <QuestionAddForm resumeId={Number(resumeId)} resumePage={currentPageNum} />
               </>
             )}
 
             {currentTab === 'comment' && isValidResumeId && (
               <>
-                <CommentList $isMobile={isMobile}>
-                  {commentList?.map((comment) => {
-                    return (
-                      <li key={comment.id}>
-                        <Comment resumeId={Number(resumeId)} {...comment} />
-                      </li>
-                    );
-                  })}
-                  {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
-                </CommentList>
+                <CommentListWrapper>
+                  <CommentList>
+                    {commentList?.map((comment) => {
+                      return (
+                        <li key={comment.id}>
+                          <Comment resumeId={Number(resumeId)} {...comment} />
+                        </li>
+                      );
+                    })}
+                    {hasNextPageAboutComment && !isFetchingNextPageAboutComment && (
+                      <div ref={setTarget}></div>
+                    )}
+                  </CommentList>
+                </CommentListWrapper>
                 <CommentAddForm resumeId={Number(resumeId)} />
               </>
             )}

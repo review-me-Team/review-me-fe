@@ -123,11 +123,18 @@ const Tab = styled.button<{ $isActive: boolean }>`
 `;
 
 // * 댓글 관련
-const CommentList = styled.ul<{ $isMobile: boolean }>`
+const CommentListWrapper = styled.div`
+  overflow-y: auto;
+  height: 100%;
+
+  @media ${breakPoints.mobile} {
+    height: 43.75rem;
+  }
+`;
+
+const CommentList = styled.ul`
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  height: ${({ $isMobile }) => ($isMobile ? '43.75rem' : '100%')};
 `;
 
 const CommentHeader = styled.header`
@@ -169,6 +176,7 @@ export {
   ResumeDetailAsideHeader,
   TabList,
   Tab,
+  CommentListWrapper,
   CommentList,
   CommentHeader,
   SwitchContainer,
