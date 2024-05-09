@@ -10,8 +10,19 @@ import mainLargeWebp from '@assets/main_1400w.webp';
 import questionJpg from '@assets/question.jpg';
 import questionWebp from '@assets/question_1000w.webp';
 import { Button } from 'review-me-design-system';
+import { screenSize } from '@styles/common';
 import { ROUTE_PATH } from '@constants';
-import { Description, DescriptionText, Guide, Img, Main, MainPageLayout, ReviewMe, Title } from './style';
+import {
+  Description,
+  DescriptionText,
+  Guide,
+  Img,
+  Main,
+  MainImg,
+  MainPageLayout,
+  ReviewMe,
+  Title,
+} from './style';
 
 interface Description {
   id: string;
@@ -47,7 +58,6 @@ const description: Description[] = [
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const mainImgBreakPoint = '(max-width: 768px)';
   const descriptionImgSizes = '(max-width: 600px) 90vw, (max-width: 768px) 300px, 416px';
 
   return (
@@ -61,10 +71,15 @@ const MainPage = () => {
         <picture>
           <source
             type="image/webp"
-            srcSet={`${mainSmallWebp} 1040w, ${mainLargeWebp} 1680w`}
-            sizes={`${mainImgBreakPoint} 90vw, 700px`}
+            media={`(max-width: ${screenSize.smallTablet}px)`}
+            srcSet={mainSmallWebp}
           />
-          <Img src={mainJpg} alt="main" />
+          <source
+            type="image/webp"
+            media={`(min-width: ${screenSize.smallTablet + 1}px)`}
+            srcSet={mainLargeWebp}
+          />
+          <MainImg src={mainJpg} alt="main" />
         </picture>
       </Main>
 
