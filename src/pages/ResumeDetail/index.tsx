@@ -41,6 +41,7 @@ import {
   AsideHeader,
   TitleContainer,
   CommentListWrapper,
+  EmptyListNotification,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
@@ -249,18 +250,25 @@ const ResumeDetail = () => {
                       />
                     </CommentHeader>
 
-                    {feedbackList?.map((feedback) => {
-                      return (
-                        <li key={feedback.id}>
-                          <Feedback
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...feedback}
-                          />
-                        </li>
-                      );
-                    })}
+                    {feedbackList && feedbackList.length > 0 ? (
+                      feedbackList.map((feedback) => {
+                        return (
+                          <li key={feedback.id}>
+                            <Feedback
+                              resumeId={Number(resumeId)}
+                              resumePage={currentPageNum}
+                              resumeWriterId={resumeDetail.writerId}
+                              {...feedback}
+                            />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 작성된 피드백이 없어요.</span>
+                        <span>피드백을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
                       <div ref={setTarget}></div>
                     )}
@@ -298,18 +306,25 @@ const ResumeDetail = () => {
                       </SwitchContainer>
                     </CommentHeader>
 
-                    {questionList?.map((question) => {
-                      return (
-                        <li key={question.id}>
-                          <Question
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...question}
-                          />
-                        </li>
-                      );
-                    })}
+                    {questionList && questionList.length > 0 ? (
+                      questionList.map((question) => {
+                        return (
+                          <li key={question.id}>
+                            <Question
+                              resumeId={Number(resumeId)}
+                              resumePage={currentPageNum}
+                              resumeWriterId={resumeDetail.writerId}
+                              {...question}
+                            />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 작성된 예상질문이 없어요.</span>
+                        <span>예상질문을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
                       <div ref={setTarget}></div>
                     )}
@@ -327,13 +342,20 @@ const ResumeDetail = () => {
               <>
                 <CommentListWrapper>
                   <CommentList ref={commentListRef}>
-                    {commentList?.map((comment) => {
-                      return (
-                        <li key={comment.id}>
-                          <Comment resumeId={Number(resumeId)} {...comment} />
-                        </li>
-                      );
-                    })}
+                    {commentList && commentList.length > 0 ? (
+                      commentList.map((comment) => {
+                        return (
+                          <li key={comment.id}>
+                            <Comment resumeId={Number(resumeId)} {...comment} />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 댓글이 없어요.</span>
+                        <span>댓글을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutComment && !isFetchingNextPageAboutComment && (
                       <div ref={setTarget}></div>
                     )}
