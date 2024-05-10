@@ -154,9 +154,9 @@ const ResumeDetail = () => {
 
   return (
     <>
-      <Main $isMobile={isMobile}>
-        <ResumeContentWrapper $isMobile={isMobile}>
-          <ResumeViewer $isMobile={isMobile}>
+      <Main>
+        <ResumeContentWrapper>
+          <ResumeViewer>
             <ResumeViewerHeader>
               <ResumeInfo>
                 <TitleContainer>
@@ -216,7 +216,7 @@ const ResumeDetail = () => {
             </PdfViewer>
           </ResumeViewer>
 
-          <Aside $isMobile={isMobile}>
+          <Aside>
             <AsideHeader>
               <TabList>
                 <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
