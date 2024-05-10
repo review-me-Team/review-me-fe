@@ -41,6 +41,7 @@ import {
   AsideHeader,
   TitleContainer,
   CommentListWrapper,
+  EmptyListNotification,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
@@ -249,18 +250,25 @@ const ResumeDetail = () => {
                       />
                     </CommentHeader>
 
-                    {feedbackList?.map((feedback) => {
-                      return (
-                        <li key={feedback.id}>
-                          <Feedback
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...feedback}
-                          />
-                        </li>
-                      );
-                    })}
+                    {feedbackList && feedbackList.length > 0 ? (
+                      feedbackList.map((feedback) => {
+                        return (
+                          <li key={feedback.id}>
+                            <Feedback
+                              resumeId={Number(resumeId)}
+                              resumePage={currentPageNum}
+                              resumeWriterId={resumeDetail.writerId}
+                              {...feedback}
+                            />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 이력서에 대한 피드백이 없어요.</span>
+                        <span>피드백을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
                       <div ref={setTarget}></div>
                     )}
