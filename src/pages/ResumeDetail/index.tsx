@@ -342,13 +342,20 @@ const ResumeDetail = () => {
               <>
                 <CommentListWrapper>
                   <CommentList ref={commentListRef}>
-                    {commentList?.map((comment) => {
-                      return (
-                        <li key={comment.id}>
-                          <Comment resumeId={Number(resumeId)} {...comment} />
-                        </li>
-                      );
-                    })}
+                    {commentList && commentList.length > 0 ? (
+                      commentList.map((comment) => {
+                        return (
+                          <li key={comment.id}>
+                            <Comment resumeId={Number(resumeId)} {...comment} />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 댓글이 없어요.</span>
+                        <span>댓글을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutComment && !isFetchingNextPageAboutComment && (
                       <div ref={setTarget}></div>
                     )}
