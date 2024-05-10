@@ -306,18 +306,25 @@ const ResumeDetail = () => {
                       </SwitchContainer>
                     </CommentHeader>
 
-                    {questionList?.map((question) => {
-                      return (
-                        <li key={question.id}>
-                          <Question
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...question}
-                          />
-                        </li>
-                      );
-                    })}
+                    {questionList && questionList.length > 0 ? (
+                      questionList.map((question) => {
+                        return (
+                          <li key={question.id}>
+                            <Question
+                              resumeId={Number(resumeId)}
+                              resumePage={currentPageNum}
+                              resumeWriterId={resumeDetail.writerId}
+                              {...question}
+                            />
+                          </li>
+                        );
+                      })
+                    ) : (
+                      <EmptyListNotification>
+                        <span>아직 이력서에 대한 예상질문이 없어요.</span>
+                        <span>예상질문을 남겨보세요!</span>
+                      </EmptyListNotification>
+                    )}
                     {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
                       <div ref={setTarget}></div>
                     )}
