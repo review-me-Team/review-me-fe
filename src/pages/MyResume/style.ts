@@ -24,4 +24,21 @@ const MyResumeList = styled.ul`
   }
 `;
 
-export { MyResumeLayout, MyResumeList };
+const EmptyMyResumeListNotification = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 1rem;
+
+  background-color: ${theme.color.neutral.bg.default};
+  border-radius: 1rem;
+
+  ${theme.font.body.default}
+  color: ${theme.palette.gray600};
+`;
+
+export { MyResumeLayout, MyResumeList, EmptyMyResumeListNotification };
