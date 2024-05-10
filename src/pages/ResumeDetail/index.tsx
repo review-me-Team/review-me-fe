@@ -265,7 +265,7 @@ const ResumeDetail = () => {
                       })
                     ) : (
                       <EmptyListNotification>
-                        <span>아직 이력서에 대한 피드백이 없어요.</span>
+                        <span>아직 작성된 피드백이 없어요.</span>
                         <span>피드백을 남겨보세요!</span>
                       </EmptyListNotification>
                     )}
@@ -321,7 +321,7 @@ const ResumeDetail = () => {
                       })
                     ) : (
                       <EmptyListNotification>
-                        <span>아직 이력서에 대한 예상질문이 없어요.</span>
+                        <span>아직 작성된 예상질문이 없어요.</span>
                         <span>예상질문을 남겨보세요!</span>
                       </EmptyListNotification>
                     )}
