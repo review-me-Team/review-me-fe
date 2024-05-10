@@ -94,13 +94,13 @@ const Career = styled.span`
 
 // * Main 중간: pdf, 피드백, 예상질문
 
-const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
+const Aside = styled.aside<{ $isMobile: boolean }>`
   display: flex;
   flex-direction: column;
   width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
 `;
 
-const ResumeDetailAsideHeader = styled.header`
+const AsideHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -172,8 +172,8 @@ export {
   WriterInfo,
   Career,
   ResumeContentWrapper,
-  ResumeDetailAside,
-  ResumeDetailAsideHeader,
+  Aside,
+  AsideHeader,
   TabList,
   Tab,
   CommentListWrapper,

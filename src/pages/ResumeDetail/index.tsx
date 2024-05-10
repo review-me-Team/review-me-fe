@@ -24,7 +24,7 @@ import { isNumeric, manageBodyScroll } from '@utils';
 import {
   Career,
   CommentList,
-  ResumeDetailAside,
+  Aside,
   Main,
   ResumeContentWrapper,
   ResumeInfo,
@@ -38,7 +38,7 @@ import {
   ResumeViewer,
   CommentHeader,
   SwitchContainer,
-  ResumeDetailAsideHeader,
+  AsideHeader,
   TitleContainer,
   CommentListWrapper,
 } from './style';
@@ -216,8 +216,8 @@ const ResumeDetail = () => {
             </PdfViewer>
           </ResumeViewer>
 
-          <ResumeDetailAside $isMobile={isMobile}>
-            <ResumeDetailAsideHeader>
+          <Aside $isMobile={isMobile}>
+            <AsideHeader>
               <TabList>
                 <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
                   피드백
@@ -232,7 +232,7 @@ const ResumeDetail = () => {
               <IconButton aria-label="가이드북 열기" onClick={handleOpenGuideBook}>
                 <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
               </IconButton>
-            </ResumeDetailAsideHeader>
+            </AsideHeader>
 
             {currentTab === 'feedback' && isValidResumeId && (
               <>
@@ -342,7 +342,7 @@ const ResumeDetail = () => {
                 <CommentAddForm resumeId={Number(resumeId)} onSubmitSuccess={scrollToTopOfCommentList} />
               </>
             )}
-          </ResumeDetailAside>
+          </Aside>
         </ResumeContentWrapper>
       </Main>
       <GuideBook isOpen={isOpenGuideBook} onClose={handleCloseGuideBook} />
