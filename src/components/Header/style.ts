@@ -96,12 +96,12 @@ const MobileMenuTop = styled.div`
   justify-content: flex-end;
 `;
 
-const MobileMenuList = styled.ul`
+const MobileMenuList = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const MobileMenuItem = styled.li`
+const MobileMenuItem = styled.button`
   display: flex;
   padding: 0.5rem 0;
   justify-content: space-between;
