@@ -171,6 +171,7 @@ const FeedbackReply = ({
           <Bottom>
             <EmojiButtonContainer>
               <EmojiButton
+                aria-label="이모지"
                 onMouseEnter={() => changeHoverState(true)}
                 onMouseLeave={() => changeHoverState(false)}
               >

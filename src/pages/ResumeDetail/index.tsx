@@ -201,16 +201,16 @@ const ResumeDetail = () => {
                 current: {currentPageNum} / {totalPages}
               </PdfViewer.PdfPagesInfo>
               <ButtonGroup height="2rem">
-                <ButtonGroup.Button onClick={prevPage}>
+                <ButtonGroup.Button aria-label="이전 페이지로 이동" onClick={prevPage}>
                   <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button onClick={zoomIn}>
+                <ButtonGroup.Button aria-label="pdf 확대" onClick={zoomIn}>
                   <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button onClick={zoomOut}>
+                <ButtonGroup.Button aria-label="pdf 축소" onClick={zoomOut}>
                   <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
                 </ButtonGroup.Button>
-                <ButtonGroup.Button onClick={nextPage}>
+                <ButtonGroup.Button aria-label="다음 페이지로 이동" onClick={nextPage}>
                   <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
                 </ButtonGroup.Button>
               </ButtonGroup>
