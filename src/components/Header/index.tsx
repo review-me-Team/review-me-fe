@@ -91,15 +91,26 @@ const Header = () => {
                     <Icon iconName="rightArrow" width={28} height={28} />
                   </MobileMenuItem>
                   {isLoggedIn && (
-                    <MobileMenuItem
-                      onClick={() => {
-                        handleCloseMobileMenu();
-                        navigate(ROUTE_PATH.MY_RESUME);
-                      }}
-                    >
-                      <span>내 이력서 보러가기</span>
-                      <Icon iconName="rightArrow" width={28} height={28} />
-                    </MobileMenuItem>
+                    <>
+                      <MobileMenuItem
+                        onClick={() => {
+                          handleCloseMobileMenu();
+                          navigate(ROUTE_PATH.MY_RESUME);
+                        }}
+                      >
+                        <span>My 이력서</span>
+                        <Icon iconName="rightArrow" width={28} height={28} />
+                      </MobileMenuItem>
+                      <MobileMenuItem
+                        onClick={() => {
+                          handleCloseMobileMenu();
+                          navigate(ROUTE_PATH.MY_PAGE);
+                        }}
+                      >
+                        <span>마이 페이지</span>
+                        <Icon iconName="rightArrow" width={28} height={28} />
+                      </MobileMenuItem>
+                    </>
                   )}
                 </MobileMenuList>
 

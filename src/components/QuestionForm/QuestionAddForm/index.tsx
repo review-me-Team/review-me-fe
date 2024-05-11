@@ -9,9 +9,10 @@ import { ButtonWrapper, KeywordLabel, QuestionFormLayout } from '../style';
 interface Props {
   resumeId: number;
   resumePage: number;
+  onSubmitSuccess?: () => void;
 }
 
-const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
+const QuestionAddForm = ({ resumeId, resumePage, onSubmitSuccess }: Props) => {
   const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
 
@@ -54,6 +55,7 @@ const QuestionAddForm = ({ resumeId, resumePage }: Props) => {
           });
 
           resetForm();
+          if (onSubmitSuccess) onSubmitSuccess();
         },
       },
     );

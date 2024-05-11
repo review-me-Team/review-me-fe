@@ -95,7 +95,10 @@ const FeedbackReply = ({
       { resumeId, feedbackId: id, jwt },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentFeedbackId] });
+          return Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['feedbackReplyList', resumeId, parentFeedbackId] }),
+            queryClient.invalidateQueries({ queryKey: ['feedbackList', resumeId] }),
+          ]);
         },
       },
     );
@@ -168,6 +171,7 @@ const FeedbackReply = ({
           <Bottom>
             <EmojiButtonContainer>
               <EmojiButton
+                aria-label="이모지"
                 onMouseEnter={() => changeHoverState(true)}
                 onMouseLeave={() => changeHoverState(false)}
               >

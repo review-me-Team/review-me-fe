@@ -95,7 +95,10 @@ const QuestionReply = ({
       { resumeId, questionId: id, jwt },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['questionReplyList', resumeId, parentQuestionId] });
+          return Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['questionReplyList', resumeId, parentQuestionId] }),
+            queryClient.invalidateQueries({ queryKey: ['questionList', resumeId] }),
+          ]);
         },
       },
     );
@@ -168,6 +171,7 @@ const QuestionReply = ({
           <Bottom>
             <EmojiButtonContainer>
               <EmojiButton
+                aria-label="이모지"
                 onMouseEnter={() => changeHoverState(true)}
                 onMouseLeave={() => changeHoverState(false)}
               >

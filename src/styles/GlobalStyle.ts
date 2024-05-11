@@ -1,7 +1,17 @@
 import { theme } from 'review-me-design-system';
 import { createGlobalStyle } from 'styled-components';
+import { breakPoints } from './common';
 
 export const GlobalStyle = createGlobalStyle`
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @media ${breakPoints.smallTablet} {
+    html {
+      font-size: 87.5%;
+    }
+  }
   body {
     overflow: auto;
     min-height: 100%;
@@ -10,5 +20,8 @@ export const GlobalStyle = createGlobalStyle`
   a {
     color: inherit;
     text-decoration: none;
+  }
+  button {
+    background: none;
   }
 `;

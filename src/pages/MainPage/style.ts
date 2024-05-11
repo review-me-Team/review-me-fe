@@ -1,5 +1,5 @@
 import { theme } from 'review-me-design-system';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { breakPoints } from '@styles/common';
 
 const MainPageLayout = styled.main`
@@ -27,7 +27,7 @@ const Main = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 4rem;
 `;
 
@@ -40,9 +40,25 @@ const ReviewMe = styled.span`
   color: ${theme.color.accent.text.weak};
 `;
 
-const Img = styled.img`
+const imageStyles = css`
   border-radius: 1.25rem;
   box-shadow: 0.875rem 1.75rem 2.5rem rgba(0, 0, 0, 0.05);
+`;
+
+const MainImg = styled.img`
+  ${imageStyles}
+  width: 100%;
+  max-width: 700px;
+`;
+
+const DescriptionImg = styled.img`
+  ${imageStyles}
+  width: 100%;
+  max-width: 416px;
+
+  @media ${breakPoints.mobile} {
+    max-width: 100%;
+  }
 `;
 
 const Guide = styled.div`
@@ -75,4 +91,14 @@ const DescriptionText = styled.span`
   color: ${theme.palette.gray500};
 `;
 
-export { MainPageLayout, Main, Title, ReviewMe, Img, Guide, Description, DescriptionText };
+export {
+  MainPageLayout,
+  Main,
+  Title,
+  ReviewMe,
+  MainImg,
+  DescriptionImg,
+  Guide,
+  Description,
+  DescriptionText,
+};

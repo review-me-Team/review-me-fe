@@ -8,9 +8,10 @@ import { ButtonWrapper, CommentFormLayout } from '../style';
 
 interface Props {
   resumeId: number;
+  onSubmitSuccess?: () => void;
 }
 
-const CommentAddForm = ({ resumeId }: Props) => {
+const CommentAddForm = ({ resumeId, onSubmitSuccess }: Props) => {
   const queryClient = useQueryClient();
   const { jwt, isLoggedIn } = useUserContext();
 
@@ -47,6 +48,7 @@ const CommentAddForm = ({ resumeId }: Props) => {
           });
 
           resetForm();
+          if (onSubmitSuccess) onSubmitSuccess();
         },
       },
     );

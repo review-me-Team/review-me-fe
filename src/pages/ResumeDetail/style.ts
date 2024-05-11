@@ -2,25 +2,37 @@ import { theme } from 'review-me-design-system';
 import styled from 'styled-components';
 import { breakPoints } from '@styles/common';
 
-const Main = styled.main<{ $isMobile: boolean }>`
+const Main = styled.main`
   width: 100%;
-  height: calc(${({ $isMobile }) => ($isMobile ? '100%' : '100vh')} - 3.75rem);
+  height: calc(100vh - 3.75rem);
 
   background-color: ${theme.color.neutral.bg.default};
+
+  @media ${breakPoints.mobile} {
+    height: calc(100% - 3.75rem);
+  }
 `;
 
-const ResumeContentWrapper = styled.div<{ $isMobile: boolean }>`
+const ResumeContentWrapper = styled.div`
   display: flex;
-  flex-direction: ${({ $isMobile }) => ($isMobile ? 'column' : 'row')};
+  flex-direction: row;
   height: 100%;
   margin: 0 auto;
+
+  @media ${breakPoints.mobile} {
+    flex-direction: column;
+  }
 `;
 
 // * Main 상단: Resume에 대한 정보
-const ResumeViewer = styled.section<{ $isMobile: boolean }>`
+const ResumeViewer = styled.section`
   display: flex;
   flex-direction: column;
-  width: ${({ $isMobile }) => ($isMobile ? '100%' : '60%')};
+  width: 60%;
+
+  @media ${breakPoints.mobile} {
+    width: 100%;
+  }
 `;
 
 const ResumeViewerHeader = styled.header`
@@ -94,13 +106,17 @@ const Career = styled.span`
 
 // * Main 중간: pdf, 피드백, 예상질문
 
-const ResumeDetailAside = styled.aside<{ $isMobile: boolean }>`
+const Aside = styled.aside`
   display: flex;
   flex-direction: column;
-  width: ${({ $isMobile }) => ($isMobile ? '100%' : '40%')};
+  width: 40%;
+
+  @media ${breakPoints.mobile} {
+    width: 100%;
+  }
 `;
 
-const ResumeDetailAsideHeader = styled.header`
+const AsideHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -123,11 +139,19 @@ const Tab = styled.button<{ $isActive: boolean }>`
 `;
 
 // * 댓글 관련
-const CommentList = styled.ul<{ $isMobile: boolean }>`
+const CommentListWrapper = styled.div`
+  overflow-y: auto;
+  height: 100%;
+
+  @media ${breakPoints.mobile} {
+    height: 43.75rem;
+  }
+`;
+
+const CommentList = styled.ul`
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  height: ${({ $isMobile }) => ($isMobile ? '43.75rem' : '100%')};
+  min-height: 100%;
 `;
 
 const CommentHeader = styled.header`
@@ -153,6 +177,19 @@ const SwitchContainer = styled.div`
   gap: 0.5rem;
 `;
 
+const EmptyListNotification = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  gap: 0.25rem;
+  height: 100%;
+
+  ${theme.font.body.default}
+  color: ${theme.palette.gray600};
+`;
+
 export {
   Main,
   ResumeViewer,
@@ -165,11 +202,13 @@ export {
   WriterInfo,
   Career,
   ResumeContentWrapper,
-  ResumeDetailAside,
-  ResumeDetailAsideHeader,
+  Aside,
+  AsideHeader,
   TabList,
   Tab,
+  CommentListWrapper,
   CommentList,
   CommentHeader,
   SwitchContainer,
+  EmptyListNotification,
 };

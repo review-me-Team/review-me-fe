@@ -10,7 +10,7 @@ const MainHeader = styled.header`
 
   @media ${breakPoints.mobile} {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 1rem;
     align-items: start;
   }
 `;

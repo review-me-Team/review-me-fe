@@ -121,10 +121,10 @@ const ResumeUploadForm = () => {
         height="35rem"
       >
         <ButtonGroup height="2rem">
-          <ButtonGroup.Button onClick={zoomIn}>
+          <ButtonGroup.Button aria-label="pdf 확대" onClick={zoomIn}>
             <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
           </ButtonGroup.Button>
-          <ButtonGroup.Button onClick={zoomOut}>
+          <ButtonGroup.Button aria-label="pdf 축소" onClick={zoomOut}>
             <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
           </ButtonGroup.Button>
         </ButtonGroup>
