@@ -98,7 +98,7 @@ const Header = () => {
                           navigate(ROUTE_PATH.MY_RESUME);
                         }}
                       >
-                        <span>내 이력서 보러가기</span>
+                        <span>My 이력서</span>
                         <Icon iconName="rightArrow" width={28} height={28} />
                       </MobileMenuItem>
                       <MobileMenuItem
