@@ -37,7 +37,7 @@ export const PageMain = styled.main<{ $css?: CSSProp }>`
   }
   @media ${breakPoints.mobile} {
     width: 90%;
-    margin: 0.5rem auto;
+    margin: 1rem auto;
   }
 
   ${({ $css }) => $css}
