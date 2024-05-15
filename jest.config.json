@@ -1,0 +1,16 @@
+{
+  "moduleNameMapper": {
+    "^@pages/(.*)$": "<rootDir>/pages/$1",
+    "^@components/(.*)$": "<rootDir>/components/$1",
+    "^@assets/(.*)$": "<rootDir>/assets/$1",
+    "^@styles/(.*)$": "<rootDir>/styles/$1",
+    "^@contexts/(.*)$": "<rootDir>/contexts/$1",
+    "^@hooks/(.*)$": "<rootDir>/hooks/$1",
+    "^@utils$": "<rootDir>/utils/index.ts",
+    "^@utils/(.*)$": "<rootDir>/utils/$1",
+    "^@constants$": "<rootDir>/constants/index.ts",
+    "^@constants/(.*)$": "<rootDir>/constants/$1",
+    "^@apis/(.*)$": "<rootDir>/apis/$1"
+  },
+  "rootDir": "./src"
+}
