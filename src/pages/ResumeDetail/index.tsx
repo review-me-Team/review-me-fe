@@ -57,9 +57,9 @@ const ResumeDetail = () => {
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
-  const { totalPages, currentPageNum, scale, setTotalPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf(
-    {},
-  );
+  const { totalPages, currentPageNum, scale, setTotalPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf({
+    initScale: isMobile ? 0.6 : 1,
+  });
 
   const [currentTab, setCurrentTab] = useState<ActiveTab>('feedback');
 

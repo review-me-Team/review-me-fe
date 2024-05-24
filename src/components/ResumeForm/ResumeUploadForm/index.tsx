@@ -29,8 +29,8 @@ const ResumeUploadForm = () => {
   const { openToast } = useToastContext();
   const { mutate: addResume } = usePostResume();
 
-  const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
+  const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({ initScale: isMobile ? 0.4 : 0.8 });
 
   const { data: occupationList } = useOccupationList();
   const { data: scopeList } = useScopeList();
