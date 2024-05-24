@@ -1,4 +1,5 @@
 {
+  "testEnvironment": "jsdom",
   "moduleNameMapper": {
     "^@pages/(.*)$": "<rootDir>/pages/$1",
     "^@components/(.*)$": "<rootDir>/components/$1",
