@@ -1,22 +1,17 @@
 import { useState } from 'react';
-import { breakPoints } from '@styles/common';
 import { PDF_VIEWER_SCALE } from '@constants';
-import useMediaQuery from './useMediaQuery';
 
 interface Props {
   initPageNum?: number;
+  initScale: number;
 }
 
-const usePdf = ({ initPageNum = 1 }: Props) => {
+const usePdf = ({ initPageNum = 1, initScale }: Props) => {
   const { MAX_SCALE, MIN_SCALE, SCALE_STEP } = PDF_VIEWER_SCALE;
-
-  const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
-
-  const INIT_SCALE = isMobile ? 0.8 : 1.2;
 
   const [totalPages, setTotalPages] = useState<number>();
   const [currentPageNum, setCurrentPageNum] = useState<number>(initPageNum);
-  const [scale, setScale] = useState<number>(INIT_SCALE);
+  const [scale, setScale] = useState<number>(initScale);
 
   const prevPage = () => {
     if (currentPageNum > 1) setCurrentPageNum(currentPageNum - 1);

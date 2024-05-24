@@ -42,8 +42,8 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
-  const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({});
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
+  const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({ initScale: isMobile ? 0.4 : 0.8 });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
