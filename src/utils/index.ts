@@ -7,7 +7,7 @@ export const formatDate = (date: string) => {
       .getDate()
       .toString()
       .padStart(2, '0')}
-  `;
+  `.trim();
 
   return formattedDate;
 };
