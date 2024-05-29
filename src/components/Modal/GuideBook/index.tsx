@@ -32,12 +32,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      modalRootId="modal-root"
-      width={isMobile ? '90%' : 'fit-content'}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
       {currentGuide === 0 && (
         <>
           <Description>

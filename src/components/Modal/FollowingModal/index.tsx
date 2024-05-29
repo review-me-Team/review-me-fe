@@ -7,7 +7,6 @@ import { useUserContext } from '@contexts/userContext';
 import { useFollowingList } from '@apis/friendApi';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
-import { FRIEND_LIST_SIZE } from '@constants';
 import { Header, SearchUserInstruction, UserList } from './style';
 
 interface Props {
@@ -53,7 +52,7 @@ const FollowingModal = ({ isOpen, onClose }: Props) => {
   }, [name]);
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
+    <Modal isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
       <Header>
         <Modal.Title>전송한 친구 요청 보기</Modal.Title>
         <IconButton aria-label="전송한 친구 요청 보기 모달 닫기" onClick={handleClose}>
