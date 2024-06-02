@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, useModal } from 'review-me-design-system';
+import { Button } from 'review-me-design-system';
 import FriendDeleteModal from '@components/Modal/FriendDeleteModal';
+import useModals from '@hooks/useModals';
 import { useUserContext } from '@contexts/userContext';
 import {
   useDeleteFriendRequest,
@@ -8,7 +9,6 @@ import {
   usePostFriendRequest,
   useRejectFriendRequest,
 } from '@apis/friendApi';
-import { manageBodyScroll } from '@utils';
 import { ButtonsContainer, UserItemLayout, UserImg, UserInfo, UserName } from './style';
 
 type Type = 'friend' | 'following' | 'follower' | 'none';
@@ -25,11 +25,8 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
 
   const [type, setType] = useState<Type>(initType);
 
-  const {
-    isOpen: isFriendDeleteModalOpen,
-    open: openFriendDeleteModal,
-    close: closeFriendDeleteModal,
-  } = useModal();
+  const { open, close } = useModals();
+
   const { mutate: requestFriend } = usePostFriendRequest();
   const { mutate: cancelFriendRequest } = useDeleteFriendRequest();
   const { mutate: acceptFriendRequest } = useAcceptFriendRequest();
@@ -60,20 +57,14 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
             variant="outline"
             size="s"
             onClick={() => {
-              openFriendDeleteModal();
-              manageBodyScroll(false);
+              const friendDeleteModalId = open(FriendDeleteModal, {
+                friendId: userId,
+                onClose: () => close(friendDeleteModalId),
+              });
             }}
           >
             삭제
           </Button>
-          <FriendDeleteModal
-            friendId={userId}
-            isOpen={isFriendDeleteModalOpen}
-            onClose={() => {
-              closeFriendDeleteModal();
-              manageBodyScroll(true);
-            }}
-          />
         </>
       )}
       {type === 'following' && (

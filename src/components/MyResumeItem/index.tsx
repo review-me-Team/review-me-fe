@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useModal } from 'review-me-design-system';
 import ResumeDeleteModal from '@components/Modal/ResumeDeleteModal';
+import useModals from '@hooks/useModals';
 import { ROUTE_PATH } from '@constants';
 import { formatDate } from '@utils';
 import {
@@ -25,7 +25,7 @@ interface Props {
 }
 
 const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) => {
-  const { isOpen: isOpenDeleteModal, open: openDeleteModal, close: closeDeleteModal } = useModal();
+  const { open, close } = useModals();
   const navigate = useNavigate();
 
   return (
@@ -48,12 +48,18 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         >
           수정
         </Button>
-        <Button $position="right" onClick={openDeleteModal}>
+        <Button
+          $position="right"
+          onClick={() => {
+            const resumeDeleteModalId = open(ResumeDeleteModal, {
+              resumeId: id,
+              onClose: () => close(resumeDeleteModalId),
+            });
+          }}
+        >
           삭제
         </Button>
       </ButtonsContainer>
-
-      <ResumeDeleteModal isOpen={isOpenDeleteModal} onClose={closeDeleteModal} resumeId={id} />
     </MyResumeItemLayout>
   );
 };

@@ -1,6 +1,6 @@
 import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Icon, Switch, theme, useModal } from 'review-me-design-system';
+import { Icon, Switch, theme } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
@@ -12,6 +12,7 @@ import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
+import useModals from '@hooks/useModals';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList } from '@apis/commentApi';
@@ -20,7 +21,7 @@ import { useQuestionList } from '@apis/questionApi';
 import { useResumeDetail } from '@apis/resumeApi';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
-import { isNumeric, manageBodyScroll } from '@utils';
+import { isNumeric } from '@utils';
 import {
   Career,
   CommentList,
@@ -120,24 +121,9 @@ const ResumeDetail = () => {
     setFilter({ checked: false, bookmarked: false });
   };
 
-  const initIsOpenGuideBook = localStorage.getItem('skip') !== 'true';
-  const {
-    isOpen: isOpenGuideBook,
-    open: openGuideBook,
-    close: closeGuideBook,
-  } = useModal(initIsOpenGuideBook);
+  const hasViewedGuideBook = localStorage.getItem('skip') === 'true';
 
-  const handleOpenGuideBook = () => {
-    openGuideBook();
-    manageBodyScroll(false);
-    localStorage.removeItem('skip');
-  };
-
-  const handleCloseGuideBook = () => {
-    closeGuideBook();
-    manageBodyScroll(true);
-    localStorage.setItem('skip', 'true');
-  };
+  const { open, close } = useModals();
 
   const commentListRef = useRef<HTMLUListElement>(null);
 
@@ -145,102 +131,164 @@ const ResumeDetail = () => {
     commentListRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    if (isOpenGuideBook) {
-      manageBodyScroll(false);
-    }
-  }, [isOpenGuideBook]);
-
   const isMyResume = resumeDetail.writerId === user?.id;
 
+  useEffect(() => {
+    if (!hasViewedGuideBook) {
+      const guideBookModalId = open(GuideBook, {
+        onClose: () => {
+          localStorage.setItem('skip', 'true');
+          close(guideBookModalId);
+        },
+      });
+    }
+  }, [hasViewedGuideBook]);
+
   return (
-    <>
-      <Main>
-        <ResumeContentWrapper>
-          <ResumeViewer>
-            <ResumeViewerHeader>
-              <ResumeInfo>
-                <TitleContainer>
-                  {isMyResume && (
-                    <a
-                      href={`${process.env.BASE_PDF_URL}/${resumeDetail.resumeUrl}`}
-                      download={resumeDetail.title}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Icon iconName="download" color={theme.color.accent.bd.weak} />
-                    </a>
-                  )}
-                  <Title>{resumeDetail.title}</Title>
-                </TitleContainer>
+    <Main>
+      <ResumeContentWrapper>
+        <ResumeViewer>
+          <ResumeViewerHeader>
+            <ResumeInfo>
+              <TitleContainer>
+                {isMyResume && (
+                  <a
+                    href={`${process.env.BASE_PDF_URL}/${resumeDetail.resumeUrl}`}
+                    download={resumeDetail.title}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Icon iconName="download" color={theme.color.accent.bd.weak} />
+                  </a>
+                )}
+                <Title>{resumeDetail.title}</Title>
+              </TitleContainer>
 
-                <WriterInfoContainer>
-                  <WriterImg src={resumeDetail.writerProfileUrl} alt={resumeDetail.writerName} />
-                  <WriterInfo>
-                    <span>{resumeDetail.writerName}</span>
-                    <Career>
-                      {resumeDetail.occupation} |{' '}
-                      {resumeDetail.year === 0 ? '신입' : `${resumeDetail.year}년차`}
-                    </Career>
-                  </WriterInfo>
-                </WriterInfoContainer>
-              </ResumeInfo>
-            </ResumeViewerHeader>
+              <WriterInfoContainer>
+                <WriterImg src={resumeDetail.writerProfileUrl} alt={resumeDetail.writerName} />
+                <WriterInfo>
+                  <span>{resumeDetail.writerName}</span>
+                  <Career>
+                    {resumeDetail.occupation} |{' '}
+                    {resumeDetail.year === 0 ? '신입' : `${resumeDetail.year}년차`}
+                  </Career>
+                </WriterInfo>
+              </WriterInfoContainer>
+            </ResumeInfo>
+          </ResumeViewerHeader>
 
-            <PdfViewer
-              showAllPages={false}
-              file={resumeDetail.resumeUrl}
-              totalPages={totalPages}
-              scale={scale}
-              pageNum={currentPageNum}
-              onLoadSuccess={setTotalPages}
-              width="100%"
-              height={isMobile ? '100vh' : '100%'}
+          <PdfViewer
+            showAllPages={false}
+            file={resumeDetail.resumeUrl}
+            totalPages={totalPages}
+            scale={scale}
+            pageNum={currentPageNum}
+            onLoadSuccess={setTotalPages}
+            width="100%"
+            height={isMobile ? '100vh' : '100%'}
+          >
+            <PdfViewer.PdfPagesInfo>
+              current: {currentPageNum} / {totalPages}
+            </PdfViewer.PdfPagesInfo>
+            <ButtonGroup height="2rem">
+              <ButtonGroup.Button aria-label="이전 페이지로 이동" onClick={prevPage}>
+                <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button aria-label="pdf 확대" onClick={zoomIn}>
+                <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button aria-label="pdf 축소" onClick={zoomOut}>
+                <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+              <ButtonGroup.Button aria-label="다음 페이지로 이동" onClick={nextPage}>
+                <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+              </ButtonGroup.Button>
+            </ButtonGroup>
+          </PdfViewer>
+        </ResumeViewer>
+
+        <Aside>
+          <AsideHeader>
+            <TabList>
+              <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
+                피드백
+              </Tab>
+              <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
+                예상질문
+              </Tab>
+              <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
+                댓글
+              </Tab>
+            </TabList>
+            <IconButton
+              aria-label="가이드북 열기"
+              onClick={() => {
+                const guideBookModalId = open(GuideBook, {
+                  onClose: () => {
+                    localStorage.setItem('skip', 'true');
+                    close(guideBookModalId);
+                  },
+                });
+              }}
             >
-              <PdfViewer.PdfPagesInfo>
-                current: {currentPageNum} / {totalPages}
-              </PdfViewer.PdfPagesInfo>
-              <ButtonGroup height="2rem">
-                <ButtonGroup.Button aria-label="이전 페이지로 이동" onClick={prevPage}>
-                  <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button aria-label="pdf 확대" onClick={zoomIn}>
-                  <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button aria-label="pdf 축소" onClick={zoomOut}>
-                  <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-                </ButtonGroup.Button>
-                <ButtonGroup.Button aria-label="다음 페이지로 이동" onClick={nextPage}>
-                  <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-                </ButtonGroup.Button>
-              </ButtonGroup>
-            </PdfViewer>
-          </ResumeViewer>
+              <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
+            </IconButton>
+          </AsideHeader>
 
-          <Aside>
-            <AsideHeader>
-              <TabList>
-                <Tab $isActive={currentTab === 'feedback'} onClick={(e) => handleTabClick(e, 'feedback')}>
-                  피드백
-                </Tab>
-                <Tab $isActive={currentTab === 'question'} onClick={(e) => handleTabClick(e, 'question')}>
-                  예상질문
-                </Tab>
-                <Tab $isActive={currentTab === 'comment'} onClick={(e) => handleTabClick(e, 'comment')}>
-                  댓글
-                </Tab>
-              </TabList>
-              <IconButton aria-label="가이드북 열기" onClick={handleOpenGuideBook}>
-                <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
-              </IconButton>
-            </AsideHeader>
+          {currentTab === 'feedback' && isValidResumeId && (
+            <>
+              <CommentListWrapper>
+                <CommentList ref={commentListRef}>
+                  <CommentHeader>
+                    <span>필터</span>
+                    <Switch
+                      label="check"
+                      checked={filter.checked}
+                      onChange={() => {
+                        setFilter((prev) => ({ ...prev, checked: !prev.checked }));
+                      }}
+                    />
+                  </CommentHeader>
 
-            {currentTab === 'feedback' && isValidResumeId && (
-              <>
-                <CommentListWrapper>
-                  <CommentList ref={commentListRef}>
-                    <CommentHeader>
-                      <span>필터</span>
+                  {feedbackList && feedbackList.length > 0 ? (
+                    feedbackList.map((feedback) => {
+                      return (
+                        <li key={feedback.id}>
+                          <Feedback
+                            resumeId={Number(resumeId)}
+                            resumePage={currentPageNum}
+                            resumeWriterId={resumeDetail.writerId}
+                            {...feedback}
+                          />
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <EmptyListNotification>
+                      <span>아직 작성된 피드백이 없어요.</span>
+                      <span>피드백을 남겨보세요!</span>
+                    </EmptyListNotification>
+                  )}
+                  {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
+                    <div ref={setTarget}></div>
+                  )}
+                </CommentList>
+              </CommentListWrapper>
+              <FeedbackAddForm
+                resumeId={Number(resumeId)}
+                resumePage={currentPageNum}
+                onSubmitSuccess={scrollToTopOfCommentList}
+              />
+            </>
+          )}
+
+          {currentTab === 'question' && isValidResumeId && (
+            <>
+              <CommentListWrapper>
+                <CommentList ref={commentListRef}>
+                  <CommentHeader>
+                    <span>필터</span>
+                    <SwitchContainer>
                       <Switch
                         label="check"
                         checked={filter.checked}
@@ -248,127 +296,75 @@ const ResumeDetail = () => {
                           setFilter((prev) => ({ ...prev, checked: !prev.checked }));
                         }}
                       />
-                    </CommentHeader>
+                      <Switch
+                        label="bookmark"
+                        checked={filter.bookmarked}
+                        onChange={() => {
+                          setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
+                        }}
+                      />
+                    </SwitchContainer>
+                  </CommentHeader>
 
-                    {feedbackList && feedbackList.length > 0 ? (
-                      feedbackList.map((feedback) => {
-                        return (
-                          <li key={feedback.id}>
-                            <Feedback
-                              resumeId={Number(resumeId)}
-                              resumePage={currentPageNum}
-                              resumeWriterId={resumeDetail.writerId}
-                              {...feedback}
-                            />
-                          </li>
-                        );
-                      })
-                    ) : (
-                      <EmptyListNotification>
-                        <span>아직 작성된 피드백이 없어요.</span>
-                        <span>피드백을 남겨보세요!</span>
-                      </EmptyListNotification>
-                    )}
-                    {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
-                      <div ref={setTarget}></div>
-                    )}
-                  </CommentList>
-                </CommentListWrapper>
-                <FeedbackAddForm
-                  resumeId={Number(resumeId)}
-                  resumePage={currentPageNum}
-                  onSubmitSuccess={scrollToTopOfCommentList}
-                />
-              </>
-            )}
+                  {questionList && questionList.length > 0 ? (
+                    questionList.map((question) => {
+                      return (
+                        <li key={question.id}>
+                          <Question
+                            resumeId={Number(resumeId)}
+                            resumePage={currentPageNum}
+                            resumeWriterId={resumeDetail.writerId}
+                            {...question}
+                          />
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <EmptyListNotification>
+                      <span>아직 작성된 예상질문이 없어요.</span>
+                      <span>예상질문을 남겨보세요!</span>
+                    </EmptyListNotification>
+                  )}
+                  {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
+                    <div ref={setTarget}></div>
+                  )}
+                </CommentList>
+              </CommentListWrapper>
+              <QuestionAddForm
+                resumeId={Number(resumeId)}
+                resumePage={currentPageNum}
+                onSubmitSuccess={scrollToTopOfCommentList}
+              />
+            </>
+          )}
 
-            {currentTab === 'question' && isValidResumeId && (
-              <>
-                <CommentListWrapper>
-                  <CommentList ref={commentListRef}>
-                    <CommentHeader>
-                      <span>필터</span>
-                      <SwitchContainer>
-                        <Switch
-                          label="check"
-                          checked={filter.checked}
-                          onChange={() => {
-                            setFilter((prev) => ({ ...prev, checked: !prev.checked }));
-                          }}
-                        />
-                        <Switch
-                          label="bookmark"
-                          checked={filter.bookmarked}
-                          onChange={() => {
-                            setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
-                          }}
-                        />
-                      </SwitchContainer>
-                    </CommentHeader>
-
-                    {questionList && questionList.length > 0 ? (
-                      questionList.map((question) => {
-                        return (
-                          <li key={question.id}>
-                            <Question
-                              resumeId={Number(resumeId)}
-                              resumePage={currentPageNum}
-                              resumeWriterId={resumeDetail.writerId}
-                              {...question}
-                            />
-                          </li>
-                        );
-                      })
-                    ) : (
-                      <EmptyListNotification>
-                        <span>아직 작성된 예상질문이 없어요.</span>
-                        <span>예상질문을 남겨보세요!</span>
-                      </EmptyListNotification>
-                    )}
-                    {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
-                      <div ref={setTarget}></div>
-                    )}
-                  </CommentList>
-                </CommentListWrapper>
-                <QuestionAddForm
-                  resumeId={Number(resumeId)}
-                  resumePage={currentPageNum}
-                  onSubmitSuccess={scrollToTopOfCommentList}
-                />
-              </>
-            )}
-
-            {currentTab === 'comment' && isValidResumeId && (
-              <>
-                <CommentListWrapper>
-                  <CommentList ref={commentListRef}>
-                    {commentList && commentList.length > 0 ? (
-                      commentList.map((comment) => {
-                        return (
-                          <li key={comment.id}>
-                            <Comment resumeId={Number(resumeId)} {...comment} />
-                          </li>
-                        );
-                      })
-                    ) : (
-                      <EmptyListNotification>
-                        <span>아직 댓글이 없어요.</span>
-                        <span>댓글을 남겨보세요!</span>
-                      </EmptyListNotification>
-                    )}
-                    {hasNextPageAboutComment && !isFetchingNextPageAboutComment && (
-                      <div ref={setTarget}></div>
-                    )}
-                  </CommentList>
-                </CommentListWrapper>
-                <CommentAddForm resumeId={Number(resumeId)} onSubmitSuccess={scrollToTopOfCommentList} />
-              </>
-            )}
-          </Aside>
-        </ResumeContentWrapper>
-      </Main>
-      <GuideBook isOpen={isOpenGuideBook} onClose={handleCloseGuideBook} />
-    </>
+          {currentTab === 'comment' && isValidResumeId && (
+            <>
+              <CommentListWrapper>
+                <CommentList ref={commentListRef}>
+                  {commentList && commentList.length > 0 ? (
+                    commentList.map((comment) => {
+                      return (
+                        <li key={comment.id}>
+                          <Comment resumeId={Number(resumeId)} {...comment} />
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <EmptyListNotification>
+                      <span>아직 댓글이 없어요.</span>
+                      <span>댓글을 남겨보세요!</span>
+                    </EmptyListNotification>
+                  )}
+                  {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
+                </CommentList>
+              </CommentListWrapper>
+              <CommentAddForm resumeId={Number(resumeId)} onSubmitSuccess={scrollToTopOfCommentList} />
+            </>
+          )}
+        </Aside>
+      </ResumeContentWrapper>
+    </Main>
   );
 };
 
