@@ -18,7 +18,7 @@ const LoginRequestModal = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="18.75rem">
+    <Modal isOpen={isOpen} onClose={onClose} width="18.75rem">
       <DescriptionContainer>
         <Modal.Title>회원만 사용 가능합니다.</Modal.Title>
         <Modal.Title>로그인 후 이용해주세요.</Modal.Title>

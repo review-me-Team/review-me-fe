@@ -50,7 +50,6 @@ const FriendSearchModal = ({ isOpen, onClose }: Props) => {
 
   return (
     <Modal
-      modalRootId="modal-root"
       isOpen={isOpen}
       onClose={() => {
         onClose();

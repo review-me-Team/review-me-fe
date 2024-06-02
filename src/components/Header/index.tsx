@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Icon, theme, useModal } from 'review-me-design-system';
+import { Button, Icon, theme } from 'review-me-design-system';
 import LoginRequestModal from '@components/Modal/LoginRequestModal';
 import useMediaQuery from '@hooks/useMediaQuery';
+import useModals from '@hooks/useModals';
 import { useUserContext } from '@contexts/userContext';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
@@ -29,11 +30,8 @@ const Header = () => {
   const navigate = useNavigate();
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
   const { isLoggedIn, logout } = useUserContext();
-  const {
-    isOpen: isOpenLoginRequestModal,
-    open: openLoginRequestModal,
-    close: closeLoginRequestModal,
-  } = useModal();
+
+  const { open, close } = useModals();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
   const handleOpenMobileMenu = () => {
@@ -149,8 +147,9 @@ const Header = () => {
                 <MenuItem
                   onClick={() => {
                     if (!isLoggedIn) {
-                      openLoginRequestModal();
-                      manageBodyScroll(false);
+                      const loginRequestModalId = open(LoginRequestModal, {
+                        onClose: () => close(loginRequestModalId),
+                      });
                       return;
                     }
                     navigate(ROUTE_PATH.MY_RESUME);
@@ -167,8 +166,9 @@ const Header = () => {
               aria-label="마이페이지로 이동"
               onClick={() => {
                 if (!isLoggedIn) {
-                  openLoginRequestModal();
-                  manageBodyScroll(false);
+                  const loginRequestModalId = open(LoginRequestModal, {
+                    onClose: () => close(loginRequestModalId),
+                  });
                   return;
                 }
                 navigate(ROUTE_PATH.MY_PAGE);
@@ -184,13 +184,6 @@ const Header = () => {
           </RightContainer>
         </NavContainer>
       </HeaderLayout>
-      <LoginRequestModal
-        isOpen={isOpenLoginRequestModal}
-        onClose={() => {
-          closeLoginRequestModal();
-          manageBodyScroll(true);
-        }}
-      />
     </>
   );
 };

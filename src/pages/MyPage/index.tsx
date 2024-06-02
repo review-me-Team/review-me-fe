@@ -1,16 +1,16 @@
 import React from 'react';
-import { Button, Icon, useModal } from 'review-me-design-system';
+import { Button, Icon } from 'review-me-design-system';
 import { css } from 'styled-components';
 import FollowerModal from '@components/Modal/FollowerModal';
 import FollowingModal from '@components/Modal/FollowingModal';
 import FriendRequestModal from '@components/Modal/FriendRequestModal';
 import FriendSearchModal from '@components/Modal/FriendSearchModal';
 import UserItem from '@components/UserItem';
+import useModals from '@hooks/useModals';
 import { useUserContext } from '@contexts/userContext';
 import { useFollowerList, useFollowingList, useFriendList } from '@apis/friendApi';
 import { PageMain } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
-import { manageBodyScroll } from '@utils';
 import { FriendSectionContainer, FriendSection, Title, UserImg, UserInfo, UserName } from './style';
 
 const MyPage = () => {
@@ -22,18 +22,7 @@ const MyPage = () => {
 
   const ITEM_COUNT = 2;
 
-  const {
-    isOpen: isFriendRequestModalOpen,
-    open: openFriendRequestModal,
-    close: closeFriendRequestModal,
-  } = useModal();
-  const {
-    isOpen: isFriendSearchModalOpen,
-    open: openFriendSearchModal,
-    close: closeFriendSearchModal,
-  } = useModal();
-  const { isOpen: isFollowingModalOpen, open: openFollowingModal, close: closeFollowingModal } = useModal();
-  const { isOpen: isFollowerModalOpen, open: openFollowerModal, close: closeFollowerModal } = useModal();
+  const { open, close } = useModals();
 
   return (
     <PageMain
@@ -50,20 +39,18 @@ const MyPage = () => {
         variant="default"
         size="l"
         onClick={() => {
-          openFriendRequestModal();
-          manageBodyScroll(false);
+          const friendRequestModalId = open(FriendRequestModal, {
+            onClose: () => {
+              refetchFriendList();
+              refetchFollowingList();
+              refetchFollowerList();
+              close(friendRequestModalId);
+            },
+          });
         }}
       >
         친구 추가하기
       </Button>
-      <FriendRequestModal
-        isOpen={isFriendRequestModalOpen}
-        onClose={() => {
-          closeFriendRequestModal();
-          manageBodyScroll(true);
-          window.location.reload();
-        }}
-      />
 
       <FriendSectionContainer>
         <FriendSection>
@@ -72,19 +59,13 @@ const MyPage = () => {
             <IconButton
               aria-label="친구 모달 열기"
               onClick={() => {
-                openFriendSearchModal();
-                manageBodyScroll(false);
+                const friendSearchModalId = open(FriendSearchModal, {
+                  onClose: () => close(friendSearchModalId),
+                });
               }}
             >
               <Icon iconName="rightArrow" />
             </IconButton>
-            <FriendSearchModal
-              isOpen={isFriendSearchModalOpen}
-              onClose={() => {
-                closeFriendSearchModal();
-                manageBodyScroll(true);
-              }}
-            />
           </Title>
 
           <ul>
@@ -108,21 +89,18 @@ const MyPage = () => {
             <IconButton
               aria-label="전송한 친구 요청 보기 모달 열기"
               onClick={() => {
-                openFollowingModal();
-                manageBodyScroll(false);
+                const followingModalId = open(FollowingModal, {
+                  onClose: () => {
+                    refetchFollowingList();
+                    close(followingModalId);
+                  },
+                });
+
                 refetchFollowingList();
               }}
             >
               <Icon iconName="rightArrow" />
             </IconButton>
-            <FollowingModal
-              isOpen={isFollowingModalOpen}
-              onClose={() => {
-                closeFollowingModal();
-                manageBodyScroll(true);
-                refetchFollowingList();
-              }}
-            />
           </Title>
 
           <ul>
@@ -146,21 +124,17 @@ const MyPage = () => {
             <IconButton
               aria-label="친구 요청에 응답하기 모달 열기"
               onClick={() => {
-                openFollowerModal();
-                manageBodyScroll(false);
+                const followerModalId = open(FollowerModal, {
+                  onClose: () => {
+                    refetchFollowerList();
+                    refetchFriendList();
+                    close(followerModalId);
+                  },
+                });
               }}
             >
               <Icon iconName="rightArrow" />
             </IconButton>
-            <FollowerModal
-              isOpen={isFollowerModalOpen}
-              onClose={() => {
-                closeFollowerModal();
-                manageBodyScroll(true);
-                refetchFollowerList();
-                refetchFriendList();
-              }}
-            />
           </Title>
 
           <ul>
