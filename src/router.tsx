@@ -7,7 +7,6 @@ import ErrorBoundary from '@components/ErrorBoundary/ErrorBoundary';
 import Layout from '@components/Layout';
 import Spinner from '@components/Spinner';
 import TokenRefresh from '@components/TokenRefresh';
-import { UserProvider } from '@contexts/userContext';
 import ErrorPage from '@pages/ErrorPage';
 import { ROUTE_PATH } from '@constants';
 
@@ -40,23 +39,21 @@ const router = createBrowserRouter([
       />
     ),
     element: (
-      <UserProvider>
-        <TokenRefresh>
-          <ErrorBoundary>
-            <Suspense
-              fallback={
-                <DelayedComponent>
-                  <SpinnerWrapper>
-                    <Spinner size="6.25rem" />
-                  </SpinnerWrapper>
-                </DelayedComponent>
-              }
-            >
-              <Layout />
-            </Suspense>
-          </ErrorBoundary>
-        </TokenRefresh>
-      </UserProvider>
+      <TokenRefresh>
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <DelayedComponent>
+                <SpinnerWrapper>
+                  <Spinner size="6.25rem" />
+                </SpinnerWrapper>
+              </DelayedComponent>
+            }
+          >
+            <Layout />
+          </Suspense>
+        </ErrorBoundary>
+      </TokenRefresh>
     ),
     children: [
       {
@@ -107,11 +104,7 @@ const router = createBrowserRouter([
   },
   {
     path: ROUTE_PATH.ROOT,
-    element: (
-      <UserProvider>
-        <Outlet />
-      </UserProvider>
-    ),
+    element: <Outlet />,
     children: [{ path: ROUTE_PATH.SOCIAL_LOGIN, element: <SocialLogin /> }],
   },
 ]);
