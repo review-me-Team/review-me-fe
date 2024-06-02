@@ -15,7 +15,7 @@ const FriendDeleteModal = ({ friendId, isOpen, onClose }: Props) => {
   const { mutate: deleteFriend } = useDeleteFriend();
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="18.75rem">
+    <Modal isOpen={isOpen} onClose={onClose} width="18.75rem">
       <Description>
         <Modal.Title>정말로 친구를 삭제하시겠습니까?</Modal.Title>
         <Modal.Description>선택한 친구가 삭제됩니다.</Modal.Description>

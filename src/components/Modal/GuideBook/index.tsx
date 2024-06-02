@@ -8,7 +8,7 @@ import { Button, Icon, Modal } from 'review-me-design-system';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
-import { ButtonContainer, Description, GuideSection, SubDescription } from './style';
+import { ButtonContainer, Description, GuideSection, SubDescription, Video } from './style';
 
 interface Props {
   isOpen: boolean;
@@ -32,12 +32,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      modalRootId="modal-root"
-      width={isMobile ? '90%' : 'fit-content'}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
       {currentGuide === 0 && (
         <>
           <Description>
@@ -65,16 +60,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
                   ex&#41; 현재 이력서가 1페이지라면, 1페이지에 달린 피드백이 보입니다.
                 </SubDescription>
               </Description>
-              <video
-                src={feedbackListVideo}
-                itemType="video/mp4"
-                width={'100%'}
-                height={'100%'}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Video src={feedbackListVideo} itemType="video/mp4" autoPlay muted loop playsInline />
             </div>
           )}
           {currentGuide === 2 && (
@@ -83,16 +69,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
                 <Modal.Title>피드백 check</Modal.Title>
                 <Modal.Description>해결된 피드백이라면 check 아이콘을 눌러주세요.</Modal.Description>
               </Description>
-              <video
-                src={feedbackCheckVideo}
-                itemType="video/mp4"
-                width={'100%'}
-                height={'100%'}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Video src={feedbackCheckVideo} itemType="video/mp4" autoPlay muted loop playsInline />
             </div>
           )}
           {currentGuide === 3 && (
@@ -104,16 +81,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
                   ex&#41; 현재 이력서가 1페이지라면, 1페이지에 달린 예상질문이 보입니다.
                 </SubDescription>
               </Description>
-              <video
-                src={questionListVideo}
-                itemType="video/mp4"
-                width={'100%'}
-                height={'100%'}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Video src={questionListVideo} itemType="video/mp4" autoPlay muted loop playsInline />
             </div>
           )}
           {currentGuide === 4 && (
@@ -122,16 +90,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
                 <Modal.Title>예상질문 check</Modal.Title>
                 <Modal.Description>해결된 예상질문이라면 check 아이콘을 눌러주세요.</Modal.Description>
               </Description>
-              <video
-                src={questionCheckVideo}
-                itemType="video/mp4"
-                width={'100%'}
-                height={'100%'}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Video src={questionCheckVideo} itemType="video/mp4" autoPlay muted loop playsInline />
             </div>
           )}
           {currentGuide === MAX_GUIDE && (
@@ -140,16 +99,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
                 <Modal.Title>예상질문 bookmark</Modal.Title>
                 <Modal.Description>기억하고 싶은 예상질문은 bookmark 아이콘을 눌러주세요.</Modal.Description>
               </Description>
-              <video
-                src={questionBookMarkVideo}
-                itemType="video/mp4"
-                width={'100%'}
-                height={'100%'}
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Video src={questionBookMarkVideo} itemType="video/mp4" autoPlay muted loop playsInline />
             </div>
           )}
           <ButtonContainer>

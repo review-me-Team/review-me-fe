@@ -52,7 +52,7 @@ const FriendRequestModal = ({ isOpen, onClose }: Props) => {
   };
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
+    <Modal isOpen={isOpen} onClose={handleClose} width={isMobile ? '80%' : '34rem'}>
       <Header>
         <Modal.Title>친구 추가하기</Modal.Title>
         <IconButton aria-label="친구 추가하기 모달 닫기" onClick={handleClose}>

@@ -11,12 +11,17 @@ interface Props {
 
 const TokenRefresh = ({ children }: Props) => {
   const { data, status, error, isFetched } = useRenewJwt();
-  const { login, logout, isLoggedIn } = useUserContext();
+  const { jwt, login, logout, isLoggedIn } = useUserContext();
   const { openToast } = useToastContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isLoggedIn) return;
+    if (isLoggedIn) {
+      const isRenewedJwt = data && jwt !== data.jwt;
+
+      if (isRenewedJwt) login(data.jwt);
+      return;
+    }
 
     if (status === 'success' && data) {
       login(data.jwt);
@@ -28,7 +33,7 @@ const TokenRefresh = ({ children }: Props) => {
         navigate(ROUTE_PATH.ROOT);
       }
     }
-  }, [isFetched, isLoggedIn, data, status, error]);
+  }, [isFetched, isLoggedIn, data, status, error, jwt]);
 
   if (status === 'pending') return <></>;
 

@@ -24,4 +24,9 @@ const SubDescription = styled.span`
   color: ${theme.color.neutral.text.sub};
 `;
 
-export { Description, ButtonContainer, GuideSection, SubDescription };
+const Video = styled.video`
+  width: 100%;
+  max-width: 600px;
+`;
+
+export { Description, ButtonContainer, GuideSection, SubDescription, Video };

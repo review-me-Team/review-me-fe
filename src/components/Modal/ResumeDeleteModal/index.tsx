@@ -15,7 +15,7 @@ const ResumeDeleteModal = ({ resumeId, isOpen, onClose }: Props) => {
   const { mutate: deleteResume } = useDeleteResume();
 
   return (
-    <Modal modalRootId="modal-root" isOpen={isOpen} onClose={onClose} width="18.75rem">
+    <Modal isOpen={isOpen} onClose={onClose} width="18.75rem">
       <Description>
         <Modal.Title>정말로 삭제하시겠습니까?</Modal.Title>
         <Modal.Description>선택한 이력서가 삭제됩니다.</Modal.Description>
