@@ -38,7 +38,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
   const [scopeId, setScopeId] = useState<number>(initScopeId);
   const [year, setYear] = useState<number>(initYear);
 
-  const { mutate: updateResume } = useUpdateResume();
+  const { mutate: updateResume, isPending } = useUpdateResume();
 
   const PDF_BUTTON_ICON_SIZE = 24;
 
@@ -168,7 +168,7 @@ const ResumeUpdateForm = ({ resumeId, file, initTitle, initOccupationId, initSco
           </Field>
         </FieldContainer>
 
-        <Button variant="default" size="m">
+        <Button variant="default" size="m" disabled={isPending}>
           수정하기
         </Button>
       </Form>
