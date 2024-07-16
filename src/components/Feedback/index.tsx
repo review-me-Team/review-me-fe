@@ -1,12 +1,12 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';
 import Dropdown from '@components/Dropdown';
 import FeedbackEditForm from '@components/FeedbackForm/FeedbackEditForm';
+import EmojiModal from '@components/Modal/EmojiModal';
 import FeedbackReplyList from '@components/ReplyList/FeedbackReplyList';
 import useDropdown from '@hooks/useDropdown';
-import useHover from '@hooks/useHover';
 import { useUserContext } from '@contexts/userContext';
 import {
   Feedback as FeedbackType,
@@ -25,10 +25,7 @@ import {
   Content,
   Bottom,
   OpenReplyButton,
-  EmojiButton,
   Top,
-  EmojiModal,
-  EmojiButtonContainer,
   EmojiLabelList,
   EmojiLabelItem,
   ContentContainer,
@@ -62,7 +59,6 @@ const Feedback = ({
   myEmojiId,
 }: Props) => {
   const { jwt, user } = useUserContext();
-  const { isHover, changeHoverState } = useHover();
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
   const [isOpenReplyList, setIsOpenReplyList] = useState<boolean>(false);
   const [isEdited, setIsEdited] = useState<boolean>(false);
@@ -82,7 +78,7 @@ const Feedback = ({
   const { mutate: toggleEmoji } = usePatchEmojiAboutFeedback();
   const queryClient = useQueryClient();
 
-  const handleEmojiLabelClick = (e: MouseEvent<HTMLButtonElement>, clickedEmojiId: number) => {
+  const handleEmojiLabelClick = (clickedEmojiId: number) => {
     if (!jwt) return;
 
     const shouldDeleteEmoji = myEmojiId === clickedEmojiId;
@@ -236,35 +232,11 @@ const Feedback = ({
                 <span>{countOfReplies}</span>
               </OpenReplyButton>
 
-              <EmojiButtonContainer>
-                <EmojiButton
-                  aria-label="이모지"
-                  onMouseEnter={() => changeHoverState(true)}
-                  onMouseLeave={() => changeHoverState(false)}
-                  disabled={content === null}
-                >
-                  <Icon iconName="emoji" />
-                </EmojiButton>
-                <EmojiModal
-                  className={isHover ? 'active' : ''}
-                  onMouseEnter={() => changeHoverState(true)}
-                  onMouseLeave={() => changeHoverState(false)}
-                >
-                  {emojiList?.map(({ id, emoji }) => {
-                    return (
-                      <EmojiLabel
-                        key={id}
-                        isActive={id === myEmojiId}
-                        py="0.5rem"
-                        px="0.75rem"
-                        onClick={(e) => handleEmojiLabelClick(e, id)}
-                      >
-                        {emoji}
-                      </EmojiLabel>
-                    );
-                  })}
-                </EmojiModal>
-              </EmojiButtonContainer>
+              <EmojiModal
+                canOpen={typeof content === 'string'}
+                myEmojiId={myEmojiId}
+                onClickEmoji={handleEmojiLabelClick}
+              />
 
               <EmojiLabelList>
                 {emojis.map(({ id, count }) => {
@@ -280,7 +252,7 @@ const Feedback = ({
                         isActive={id === myEmojiId}
                         py="0"
                         px="0.75rem"
-                        onClick={(e) => handleEmojiLabelClick(e, id)}
+                        onClick={() => handleEmojiLabelClick(id)}
                       >
                         {`${emoji} ${count}`}
                       </EmojiLabel>
