@@ -100,33 +100,6 @@ const OpenReplyButton = styled.button`
   }
 `;
 
-const EmojiButtonContainer = styled.div`
-  position: relative;
-`;
-
-const EmojiButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-
-  background-color: ${theme.palette.gray300};
-  border-radius: 50%;
-
-  & > svg {
-    fill: ${theme.palette.gray600};
-  }
-
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-`;
-
 const EmojiLabelList = styled.ul`
   display: flex;
   flex-wrap: wrap;
@@ -135,25 +108,6 @@ const EmojiLabelList = styled.ul`
 
 const EmojiLabelItem = styled.li`
   margin-right: 0.5rem;
-`;
-
-const EmojiModal = styled.div`
-  display: none;
-  padding: 0.5rem;
-  gap: 0.25rem;
-  position: absolute;
-  left: -0.75rem;
-  top: auto;
-  bottom: 100%;
-  z-index: ${theme.zIndex.modal};
-
-  background-color: ${theme.color.neutral.bg.default};
-  border-radius: 1rem;
-  box-shadow: 0 0 0.625rem 0 rgba(0, 0, 0, 0.25);
-
-  &.active {
-    display: flex;
-  }
 `;
 
 export {
@@ -171,9 +125,6 @@ export {
   ContentContainer,
   Bottom,
   OpenReplyButton,
-  EmojiButtonContainer,
-  EmojiButton,
-  EmojiModal,
   EmojiLabelList,
   EmojiLabelItem,
 };
