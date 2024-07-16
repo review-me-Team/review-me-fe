@@ -66,12 +66,11 @@ const Label = styled.label`
   ${theme.font.body.default}
 `;
 
-const FileLabel = styled.label`
+const UploadFileButton = styled.button`
   display: flex;
   padding: 0.5rem 0.75rem;
   justify-content: center;
   align-items: center;
-  margin-right: 0.5rem;
 
   border-radius: 0.75rem;
   border: 1px solid ${theme.color.accent.bd.strong};
@@ -90,5 +89,5 @@ export {
   SubDescription,
   Field,
   Label,
-  FileLabel,
+  UploadFileButton,
 };

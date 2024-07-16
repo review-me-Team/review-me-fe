@@ -13,7 +13,7 @@ import { useOccupationList, useScopeList } from '@apis/utilApi';
 import { breakPoints } from '@styles/common';
 import { FAILURE_MESSAGE, ROUTE_PATH, SUCCESS_MESSAGE } from '@constants';
 import { validateFileName, validateTitle, validateYear } from '@utils';
-import { Field, FieldContainer, FileLabel, Form, ResumeFormLayout, Label } from '../style';
+import { Field, FieldContainer, UploadFileButton, Form, ResumeFormLayout, Label } from '../style';
 
 const ResumeUploadForm = () => {
   const navigate = useNavigate();
@@ -95,12 +95,22 @@ const ResumeUploadForm = () => {
     );
   };
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   return (
     <ResumeFormLayout>
       {isMobile && (
         <Field>
-          <FileLabel htmlFor="file">파일 선택</FileLabel>
+          <UploadFileButton
+            type="button"
+            onClick={() => {
+              fileInputRef.current?.click();
+            }}
+          >
+            파일 선택
+          </UploadFileButton>
           <input
+            ref={fileInputRef}
             type="file"
             id="file"
             name="file"
@@ -134,8 +144,16 @@ const ResumeUploadForm = () => {
         <FieldContainer>
           {!isMobile && (
             <Field>
-              <FileLabel htmlFor="file">파일 선택</FileLabel>
+              <UploadFileButton
+                type="button"
+                onClick={() => {
+                  fileInputRef.current?.click();
+                }}
+              >
+                파일 선택
+              </UploadFileButton>
               <input
+                ref={fileInputRef}
                 type="file"
                 id="file"
                 name="file"
