@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Icon, theme } from 'review-me-design-system';
 import LoginRequestModal from '@components/Modal/LoginRequestModal';
+import useKeyPress from '@hooks/useKeyPress';
 import useMediaQuery from '@hooks/useMediaQuery';
 import useModals from '@hooks/useModals';
 import { useUserContext } from '@contexts/userContext';
@@ -35,18 +36,23 @@ const Header = () => {
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
   const handleOpenMobileMenu = () => {
-    if (!isMobile) return;
+    if (!isMobile || isOpenMobileMenu) return;
 
     setIsOpenMobileMenu(true);
     manageBodyScroll(false);
   };
 
   const handleCloseMobileMenu = () => {
-    if (!isMobile) return;
+    if (!isMobile || !isOpenMobileMenu) return;
 
     setIsOpenMobileMenu(false);
     manageBodyScroll(true);
   };
+
+  useKeyPress({
+    targetKey: 'Escape',
+    onKeyPress: handleCloseMobileMenu,
+  });
 
   const CLIENT_ID = process.env.DEV_CLIENT_ID;
   const REDIRECT_URI =
@@ -144,18 +150,20 @@ const Header = () => {
                 <MenuItem>
                   <Link to={ROUTE_PATH.RESUME}>이력서</Link>
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      const loginRequestModalId = open(LoginRequestModal, {
-                        onClose: () => close(loginRequestModalId),
-                      });
-                      return;
-                    }
-                    navigate(ROUTE_PATH.MY_RESUME);
-                  }}
-                >
-                  My 이력서
+                <MenuItem>
+                  <button
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        const loginRequestModalId = open(LoginRequestModal, {
+                          onClose: () => close(loginRequestModalId),
+                        });
+                        return;
+                      }
+                      navigate(ROUTE_PATH.MY_RESUME);
+                    }}
+                  >
+                    My 이력서
+                  </button>
                 </MenuItem>
               </MenuList>
             </LeftContainer>
