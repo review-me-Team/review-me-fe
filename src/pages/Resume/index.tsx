@@ -9,6 +9,7 @@ import SkeletonResumeList from '@components/ResumeList/skeleton';
 import Select from '@components/Select';
 import YearRangeFilter from '@components/YearRangeFilter';
 import useDropdown from '@hooks/useDropdown';
+import useKeyPress from '@hooks/useKeyPress';
 import useMediaQuery from '@hooks/useMediaQuery';
 import { useUserContext } from '@contexts/userContext';
 import { useOccupationList } from '@apis/utilApi';
@@ -36,6 +37,11 @@ const Resume = () => {
   const { isDropdownOpen, openDropdown, closeDropdown } = useDropdown();
 
   const { data: occupationList } = useOccupationList();
+
+  useKeyPress({
+    targetKey: 'Escape',
+    onKeyPress: closeDropdown,
+  });
 
   return (
     <PageMain>
