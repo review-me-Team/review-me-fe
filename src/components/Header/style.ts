@@ -53,7 +53,13 @@ const MenuItem = styled.li`
 
   cursor: pointer;
   transition: all 0.2s;
-  &:hover {
+
+  & > button {
+    transition: all 0.2s;
+  }
+
+  &:hover,
+  & > button:hover {
     color: ${theme.color.accent.text.weak};
   }
 `;
