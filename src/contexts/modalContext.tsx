@@ -1,4 +1,12 @@
-import React, { ComponentProps, FunctionComponent, ReactNode, createContext, useContext } from 'react';
+import React, {
+  ComponentProps,
+  FunctionComponent,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+} from 'react';
+import { manageBodyScroll } from '@utils';
 
 type ModalIdType = string;
 
@@ -34,20 +42,21 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
   const [Modals, setModals] = React.useState<ModalType[]>([]);
 
   const push = ({ Component, props, id }: ModalType) => {
-    document.body.style.overflow = 'hidden';
-
     setModals((prev) => [...prev, { Component, props: { ...props, isOpen: true }, id }]);
   };
 
   const pop = (id: ModalIdType) => {
-    const hasModal = Modals.length > 0;
-
-    if (!hasModal) {
-      document.body.style.overflow = 'auto';
-    }
-
     setModals((prev) => prev.filter((C) => C.id !== id));
   };
+
+  useEffect(() => {
+    if (Modals.length === 0) {
+      manageBodyScroll(true);
+      return;
+    }
+
+    manageBodyScroll(false);
+  }, [Modals]);
 
   return (
     <ModalContext.Provider value={{ modals: Modals, push, pop }}>
