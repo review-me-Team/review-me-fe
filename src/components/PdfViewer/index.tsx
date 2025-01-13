@@ -43,6 +43,7 @@ const PdfViewer = ({
           <Document
             file={typeof file === 'string' ? `${process.env.BASE_PDF_URL}/${file}` : file}
             onLoadSuccess={({ numPages }) => onLoadSuccess(numPages)}
+            loading={null}
           >
             {showAllPages ? (
               Array.from(new Array(totalPages), (el, index) => (
@@ -52,10 +53,17 @@ const PdfViewer = ({
                   scale={scale}
                   renderAnnotationLayer={true}
                   renderTextLayer={false}
+                  loading={null}
                 />
               ))
             ) : (
-              <Page pageNumber={pageNum} scale={scale} renderAnnotationLayer={true} renderTextLayer={false} />
+              <Page
+                pageNumber={pageNum}
+                scale={scale}
+                renderAnnotationLayer={true}
+                renderTextLayer={false}
+                loading={null}
+              />
             )}
           </Document>
         </DocumentWrapper>
