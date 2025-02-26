@@ -144,18 +144,20 @@ const Header = () => {
                 <MenuItem>
                   <Link to={ROUTE_PATH.RESUME}>이력서</Link>
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      const loginRequestModalId = open(LoginRequestModal, {
-                        onClose: () => close(loginRequestModalId),
-                      });
-                      return;
-                    }
-                    navigate(ROUTE_PATH.MY_RESUME);
-                  }}
-                >
-                  My 이력서
+                <MenuItem>
+                  <button
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        const loginRequestModalId = open(LoginRequestModal, {
+                          onClose: () => close(loginRequestModalId),
+                        });
+                        return;
+                      }
+                      navigate(ROUTE_PATH.MY_RESUME);
+                    }}
+                  >
+                    My 이력서
+                  </button>
                 </MenuItem>
               </MenuList>
             </LeftContainer>
