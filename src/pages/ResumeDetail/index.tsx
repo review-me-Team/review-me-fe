@@ -123,7 +123,7 @@ const ResumeDetail = () => {
 
   const hasViewedGuideBook = localStorage.getItem('skip') === 'true';
 
-  const { open, close } = useModals();
+  const { open } = useModals();
 
   const commentListRef = useRef<HTMLUListElement>(null);
 
@@ -135,12 +135,15 @@ const ResumeDetail = () => {
 
   useEffect(() => {
     if (!hasViewedGuideBook) {
-      const guideBookModalId = open(GuideBook, {
-        onClose: () => {
-          localStorage.setItem('skip', 'true');
-          close(guideBookModalId);
-        },
-      });
+      open(({ isOpen, onClose }) => (
+        <GuideBook
+          isOpen={isOpen}
+          onClose={() => {
+            localStorage.setItem('skip', 'true');
+            onClose();
+          }}
+        />
+      ));
     }
   }, [hasViewedGuideBook]);
 
@@ -223,12 +226,15 @@ const ResumeDetail = () => {
             <IconButton
               aria-label="가이드북 열기"
               onClick={() => {
-                const guideBookModalId = open(GuideBook, {
-                  onClose: () => {
-                    localStorage.setItem('skip', 'true');
-                    close(guideBookModalId);
-                  },
-                });
+                open(({ isOpen, onClose }) => (
+                  <GuideBook
+                    isOpen={isOpen}
+                    onClose={() => {
+                      localStorage.setItem('skip', 'true');
+                      onClose();
+                    }}
+                  />
+                ));
               }}
             >
               <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />

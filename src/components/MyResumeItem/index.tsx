@@ -25,7 +25,7 @@ interface Props {
 }
 
 const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) => {
-  const { open, close } = useModals();
+  const { open } = useModals();
   const navigate = useNavigate();
 
   return (
@@ -51,10 +51,9 @@ const MyResumeItem = ({ id, title, year, occupation, scope, createdAt }: Props) 
         <Button
           $position="right"
           onClick={() => {
-            const resumeDeleteModalId = open(ResumeDeleteModal, {
-              resumeId: id,
-              onClose: () => close(resumeDeleteModalId),
-            });
+            open(({ isOpen, onClose }) => (
+              <ResumeDeleteModal resumeId={id} isOpen={isOpen} onClose={onClose} />
+            ));
           }}
         >
           삭제

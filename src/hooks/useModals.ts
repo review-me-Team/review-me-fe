@@ -1,22 +1,17 @@
-import { ComponentProps, FunctionComponent } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useModalContext } from '@contexts/modalContext';
 
+type ModalComponentFunctionType = (params: { isOpen: boolean; onClose: () => void }) => JSX.Element;
+
 const useModals = () => {
-  const { push, pop } = useModalContext();
+  const { push } = useModalContext();
 
-  const open = (Component: FunctionComponent<any>, props: ComponentProps<FunctionComponent<any>> = {}) => {
+  const open = (modalComponent: ModalComponentFunctionType) => {
     const id = uuidv4();
-    push({ Component, props, id });
-
-    return id;
+    push({ id, modalComponent });
   };
 
-  const close = (id: string) => {
-    pop(id);
-  };
-
-  return { open, close };
+  return { open };
 };
 
 export default useModals;
