@@ -1,17 +1,19 @@
-import React, { ComponentProps, FunctionComponent, ReactNode, createContext, useContext } from 'react';
-
-type ModalIdType = string;
+import React, { ReactNode, createContext, useContext, useEffect } from 'react';
+import { ModalComponentFunctionType, ModalIdType } from '@customTypes/modal';
+import { manageBodyScroll } from '@utils';
 
 interface ModalType {
-  Component: FunctionComponent<any>;
-  props: ComponentProps<FunctionComponent<any>>;
   id: ModalIdType;
+  isOpen: boolean;
+  modalComponent: ModalComponentFunctionType;
 }
 
+type PushType = ({ modalComponent, id }: Omit<ModalType, 'isOpen'>) => void;
+type PopType = (id: ModalIdType) => void;
+
 interface ModalContext {
-  modals: ModalType[];
-  push: ({ Component, props, id }: ModalType) => void;
-  pop: (id: string) => void;
+  push: PushType;
+  pop: PopType;
 }
 
 const ModalContext = createContext<ModalContext | null>(null);
@@ -26,34 +28,58 @@ export const useModalContext = () => {
   return context;
 };
 
+const ModalController = ({
+  isOpen,
+  modalController: ModalComponent,
+  unmount,
+}: {
+  isOpen: boolean;
+  modalController: ModalComponentFunctionType;
+  unmount: () => void;
+}) => {
+  return <ModalComponent isOpen={isOpen} onClose={unmount} />;
+};
+
 interface ModalProviderProps {
   children: ReactNode;
 }
 
 const ModalProvider = ({ children }: ModalProviderProps) => {
-  const [Modals, setModals] = React.useState<ModalType[]>([]);
+  const [modalList, setModalList] = React.useState<ModalType[]>([]);
 
-  const push = ({ Component, props, id }: ModalType) => {
-    document.body.style.overflow = 'hidden';
+  const push: PushType = ({ modalComponent, id: newModalId }) => {
+    manageBodyScroll(false);
 
-    setModals((prev) => [...prev, { Component, props: { ...props, isOpen: true }, id }]);
+    setModalList((prev) => [
+      ...prev.filter(({ id }) => id !== newModalId),
+      { modalComponent, id: newModalId, isOpen: true },
+    ]);
   };
 
-  const pop = (id: ModalIdType) => {
-    const hasModal = Modals.length > 0;
+  const pop: PopType = (id) => {
+    setModalList((prev) => prev.filter((C) => C.id !== id));
 
-    if (!hasModal) {
-      document.body.style.overflow = 'auto';
+    if (modalList.length === 1) {
+      manageBodyScroll(true);
     }
-
-    setModals((prev) => prev.filter((C) => C.id !== id));
   };
+
+  const removeAll = () => {
+    setModalList([]);
+    manageBodyScroll(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      removeAll();
+    };
+  }, []);
 
   return (
-    <ModalContext.Provider value={{ modals: Modals, push, pop }}>
+    <ModalContext.Provider value={{ push, pop }}>
       {children}
-      {Modals.map(({ Component, props, id }) => (
-        <Component key={id} {...props} />
+      {modalList.map(({ id, modalComponent, isOpen }) => (
+        <ModalController key={id} isOpen={isOpen} modalController={modalComponent} unmount={() => pop(id)} />
       ))}
     </ModalContext.Provider>
   );

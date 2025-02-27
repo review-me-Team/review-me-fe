@@ -25,7 +25,7 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
 
   const [type, setType] = useState<Type>(initType);
 
-  const { open, close } = useModals();
+  const { open } = useModals();
 
   const { mutate: requestFriend } = usePostFriendRequest();
   const { mutate: cancelFriendRequest } = useDeleteFriendRequest();
@@ -57,10 +57,9 @@ const UserItem = ({ type: initType, userId, userImg, userName }: Props) => {
             variant="outline"
             size="s"
             onClick={() => {
-              const friendDeleteModalId = open(FriendDeleteModal, {
-                friendId: userId,
-                onClose: () => close(friendDeleteModalId),
-              });
+              open(({ isOpen, onClose }) => (
+                <FriendDeleteModal friendId={userId} isOpen={isOpen} onClose={onClose} />
+              ));
             }}
           >
             삭제

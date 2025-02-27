@@ -31,7 +31,7 @@ const Header = () => {
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
   const { isLoggedIn, logout } = useUserContext();
 
-  const { open, close } = useModals();
+  const { open } = useModals();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState<boolean>(false);
 
   const handleOpenMobileMenu = () => {
@@ -144,18 +144,20 @@ const Header = () => {
                 <MenuItem>
                   <Link to={ROUTE_PATH.RESUME}>이력서</Link>
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    if (!isLoggedIn) {
-                      const loginRequestModalId = open(LoginRequestModal, {
-                        onClose: () => close(loginRequestModalId),
-                      });
-                      return;
-                    }
-                    navigate(ROUTE_PATH.MY_RESUME);
-                  }}
-                >
-                  My 이력서
+                <MenuItem>
+                  <button
+                    onClick={() => {
+                      if (!isLoggedIn) {
+                        open(({ isOpen, onClose }) => (
+                          <LoginRequestModal isOpen={isOpen} onClose={onClose} />
+                        ));
+                        return;
+                      }
+                      navigate(ROUTE_PATH.MY_RESUME);
+                    }}
+                  >
+                    My 이력서
+                  </button>
                 </MenuItem>
               </MenuList>
             </LeftContainer>
@@ -166,9 +168,7 @@ const Header = () => {
               aria-label="마이페이지로 이동"
               onClick={() => {
                 if (!isLoggedIn) {
-                  const loginRequestModalId = open(LoginRequestModal, {
-                    onClose: () => close(loginRequestModalId),
-                  });
+                  open(({ isOpen, onClose }) => <LoginRequestModal isOpen={isOpen} onClose={onClose} />);
                   return;
                 }
                 navigate(ROUTE_PATH.MY_PAGE);

@@ -22,7 +22,7 @@ const MyPage = () => {
 
   const ITEM_COUNT = 2;
 
-  const { open, close } = useModals();
+  const { open } = useModals();
 
   return (
     <PageMain
@@ -39,14 +39,17 @@ const MyPage = () => {
         variant="default"
         size="l"
         onClick={() => {
-          const friendRequestModalId = open(FriendRequestModal, {
-            onClose: () => {
-              refetchFriendList();
-              refetchFollowingList();
-              refetchFollowerList();
-              close(friendRequestModalId);
-            },
-          });
+          open(({ isOpen, onClose }) => (
+            <FriendRequestModal
+              isOpen={isOpen}
+              onClose={() => {
+                refetchFriendList();
+                refetchFollowingList();
+                refetchFollowerList();
+                onClose();
+              }}
+            />
+          ));
         }}
       >
         친구 추가하기
@@ -59,9 +62,7 @@ const MyPage = () => {
             <IconButton
               aria-label="친구 모달 열기"
               onClick={() => {
-                const friendSearchModalId = open(FriendSearchModal, {
-                  onClose: () => close(friendSearchModalId),
-                });
+                open(({ isOpen, onClose }) => <FriendSearchModal isOpen={isOpen} onClose={onClose} />);
               }}
             >
               <Icon iconName="rightArrow" />
@@ -89,12 +90,15 @@ const MyPage = () => {
             <IconButton
               aria-label="전송한 친구 요청 보기 모달 열기"
               onClick={() => {
-                const followingModalId = open(FollowingModal, {
-                  onClose: () => {
-                    refetchFollowingList();
-                    close(followingModalId);
-                  },
-                });
+                open(({ isOpen, onClose }) => (
+                  <FollowingModal
+                    isOpen={isOpen}
+                    onClose={() => {
+                      refetchFriendList();
+                      onClose();
+                    }}
+                  />
+                ));
 
                 refetchFollowingList();
               }}
@@ -124,13 +128,16 @@ const MyPage = () => {
             <IconButton
               aria-label="친구 요청에 응답하기 모달 열기"
               onClick={() => {
-                const followerModalId = open(FollowerModal, {
-                  onClose: () => {
-                    refetchFollowerList();
-                    refetchFriendList();
-                    close(followerModalId);
-                  },
-                });
+                open(({ isOpen, onClose }) => (
+                  <FollowerModal
+                    isOpen={isOpen}
+                    onClose={() => {
+                      refetchFollowerList();
+                      refetchFriendList();
+                      onClose();
+                    }}
+                  />
+                ));
               }}
             >
               <Icon iconName="rightArrow" />

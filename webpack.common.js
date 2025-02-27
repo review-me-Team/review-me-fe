@@ -27,6 +27,7 @@ module.exports = {
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@constants': path.resolve(__dirname, 'src/constants'),
       '@apis': path.resolve(__dirname, 'src/apis'),
+      '@customTypes': path.resolve(__dirname, 'src/types'),
     },
   },
   module: {
