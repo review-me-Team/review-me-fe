@@ -131,14 +131,16 @@ const ResumeDetail = () => {
 
   const isMyResume = resumeDetail.writerId === user?.id;
 
+  const SKIP_GUIDE_BOOK_KEY = 'skipGuideBook';
+
   useEffect(() => {
-    if (!localStorage.getItem('skipGuideBook')) {
+    if (!localStorage.getItem(SKIP_GUIDE_BOOK_KEY)) {
       open(
         ({ isOpen, onClose }) => (
           <GuideBook
             isOpen={isOpen}
             onClose={() => {
-              localStorage.setItem('skipGuideBook', 'true');
+              localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
               onClose();
             }}
           />
@@ -233,7 +235,7 @@ const ResumeDetail = () => {
                   <GuideBook
                     isOpen={isOpen}
                     onClose={() => {
-                      localStorage.setItem('skipGuideBook', 'true');
+                      localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
                       onClose();
                     }}
                   />
