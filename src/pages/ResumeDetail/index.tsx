@@ -121,8 +121,6 @@ const ResumeDetail = () => {
     setFilter({ checked: false, bookmarked: false });
   };
 
-  const hasViewedGuideBook = localStorage.getItem('skip') === 'true';
-
   const { open } = useModals();
 
   const commentListRef = useRef<HTMLUListElement>(null);
@@ -134,18 +132,23 @@ const ResumeDetail = () => {
   const isMyResume = resumeDetail.writerId === user?.id;
 
   useEffect(() => {
-    if (!hasViewedGuideBook) {
-      open(({ isOpen, onClose }) => (
-        <GuideBook
-          isOpen={isOpen}
-          onClose={() => {
-            localStorage.setItem('skip', 'true');
-            onClose();
-          }}
-        />
-      ));
+    if (!localStorage.getItem('skipGuideBook')) {
+      open(
+        ({ isOpen, onClose }) => (
+          <GuideBook
+            isOpen={isOpen}
+            onClose={() => {
+              localStorage.setItem('skipGuideBook', 'true');
+              onClose();
+            }}
+          />
+        ),
+        {
+          modalId: 'guideBook',
+        },
+      );
     }
-  }, [hasViewedGuideBook]);
+  }, []);
 
   return (
     <Main>
@@ -230,7 +233,7 @@ const ResumeDetail = () => {
                   <GuideBook
                     isOpen={isOpen}
                     onClose={() => {
-                      localStorage.setItem('skip', 'true');
+                      localStorage.setItem('skipGuideBook', 'true');
                       onClose();
                     }}
                   />

@@ -50,10 +50,13 @@ interface ModalProviderProps {
 const ModalProvider = ({ children }: ModalProviderProps) => {
   const [modalList, setModalList] = React.useState<ModalType[]>([]);
 
-  const push: PushType = ({ modalComponent, id }) => {
+  const push: PushType = ({ modalComponent, id: newModalId }) => {
     manageBodyScroll(false);
 
-    setModalList((prev) => [...prev, { modalComponent, id, isOpen: true }]);
+    setModalList((prev) => [
+      ...prev.filter(({ id }) => id !== newModalId),
+      { modalComponent, id: newModalId, isOpen: true },
+    ]);
   };
 
   const pop: PopType = (id) => {
