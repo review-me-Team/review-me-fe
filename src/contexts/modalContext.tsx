@@ -1,4 +1,4 @@
-import React, { ComponentProps, FunctionComponent, ReactNode, createContext, useContext } from 'react';
+import React, { ReactNode, createContext, useContext, useEffect } from 'react';
 import { manageBodyScroll } from '@utils';
 
 type ModalIdType = string;
@@ -63,6 +63,17 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
       manageBodyScroll(true);
     }
   };
+
+  const removeAll = () => {
+    setModalList([]);
+    manageBodyScroll(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      removeAll();
+    };
+  }, []);
 
   return (
     <ModalContext.Provider value={{ push, pop }}>
