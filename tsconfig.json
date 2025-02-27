@@ -22,7 +22,8 @@
       "@utils/*": ["./utils/*"],
       "@constants": ["./constants/index.ts"],
       "@constants/*": ["./constants/*"],
-      "@apis/*": ["./apis/*"]
+      "@apis/*": ["./apis/*"],
+      "@customTypes/*": ["./types/*"]
     }
   },
   "include": ["src/**/*", "./declaration.d.ts"],

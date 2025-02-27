@@ -1,8 +1,8 @@
+import { ModalComponentFunctionType, ModalIdType } from '@customTypes/modal';
 import { v4 as uuidv4 } from 'uuid';
 import { useModalContext } from '@contexts/modalContext';
 
-type ModalComponentFunctionType = (params: { isOpen: boolean; onClose: () => void }) => JSX.Element;
-type ModalOptions = { modalId: string };
+type ModalOptions = { modalId: ModalIdType };
 
 const useModals = () => {
   const { push } = useModalContext();

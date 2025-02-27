@@ -1,9 +1,6 @@
 import React, { ReactNode, createContext, useContext, useEffect } from 'react';
+import { ModalComponentFunctionType, ModalIdType } from '@customTypes/modal';
 import { manageBodyScroll } from '@utils';
-
-type ModalIdType = string;
-
-type ModalComponentFunctionType = (params: { isOpen: boolean; onClose: () => void }) => JSX.Element;
 
 interface ModalType {
   id: ModalIdType;
