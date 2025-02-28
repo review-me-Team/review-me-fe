@@ -165,6 +165,7 @@ const ResumeDetail = () => {
                     download={resumeDetail.title}
                     target="_blank"
                     rel="noreferrer"
+                    style={{ display: 'flex' }}
                   >
                     <Icon iconName="download" color={theme.color.accent.bd.weak} />
                   </a>

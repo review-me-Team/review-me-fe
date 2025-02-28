@@ -66,7 +66,7 @@ const Label = styled.label`
   ${theme.font.body.default}
 `;
 
-const FileLabel = styled.label`
+const FileLabel = styled.label<{ $isFocused?: boolean }>`
   display: flex;
   padding: 0.5rem 0.75rem;
   justify-content: center;
@@ -79,6 +79,9 @@ const FileLabel = styled.label`
 
   color: ${theme.color.accent.text.strong};
   ${theme.font.button.weak}
+
+  ${({ $isFocused }) =>
+    $isFocused && `outline: 2px solid ${theme.color.accent.bd.strong}; outline-offset: 2px;`}
 `;
 
 export {
