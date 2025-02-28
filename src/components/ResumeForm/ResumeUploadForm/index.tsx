@@ -95,18 +95,24 @@ const ResumeUploadForm = () => {
     );
   };
 
+  const [isFileInputFocused, setIsFileInputFocused] = useState<boolean>(false);
+
   return (
     <ResumeFormLayout>
       {isMobile && (
         <Field>
-          <FileLabel htmlFor="file">파일 선택</FileLabel>
+          <FileLabel htmlFor="file" $isFocused={isFileInputFocused}>
+            파일 선택
+          </FileLabel>
           <input
             type="file"
             id="file"
             name="file"
             accept=".pdf"
-            style={{ display: 'none' }}
+            className="visuallyhidden"
             onChange={handleFileChange}
+            onFocus={() => setIsFileInputFocused(true)}
+            onBlur={() => setIsFileInputFocused(false)}
           />
         </Field>
       )}
@@ -134,14 +140,18 @@ const ResumeUploadForm = () => {
         <FieldContainer>
           {!isMobile && (
             <Field>
-              <FileLabel htmlFor="file">파일 선택</FileLabel>
+              <FileLabel htmlFor="file" $isFocused={isFileInputFocused}>
+                파일 선택
+              </FileLabel>
               <input
                 type="file"
                 id="file"
                 name="file"
                 accept=".pdf"
-                style={{ display: 'none' }}
+                className="visuallyhidden"
                 onChange={handleFileChange}
+                onFocus={() => setIsFileInputFocused(true)}
+                onBlur={() => setIsFileInputFocused(false)}
               />
             </Field>
           )}
