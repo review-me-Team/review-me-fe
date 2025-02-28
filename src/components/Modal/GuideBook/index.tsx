@@ -19,21 +19,21 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
   const INIT_GUIDE = 0;
   const MIN_GUIDE = 1;
   const MAX_GUIDE = 5;
-  const [currentGuide, setCurrentGuide] = useState<number>(INIT_GUIDE);
+  const [step, setStep] = useState<number>(INIT_GUIDE);
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
   const handleNextGuide = () => {
-    if (currentGuide < MAX_GUIDE) setCurrentGuide(currentGuide + 1);
+    if (step < MAX_GUIDE) setStep(step + 1);
   };
 
   const handlePrevGuide = () => {
-    if (currentGuide > MIN_GUIDE) setCurrentGuide(currentGuide - 1);
+    if (step > MIN_GUIDE) setStep(step - 1);
   };
 
   return (
     <>
-      {currentGuide === 0 && (
+      {step === 0 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <Description>
             <Modal.Title>Review Me를 처음 이용하시나요?</Modal.Title>
@@ -49,7 +49,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           </ButtonContainer>
         </Modal>
       )}
-      {currentGuide === 1 && (
+      {step === 1 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <GuideSection>
             <div>
@@ -72,7 +72,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           </GuideSection>
         </Modal>
       )}
-      {currentGuide === 2 && (
+      {step === 2 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <div>
             <Description>
@@ -91,7 +91,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           </ButtonContainer>
         </Modal>
       )}
-      {currentGuide === 3 && (
+      {step === 3 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <div>
             <Description>
@@ -113,7 +113,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           </ButtonContainer>
         </Modal>
       )}
-      {currentGuide === 4 && (
+      {step === 4 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <div>
             <Description>
@@ -132,7 +132,7 @@ const GuideBook = ({ isOpen, onClose }: Props) => {
           </ButtonContainer>
         </Modal>
       )}
-      {currentGuide === 5 && (
+      {step === 5 && (
         <Modal isOpen={isOpen} onClose={onClose} width={isMobile ? '90%' : 'fit-content'}>
           <div>
             <Description>
