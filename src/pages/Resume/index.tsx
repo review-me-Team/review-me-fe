@@ -83,6 +83,9 @@ const Resume = () => {
                 }
                 openDropdown();
               }}
+              onFocus={() => {
+                openDropdown();
+              }}
             >
               <span>{rangeText}</span>
             </YearRange>
