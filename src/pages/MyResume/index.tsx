@@ -14,7 +14,13 @@ const MyResume = () => {
   const navigate = useNavigate();
   const { jwt } = useUserContext();
 
-  const { data: myResumeList, fetchNextPage, hasNextPage, isFetchingNextPage } = useMyResumeList({ jwt });
+  const {
+    data: myResumeList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    status,
+  } = useMyResumeList({ jwt });
   const { setTarget } = useIntersectionObserver({
     onIntersect: () => fetchNextPage(),
     options: {
@@ -28,7 +34,7 @@ const MyResume = () => {
         이력서 pdf 올리기
       </Button>
 
-      {myResumeList && myResumeList.length > 0 ? (
+      {myResumeList && myResumeList.length > 0 && (
         <MyResumeList>
           {myResumeList.map((resume) => {
             return (
@@ -38,7 +44,8 @@ const MyResume = () => {
             );
           })}
         </MyResumeList>
-      ) : (
+      )}
+      {myResumeList && myResumeList.length === 0 && (
         <EmptyMyResumeListNotification>
           <span>작성된 이력서가 없습니다.</span>
           <span>이력서를 공유하여 다양한 의견과 조언을 받아보세요!</span>

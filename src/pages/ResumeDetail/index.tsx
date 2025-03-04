@@ -121,9 +121,7 @@ const ResumeDetail = () => {
     setFilter({ checked: false, bookmarked: false });
   };
 
-  const hasViewedGuideBook = localStorage.getItem('skip') === 'true';
-
-  const { open, close } = useModals();
+  const { open } = useModals();
 
   const commentListRef = useRef<HTMLUListElement>(null);
 
@@ -133,16 +131,26 @@ const ResumeDetail = () => {
 
   const isMyResume = resumeDetail.writerId === user?.id;
 
+  const SKIP_GUIDE_BOOK_KEY = 'skipGuideBook';
+
   useEffect(() => {
-    if (!hasViewedGuideBook) {
-      const guideBookModalId = open(GuideBook, {
-        onClose: () => {
-          localStorage.setItem('skip', 'true');
-          close(guideBookModalId);
+    if (!localStorage.getItem(SKIP_GUIDE_BOOK_KEY)) {
+      open(
+        ({ isOpen, onClose }) => (
+          <GuideBook
+            isOpen={isOpen}
+            onClose={() => {
+              localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
+              onClose();
+            }}
+          />
+        ),
+        {
+          modalId: 'guideBook',
         },
-      });
+      );
     }
-  }, [hasViewedGuideBook]);
+  }, []);
 
   return (
     <Main>
@@ -157,6 +165,7 @@ const ResumeDetail = () => {
                     download={resumeDetail.title}
                     target="_blank"
                     rel="noreferrer"
+                    style={{ display: 'flex' }}
                   >
                     <Icon iconName="download" color={theme.color.accent.bd.weak} />
                   </a>
@@ -223,12 +232,15 @@ const ResumeDetail = () => {
             <IconButton
               aria-label="가이드북 열기"
               onClick={() => {
-                const guideBookModalId = open(GuideBook, {
-                  onClose: () => {
-                    localStorage.setItem('skip', 'true');
-                    close(guideBookModalId);
-                  },
-                });
+                open(({ isOpen, onClose }) => (
+                  <GuideBook
+                    isOpen={isOpen}
+                    onClose={() => {
+                      localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
+                      onClose();
+                    }}
+                  />
+                ));
               }}
             >
               <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />

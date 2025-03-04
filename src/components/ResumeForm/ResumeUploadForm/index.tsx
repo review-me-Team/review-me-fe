@@ -27,7 +27,7 @@ const ResumeUploadForm = () => {
   const [year, setYear] = useState<number | undefined>();
 
   const { openToast } = useToastContext();
-  const { mutate: addResume } = usePostResume();
+  const { mutate: addResume, isPending } = usePostResume();
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
   const { totalPages, scale, zoomIn, zoomOut, setTotalPages } = usePdf({ initScale: isMobile ? 0.4 : 0.8 });
@@ -95,18 +95,24 @@ const ResumeUploadForm = () => {
     );
   };
 
+  const [isFileInputFocused, setIsFileInputFocused] = useState<boolean>(false);
+
   return (
     <ResumeFormLayout>
       {isMobile && (
         <Field>
-          <FileLabel htmlFor="file">파일 선택</FileLabel>
+          <FileLabel htmlFor="file" $isFocused={isFileInputFocused}>
+            파일 선택
+          </FileLabel>
           <input
             type="file"
             id="file"
             name="file"
             accept=".pdf"
-            style={{ display: 'none' }}
+            className="visuallyhidden"
             onChange={handleFileChange}
+            onFocus={() => setIsFileInputFocused(true)}
+            onBlur={() => setIsFileInputFocused(false)}
           />
         </Field>
       )}
@@ -134,14 +140,18 @@ const ResumeUploadForm = () => {
         <FieldContainer>
           {!isMobile && (
             <Field>
-              <FileLabel htmlFor="file">파일 선택</FileLabel>
+              <FileLabel htmlFor="file" $isFocused={isFileInputFocused}>
+                파일 선택
+              </FileLabel>
               <input
                 type="file"
                 id="file"
                 name="file"
                 accept=".pdf"
-                style={{ display: 'none' }}
+                className="visuallyhidden"
                 onChange={handleFileChange}
+                onFocus={() => setIsFileInputFocused(true)}
+                onBlur={() => setIsFileInputFocused(false)}
               />
             </Field>
           )}
@@ -223,7 +233,7 @@ const ResumeUploadForm = () => {
           </Field>
         </FieldContainer>
 
-        <Button type="submit" variant="default" size="m">
+        <Button type="submit" variant="default" size="m" disabled={isPending}>
           올리기
         </Button>
       </Form>
