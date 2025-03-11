@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useRef, useState } from 'react';
+import React, { MouseEvent, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Icon, Switch, theme } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
@@ -6,13 +6,12 @@ import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
 import Feedback from '@components/Feedback';
 import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
-import GuideBook from '@components/Modal/GuideBook';
 import PdfViewer from '@components/PdfViewer';
 import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
+import useGuideBook from '@hooks/useGuideBook';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
-import useModals from '@hooks/useModals';
 import usePdf from '@hooks/usePdf';
 import { useUserContext } from '@contexts/userContext';
 import { useCommentList } from '@apis/commentApi';
@@ -121,8 +120,6 @@ const ResumeDetail = () => {
     setFilter({ checked: false, bookmarked: false });
   };
 
-  const { open } = useModals();
-
   const commentListRef = useRef<HTMLUListElement>(null);
 
   const scrollToTopOfCommentList = () => {
@@ -131,26 +128,7 @@ const ResumeDetail = () => {
 
   const isMyResume = resumeDetail.writerId === user?.id;
 
-  const SKIP_GUIDE_BOOK_KEY = 'skipGuideBook';
-
-  useEffect(() => {
-    if (!localStorage.getItem(SKIP_GUIDE_BOOK_KEY)) {
-      open(
-        ({ isOpen, onClose }) => (
-          <GuideBook
-            isOpen={isOpen}
-            onClose={() => {
-              localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
-              onClose();
-            }}
-          />
-        ),
-        {
-          modalId: 'guideBook',
-        },
-      );
-    }
-  }, []);
+  const { openGuideBook } = useGuideBook();
 
   return (
     <Main>
@@ -229,20 +207,7 @@ const ResumeDetail = () => {
                 댓글
               </Tab>
             </TabList>
-            <IconButton
-              aria-label="가이드북 열기"
-              onClick={() => {
-                open(({ isOpen, onClose }) => (
-                  <GuideBook
-                    isOpen={isOpen}
-                    onClose={() => {
-                      localStorage.setItem(SKIP_GUIDE_BOOK_KEY, 'true');
-                      onClose();
-                    }}
-                  />
-                ));
-              }}
-            >
+            <IconButton aria-label="가이드북 열기" onClick={openGuideBook}>
               <Icon iconName="info" color={theme.palette.blue} width={24} height={24} />
             </IconButton>
           </AsideHeader>
