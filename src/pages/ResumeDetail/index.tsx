@@ -135,17 +135,7 @@ const ResumeDetail = () => {
           <ResumeViewerHeader>
             <ResumeInfo>
               <TitleContainer>
-                {isMyResume && (
-                  <a
-                    href={`${process.env.BASE_PDF_URL}/${resumeDetail.resumeUrl}`}
-                    download={resumeDetail.title}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ display: 'flex' }}
-                  >
-                    <Icon iconName="download" color={theme.color.accent.bd.weak} />
-                  </a>
-                )}
+                {isMyResume && <PdfLink resumeUrl={resumeDetail.resumeUrl} title={resumeDetail.title} />}
                 <Title>{resumeDetail.title}</Title>
               </TitleContainer>
 
@@ -336,6 +326,20 @@ const ResumeDetail = () => {
 };
 
 export default ResumeDetail;
+
+const PdfLink = ({ resumeUrl, title }: { resumeUrl: string; title: string }) => {
+  return (
+    <a
+      href={`${process.env.BASE_PDF_URL}/${resumeUrl}`}
+      download={title}
+      target="_blank"
+      rel="noreferrer"
+      style={{ display: 'flex' }}
+    >
+      <Icon iconName="download" color={theme.color.accent.bd.weak} />
+    </a>
+  );
+};
 
 const PdfController = ({
   onGoToPrevPage,
