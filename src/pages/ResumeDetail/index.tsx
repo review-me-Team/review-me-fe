@@ -55,8 +55,6 @@ const ResumeDetail = () => {
 
   const { data: resumeDetail } = useResumeDetail({ resumeId: Number(resumeId), jwt });
 
-  const PDF_BUTTON_ICON_SIZE = 24;
-
   const { totalPages, currentPageNum, scale, setTotalPages, zoomIn, zoomOut, prevPage, nextPage } = usePdf({
     initScale: isMobile ? 0.6 : 1,
   });
@@ -177,20 +175,12 @@ const ResumeDetail = () => {
             <PdfViewer.PdfPagesInfo>
               current: {currentPageNum} / {totalPages}
             </PdfViewer.PdfPagesInfo>
-            <ButtonGroup height="2rem">
-              <ButtonGroup.Button aria-label="이전 페이지로 이동" onClick={prevPage}>
-                <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button aria-label="pdf 확대" onClick={zoomIn}>
-                <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button aria-label="pdf 축소" onClick={zoomOut}>
-                <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-              <ButtonGroup.Button aria-label="다음 페이지로 이동" onClick={nextPage}>
-                <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
-              </ButtonGroup.Button>
-            </ButtonGroup>
+            <PdfController
+              onGoToPrevPage={prevPage}
+              onGoToNextPage={nextPage}
+              onZoomIn={zoomIn}
+              onZoomOut={zoomOut}
+            />
           </PdfViewer>
         </ResumeViewer>
 
@@ -346,3 +336,34 @@ const ResumeDetail = () => {
 };
 
 export default ResumeDetail;
+
+const PdfController = ({
+  onGoToPrevPage,
+  onGoToNextPage,
+  onZoomIn,
+  onZoomOut,
+}: {
+  onGoToPrevPage: () => void;
+  onGoToNextPage: () => void;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+}) => {
+  const PDF_BUTTON_ICON_SIZE = 24;
+
+  return (
+    <ButtonGroup height="2rem">
+      <ButtonGroup.Button aria-label="이전 페이지로 이동" onClick={onGoToPrevPage}>
+        <Icon iconName="leftArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+      </ButtonGroup.Button>
+      <ButtonGroup.Button aria-label="pdf 확대" onClick={onZoomIn}>
+        <Icon iconName="plus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+      </ButtonGroup.Button>
+      <ButtonGroup.Button aria-label="pdf 축소" onClick={onZoomOut}>
+        <Icon iconName="minus" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+      </ButtonGroup.Button>
+      <ButtonGroup.Button aria-label="다음 페이지로 이동" onClick={onGoToNextPage}>
+        <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
+      </ButtonGroup.Button>
+    </ButtonGroup>
+  );
+};
