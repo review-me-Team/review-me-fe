@@ -125,7 +125,7 @@ export const useMyResumeList = ({ jwt }: UseMyResumeListProps) => {
 };
 
 // GET 이력서 상세 조회
-interface GetResumeDetail {
+export interface GetResumeDetail {
   resumeUrl: string;
   title: string;
   writerId: number;

@@ -1,14 +1,16 @@
-import React, { MouseEvent, useRef, useState } from 'react';
+import React, { MouseEvent, Suspense, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Icon, Switch, theme } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
 import CommentAddForm from '@components/CommentForm/CommentAddForm';
+import DelayedComponent from '@components/DelayedComponent';
 import Feedback from '@components/Feedback';
 import FeedbackAddForm from '@components/FeedbackForm/FeedbackAddForm';
 import PdfViewer from '@components/PdfViewer';
 import Question from '@components/Question';
 import QuestionAddForm from '@components/QuestionForm/QuestionAddForm';
+import Spinner from '@components/Spinner';
 import useGuideBook from '@hooks/useGuideBook';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
 import useMediaQuery from '@hooks/useMediaQuery';
@@ -17,7 +19,7 @@ import { useUserContext } from '@contexts/userContext';
 import { useCommentList } from '@apis/commentApi';
 import { useFeedbackList } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
-import { useResumeDetail } from '@apis/resumeApi';
+import { GetResumeDetail, useResumeDetail } from '@apis/resumeApi';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
 import { isNumeric } from '@utils';
@@ -42,6 +44,7 @@ import {
   TitleContainer,
   CommentListWrapper,
   EmptyListNotification,
+  SpinnerWrapper,
 } from './style';
 
 type ActiveTab = 'feedback' | 'question' | 'comment';
@@ -49,7 +52,6 @@ type ActiveTab = 'feedback' | 'question' | 'comment';
 const ResumeDetail = () => {
   const { jwt, user } = useUserContext();
   const { resumeId } = useParams();
-  const isValidResumeId = isNumeric(resumeId);
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
 
@@ -66,65 +68,13 @@ const ResumeDetail = () => {
     bookmarked: false,
   });
 
-  const {
-    data: feedbackList,
-    fetchNextPage: fetchNextPageAboutFeedback,
-    hasNextPage: hasNextPageAboutFeedback,
-    isFetchingNextPage: isFetchingNextPageAboutFeedback,
-  } = useFeedbackList({
-    resumeId: Number(resumeId),
-    resumePage: currentPageNum,
-    checked: filter.checked,
-    enabled: currentTab === 'feedback',
-    jwt,
-  });
-  const {
-    data: questionList,
-    fetchNextPage: fetchNextPageAboutQuestion,
-    hasNextPage: hasNextPageAboutQuestion,
-    isFetchingNextPage: isFetchingNextPageAboutQuestion,
-  } = useQuestionList({
-    resumeId: Number(resumeId),
-    resumePage: currentPageNum,
-    checked: filter.checked,
-    bookmarked: filter.bookmarked,
-    enabled: currentTab === 'question',
-    jwt,
-  });
-  const {
-    data: commentList,
-    fetchNextPage: fetchNextPageAboutComment,
-    hasNextPage: hasNextPageAboutComment,
-    isFetchingNextPage: isFetchingNextPageAboutComment,
-  } = useCommentList({
-    resumeId: Number(resumeId),
-    enabled: currentTab === 'comment',
-    jwt,
-  });
-
-  const { setTarget } = useIntersectionObserver({
-    onIntersect: () => {
-      if (currentTab === 'feedback') fetchNextPageAboutFeedback();
-      else if (currentTab === 'question') fetchNextPageAboutQuestion();
-      else if (currentTab === 'comment') fetchNextPageAboutComment();
-    },
-    options: {
-      threshold: 0.5,
-    },
-  });
-
   const handleTabClick = (e: MouseEvent<HTMLButtonElement>, tab: ActiveTab) => {
     setCurrentTab(tab);
     setFilter({ checked: false, bookmarked: false });
   };
 
-  const commentListRef = useRef<HTMLUListElement>(null);
-
-  const scrollToTopOfCommentList = () => {
-    commentListRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   const isMyResume = resumeDetail.writerId === user?.id;
+  const isValidResumeId = isNumeric(resumeId);
 
   const { openGuideBook } = useGuideBook();
 
@@ -193,131 +143,57 @@ const ResumeDetail = () => {
           </AsideHeader>
 
           {currentTab === 'feedback' && isValidResumeId && (
-            <>
-              <CommentListWrapper>
-                <CommentList ref={commentListRef}>
-                  <CommentHeader>
-                    <span>필터</span>
-                    <Switch
-                      label="check"
-                      checked={filter.checked}
-                      onChange={() => {
-                        setFilter((prev) => ({ ...prev, checked: !prev.checked }));
-                      }}
-                    />
-                  </CommentHeader>
-
-                  {feedbackList && feedbackList.length > 0 ? (
-                    feedbackList.map((feedback) => {
-                      return (
-                        <li key={feedback.id}>
-                          <Feedback
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...feedback}
-                          />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <EmptyListNotification>
-                      <span>아직 작성된 피드백이 없어요.</span>
-                      <span>피드백을 남겨보세요!</span>
-                    </EmptyListNotification>
-                  )}
-                  {hasNextPageAboutFeedback && !isFetchingNextPageAboutFeedback && (
-                    <div ref={setTarget}></div>
-                  )}
-                </CommentList>
-              </CommentListWrapper>
-              <FeedbackAddForm
+            <Suspense
+              fallback={
+                <DelayedComponent>
+                  <SpinnerWrapper>
+                    <Spinner size="5rem" />
+                  </SpinnerWrapper>
+                </DelayedComponent>
+              }
+            >
+              <FeedbackSection
+                resumeDetail={resumeDetail}
                 resumeId={Number(resumeId)}
-                resumePage={currentPageNum}
-                onSubmitSuccess={scrollToTopOfCommentList}
+                currentPageNum={currentPageNum}
+                filter={filter}
+                onChangeFilter={setFilter}
               />
-            </>
+            </Suspense>
           )}
 
           {currentTab === 'question' && isValidResumeId && (
-            <>
-              <CommentListWrapper>
-                <CommentList ref={commentListRef}>
-                  <CommentHeader>
-                    <span>필터</span>
-                    <SwitchContainer>
-                      <Switch
-                        label="check"
-                        checked={filter.checked}
-                        onChange={() => {
-                          setFilter((prev) => ({ ...prev, checked: !prev.checked }));
-                        }}
-                      />
-                      <Switch
-                        label="bookmark"
-                        checked={filter.bookmarked}
-                        onChange={() => {
-                          setFilter((prev) => ({ ...prev, bookmarked: !prev.bookmarked }));
-                        }}
-                      />
-                    </SwitchContainer>
-                  </CommentHeader>
-
-                  {questionList && questionList.length > 0 ? (
-                    questionList.map((question) => {
-                      return (
-                        <li key={question.id}>
-                          <Question
-                            resumeId={Number(resumeId)}
-                            resumePage={currentPageNum}
-                            resumeWriterId={resumeDetail.writerId}
-                            {...question}
-                          />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <EmptyListNotification>
-                      <span>아직 작성된 예상질문이 없어요.</span>
-                      <span>예상질문을 남겨보세요!</span>
-                    </EmptyListNotification>
-                  )}
-                  {hasNextPageAboutQuestion && !isFetchingNextPageAboutQuestion && (
-                    <div ref={setTarget}></div>
-                  )}
-                </CommentList>
-              </CommentListWrapper>
-              <QuestionAddForm
+            <Suspense
+              fallback={
+                <DelayedComponent>
+                  <SpinnerWrapper>
+                    <Spinner size="5rem" />
+                  </SpinnerWrapper>
+                </DelayedComponent>
+              }
+            >
+              <QuestionSection
+                resumeDetail={resumeDetail}
                 resumeId={Number(resumeId)}
-                resumePage={currentPageNum}
-                onSubmitSuccess={scrollToTopOfCommentList}
+                currentPageNum={currentPageNum}
+                filter={filter}
+                onChangeFilter={setFilter}
               />
-            </>
+            </Suspense>
           )}
 
           {currentTab === 'comment' && isValidResumeId && (
-            <>
-              <CommentListWrapper>
-                <CommentList ref={commentListRef}>
-                  {commentList && commentList.length > 0 ? (
-                    commentList.map((comment) => {
-                      return (
-                        <li key={comment.id}>
-                          <Comment resumeId={Number(resumeId)} {...comment} />
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <EmptyListNotification>
-                      <span>아직 댓글이 없어요.</span>
-                      <span>댓글을 남겨보세요!</span>
-                    </EmptyListNotification>
-                  )}
-                  {hasNextPageAboutComment && !isFetchingNextPageAboutComment && <div ref={setTarget}></div>}
-                </CommentList>
-              </CommentListWrapper>
-              <CommentAddForm resumeId={Number(resumeId)} onSubmitSuccess={scrollToTopOfCommentList} />
-            </>
+            <Suspense
+              fallback={
+                <DelayedComponent>
+                  <SpinnerWrapper>
+                    <Spinner size="5rem" />
+                  </SpinnerWrapper>
+                </DelayedComponent>
+              }
+            >
+              <CommentSection resumeId={Number(resumeId)} />
+            </Suspense>
           )}
         </Aside>
       </ResumeContentWrapper>
@@ -369,5 +245,230 @@ const PdfController = ({
         <Icon iconName="rightArrow" width={PDF_BUTTON_ICON_SIZE} height={PDF_BUTTON_ICON_SIZE} />
       </ButtonGroup.Button>
     </ButtonGroup>
+  );
+};
+
+const FeedbackSection = ({
+  resumeDetail,
+  resumeId,
+  currentPageNum,
+  onChangeFilter,
+  filter,
+}: {
+  resumeDetail: GetResumeDetail;
+  resumeId: number;
+  currentPageNum: number;
+  onChangeFilter: (filter: { checked: boolean; bookmarked: boolean }) => void;
+  filter: { checked: boolean; bookmarked: boolean };
+}) => {
+  const { jwt } = useUserContext();
+  const {
+    data: feedbackList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useFeedbackList({
+    resumeId,
+    resumePage: currentPageNum,
+    checked: filter.checked,
+    jwt,
+  });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      fetchNextPage();
+    },
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  const feedbackListRef = useRef<HTMLUListElement>(null);
+
+  const scrollToTop = () => {
+    feedbackListRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <>
+      <CommentListWrapper>
+        <CommentList ref={feedbackListRef}>
+          <CommentHeader>
+            <span>필터</span>
+            <Switch
+              label="check"
+              checked={filter.checked}
+              onChange={() => {
+                onChangeFilter({ ...filter, checked: !filter.checked });
+              }}
+            />
+          </CommentHeader>
+
+          {feedbackList && feedbackList.length > 0 ? (
+            feedbackList.map((feedback) => {
+              return (
+                <li key={feedback.id}>
+                  <Feedback
+                    resumeId={resumeId}
+                    resumePage={currentPageNum}
+                    resumeWriterId={resumeDetail.writerId}
+                    {...feedback}
+                  />
+                </li>
+              );
+            })
+          ) : (
+            <EmptyListNotification>
+              <span>아직 작성된 피드백이 없어요.</span>
+              <span>피드백을 남겨보세요!</span>
+            </EmptyListNotification>
+          )}
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
+        </CommentList>
+      </CommentListWrapper>
+      <FeedbackAddForm resumeId={resumeId} resumePage={currentPageNum} onSubmitSuccess={scrollToTop} />
+    </>
+  );
+};
+
+const QuestionSection = ({
+  resumeDetail,
+  resumeId,
+  currentPageNum,
+  filter,
+  onChangeFilter,
+}: {
+  resumeDetail: GetResumeDetail;
+  resumeId: number;
+  currentPageNum: number;
+  onChangeFilter: (filter: { checked: boolean; bookmarked: boolean }) => void;
+  filter: { checked: boolean; bookmarked: boolean };
+}) => {
+  const { jwt } = useUserContext();
+  const {
+    data: questionList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useQuestionList({
+    resumeId,
+    resumePage: currentPageNum,
+    checked: filter.checked,
+    bookmarked: filter.bookmarked,
+    jwt,
+  });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      fetchNextPage();
+    },
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  const questionListRef = useRef<HTMLUListElement>(null);
+
+  const scrollToTop = () => {
+    questionListRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  return (
+    <>
+      <CommentListWrapper>
+        <CommentList ref={questionListRef}>
+          <CommentHeader>
+            <span>필터</span>
+            <SwitchContainer>
+              <Switch
+                label="check"
+                checked={filter.checked}
+                onChange={() => {
+                  onChangeFilter({ ...filter, checked: !filter.checked });
+                }}
+              />
+              <Switch
+                label="bookmark"
+                checked={filter.bookmarked}
+                onChange={() => {
+                  onChangeFilter({ ...filter, bookmarked: !filter.bookmarked });
+                }}
+              />
+            </SwitchContainer>
+          </CommentHeader>
+
+          {questionList && questionList.length > 0 ? (
+            questionList.map((question) => {
+              return (
+                <li key={question.id}>
+                  <Question
+                    resumeId={Number(resumeId)}
+                    resumePage={currentPageNum}
+                    resumeWriterId={resumeDetail.writerId}
+                    {...question}
+                  />
+                </li>
+              );
+            })
+          ) : (
+            <EmptyListNotification>
+              <span>아직 작성된 예상질문이 없어요.</span>
+              <span>예상질문을 남겨보세요!</span>
+            </EmptyListNotification>
+          )}
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
+        </CommentList>
+      </CommentListWrapper>
+      <QuestionAddForm resumeId={resumeId} resumePage={currentPageNum} onSubmitSuccess={scrollToTop} />
+    </>
+  );
+};
+
+const CommentSection = ({ resumeId }: { resumeId: number }) => {
+  const { jwt } = useUserContext();
+  const {
+    data: commentList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useCommentList({
+    resumeId,
+    jwt,
+  });
+  const { setTarget } = useIntersectionObserver({
+    onIntersect: () => {
+      fetchNextPage();
+    },
+    options: {
+      threshold: 0.5,
+    },
+  });
+
+  const commentListRef = useRef<HTMLUListElement>(null);
+
+  const scrollToTop = () => {
+    commentListRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <>
+      <CommentListWrapper>
+        <CommentList ref={commentListRef}>
+          {commentList && commentList.length > 0 ? (
+            commentList.map((comment) => {
+              return (
+                <li key={comment.id}>
+                  <Comment resumeId={resumeId} {...comment} />
+                </li>
+              );
+            })
+          ) : (
+            <EmptyListNotification>
+              <span>아직 댓글이 없어요.</span>
+              <span>댓글을 남겨보세요!</span>
+            </EmptyListNotification>
+          )}
+          {hasNextPage && !isFetchingNextPage && <div ref={setTarget}></div>}
+        </CommentList>
+      </CommentListWrapper>
+      <CommentAddForm resumeId={resumeId} onSubmitSuccess={scrollToTop} />
+    </>
   );
 };
