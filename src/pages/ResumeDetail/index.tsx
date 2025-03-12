@@ -1,5 +1,6 @@
 import React, { MouseEvent, Suspense, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { usePrefetchQuery } from '@tanstack/react-query';
 import { Icon, Switch, theme } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';
 import Comment from '@components/Comment';
@@ -20,6 +21,7 @@ import { useCommentList } from '@apis/commentApi';
 import { useFeedbackList } from '@apis/feedbackApi';
 import { useQuestionList } from '@apis/questionApi';
 import { GetResumeDetail, useResumeDetail } from '@apis/resumeApi';
+import { getEmojiList, getFeedbackLabelList } from '@apis/utilApi';
 import { breakPoints } from '@styles/common';
 import { IconButton } from '@styles/iconButton';
 import { isNumeric } from '@utils';
@@ -54,6 +56,15 @@ const ResumeDetail = () => {
   const { resumeId } = useParams();
 
   const { matches: isMobile } = useMediaQuery({ mediaQueryString: breakPoints.mobile });
+
+  usePrefetchQuery({
+    queryKey: ['emojiList'],
+    queryFn: getEmojiList,
+  });
+  usePrefetchQuery({
+    queryKey: ['feedbackLabelList'],
+    queryFn: getFeedbackLabelList,
+  });
 
   const { data: resumeDetail } = useResumeDetail({ resumeId: Number(resumeId), jwt });
 
