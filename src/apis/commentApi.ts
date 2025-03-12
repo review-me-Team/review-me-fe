@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { useMutation, useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -51,12 +51,11 @@ export const getCommentList = async ({
 
 interface UseCommentListProps {
   resumeId: number;
-  enabled: boolean;
   jwt?: string;
 }
 
-export const useCommentList = ({ resumeId, enabled, jwt }: UseCommentListProps) => {
-  return useInfiniteQuery({
+export const useCommentList = ({ resumeId, jwt }: UseCommentListProps) => {
+  return useSuspenseInfiniteQuery({
     queryKey: ['commentList', resumeId],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getCommentList({ resumeId, pageParam, jwt }),
@@ -66,7 +65,6 @@ export const useCommentList = ({ resumeId, enabled, jwt }: UseCommentListProps) 
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => data.pages.flatMap((page) => page.comments),
-    enabled,
   });
 };
 
