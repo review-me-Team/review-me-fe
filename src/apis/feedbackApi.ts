@@ -1,4 +1,9 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -64,12 +69,11 @@ interface UseFeedbackListProps {
   resumeId: number;
   resumePage: number;
   checked: boolean;
-  enabled: boolean;
   jwt?: string;
 }
 
-export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }: UseFeedbackListProps) => {
-  return useInfiniteQuery({
+export const useFeedbackList = ({ resumeId, resumePage, checked, jwt }: UseFeedbackListProps) => {
+  return useSuspenseInfiniteQuery({
     queryKey: ['feedbackList', resumeId, resumePage, checked],
     initialPageParam: 0,
     queryFn: ({ pageParam }) => getFeedbackList({ resumeId, pageParam, resumePage, checked, jwt }),
@@ -79,7 +83,6 @@ export const useFeedbackList = ({ resumeId, resumePage, checked, enabled, jwt }:
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => data.pages.flatMap((page) => page.feedbacks),
-    enabled,
   });
 };
 

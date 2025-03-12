@@ -1,4 +1,9 @@
-import { InfiniteData, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  useSuspenseInfiniteQuery,
+} from '@tanstack/react-query';
 import { REPLY_LIST_SIZE, REQUEST_URL } from '@constants';
 import { apiClient } from './apiClient';
 import { PageNationData } from './response.types';
@@ -70,19 +75,11 @@ interface UseQuestionListProps {
   resumePage: number;
   checked: boolean;
   bookmarked: boolean;
-  enabled: boolean;
   jwt?: string;
 }
 
-export const useQuestionList = ({
-  resumeId,
-  resumePage,
-  checked,
-  bookmarked,
-  enabled,
-  jwt,
-}: UseQuestionListProps) => {
-  return useInfiniteQuery({
+export const useQuestionList = ({ resumeId, resumePage, checked, bookmarked, jwt }: UseQuestionListProps) => {
+  return useSuspenseInfiniteQuery({
     queryKey: ['questionList', resumeId, resumePage, checked, bookmarked],
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
@@ -93,7 +90,6 @@ export const useQuestionList = ({
       return pageNumber < lastPageNum ? pageNumber + 1 : null;
     },
     select: (data) => data.pages.flatMap((page) => page.questions),
-    enabled,
   });
 };
 

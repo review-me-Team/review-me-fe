@@ -190,6 +190,13 @@ const EmptyListNotification = styled.div`
   color: ${theme.palette.gray600};
 `;
 
+const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+`;
+
 export {
   Main,
   ResumeViewer,
@@ -211,4 +218,5 @@ export {
   CommentHeader,
   SwitchContainer,
   EmptyListNotification,
+  SpinnerWrapper,
 };
