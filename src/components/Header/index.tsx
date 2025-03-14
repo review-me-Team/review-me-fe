@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Icon, theme } from 'review-me-design-system';
 import LoginRequestModal from '@components/Modal/LoginRequestModal';

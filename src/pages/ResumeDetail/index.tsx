@@ -1,4 +1,4 @@
-import React, { MouseEvent, Suspense, useRef, useState } from 'react';
+import { MouseEvent, Suspense, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePrefetchQuery } from '@tanstack/react-query';
 import { Icon, Switch, theme } from 'review-me-design-system';

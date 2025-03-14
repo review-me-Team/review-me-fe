@@ -1,4 +1,4 @@
-import React, { Component, ReactNode } from 'react';
+import { Component, ReactNode } from 'react';
 import CustomError from '@apis/customError';
 import ErrorPage from '@pages/ErrorPage';
 

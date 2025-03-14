@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { Outlet, createBrowserRouter } from 'react-router-dom';
 
 import styled from 'styled-components';
@@ -10,17 +10,15 @@ import TokenRefresh from '@components/TokenRefresh';
 import ErrorPage from '@pages/ErrorPage';
 import { ROUTE_PATH } from '@constants';
 
-const MainPage = React.lazy(() => import(/* webpackChunkName: "mainPage" */ '@pages/MainPage'));
-const MyPage = React.lazy(() => import(/* webpackChunkName: "myPage" */ '@pages/MyPage'));
-const MyResume = React.lazy(() => import(/* webpackChunkName: "myResume" */ '@pages/MyResume'));
-const Resume = React.lazy(() => import(/* webpackChunkName: "resume" */ '@pages/Resume'));
-const ResumeDetail = React.lazy(() => import(/* webpackChunkName: "resumeDetail" */ '@pages/ResumeDetail'));
-const ResumeUpdate = React.lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
-const ResumeUpload = React.lazy(() => import(/* webpackChunkName: "resumeUpload" */ '@pages/ResumeUpload'));
-const SocialLogin = React.lazy(() => import(/* webpackChunkName: "socialLogin" */ '@pages/SocialLogin'));
-const PrivateRoute = React.lazy(
-  () => import(/* webpackChunkName: "privateRoute" */ '@components/PrivateRoute'),
-);
+const MainPage = lazy(() => import(/* webpackChunkName: "mainPage" */ '@pages/MainPage'));
+const MyPage = lazy(() => import(/* webpackChunkName: "myPage" */ '@pages/MyPage'));
+const MyResume = lazy(() => import(/* webpackChunkName: "myResume" */ '@pages/MyResume'));
+const Resume = lazy(() => import(/* webpackChunkName: "resume" */ '@pages/Resume'));
+const ResumeDetail = lazy(() => import(/* webpackChunkName: "resumeDetail" */ '@pages/ResumeDetail'));
+const ResumeUpdate = lazy(() => import(/* webpackChunkName: "resumeUpdate" */ '@pages/ResumeUpdate'));
+const ResumeUpload = lazy(() => import(/* webpackChunkName: "resumeUpload" */ '@pages/ResumeUpload'));
+const SocialLogin = lazy(() => import(/* webpackChunkName: "socialLogin" */ '@pages/SocialLogin'));
+const PrivateRoute = lazy(() => import(/* webpackChunkName: "privateRoute" */ '@components/PrivateRoute'));
 
 const SpinnerWrapper = styled.div`
   display: flex;

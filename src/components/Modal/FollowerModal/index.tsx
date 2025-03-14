@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon, Input, Modal } from 'review-me-design-system';
 import UserItem from '@components/UserItem';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';

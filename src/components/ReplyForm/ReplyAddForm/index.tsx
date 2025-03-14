@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { Button, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';
 import { usePostFeedbackReply } from '@apis/feedbackApi';

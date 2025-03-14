@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import feedbackCheckVideo from '@assets/feedback-check.mp4';
 import feedbackListVideo from '@assets/feedback-list.mp4';
 import questionBookMarkVideo from '@assets/question-bookmark.mp4';
