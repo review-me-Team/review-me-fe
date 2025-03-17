@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'review-me-design-system';
 import FriendDeleteModal from '@components/Modal/FriendDeleteModal';
 import useModals from '@hooks/useModals';

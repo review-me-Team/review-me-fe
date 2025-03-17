@@ -1,4 +1,4 @@
-import React, { ComponentPropsWithoutRef, forwardRef } from 'react';
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { SelectLayout } from './style';
 
 interface Props extends ComponentPropsWithoutRef<'select'> {

@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'review-me-design-system';
 import { css } from 'styled-components';

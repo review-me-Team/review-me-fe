@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icon, Input } from 'review-me-design-system';
 import ButtonGroup from '@components/ButtonGroup';

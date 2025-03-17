@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import GuideBook from '@components/Modal/GuideBook';
 import useModals from './useModals';
 

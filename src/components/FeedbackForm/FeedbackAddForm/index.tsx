@@ -1,4 +1,4 @@
-import React, { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Label, Textarea } from 'review-me-design-system';
 import { useUserContext } from '@contexts/userContext';

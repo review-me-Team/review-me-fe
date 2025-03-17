@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useEffect } from 'react';
+import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 import { ModalComponentFunctionType, ModalIdType } from '@customTypes/modal';
 import { manageBodyScroll } from '@utils';
 
@@ -45,7 +45,7 @@ interface ModalProviderProps {
 }
 
 const ModalProvider = ({ children }: ModalProviderProps) => {
-  const [modalList, setModalList] = React.useState<ModalType[]>([]);
+  const [modalList, setModalList] = useState<ModalType[]>([]);
 
   const push: PushType = ({ modalComponent, id: newModalId }) => {
     manageBodyScroll(false);

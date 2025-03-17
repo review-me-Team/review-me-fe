@@ -1,5 +1,5 @@
 import type { CSSProp } from 'styled-components';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { BackDrop, DropdownItem, DropdownLayout } from './style';
 
 interface Props {

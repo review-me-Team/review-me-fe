@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useContext, useState } from 'react';
 import Toast from '@components/Toast';
 
 interface Toast {

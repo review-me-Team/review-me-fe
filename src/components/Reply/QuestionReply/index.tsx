@@ -1,4 +1,4 @@
-import React, { MouseEvent, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon, Label as EmojiLabel, theme } from 'review-me-design-system';
 import { css } from 'styled-components';

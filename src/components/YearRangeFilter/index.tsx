@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, MultiRangeSlider } from 'review-me-design-system';
 import { getRangeText } from '@utils';
 import { ButtonsContainer, YearRangeFilterLayout } from './style';
