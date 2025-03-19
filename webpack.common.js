@@ -49,15 +49,7 @@ module.exports = {
       },
       {
         test: /\.(mp4|png|jpg|webp)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[ext]',
-              outputPath: 'assets',
-            },
-          },
-        ],
+        type: 'asset/resource',
       },
     ],
   },
