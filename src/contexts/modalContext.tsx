@@ -9,11 +9,11 @@ interface ModalType {
 }
 
 type PushType = ({ modalComponent, id }: Omit<ModalType, 'isOpen'>) => void;
-type PopType = (id: ModalIdType) => void;
+type RemoveType = (id: ModalIdType) => void;
 
 interface ModalContext {
   push: PushType;
-  pop: PopType;
+  remove: RemoveType;
 }
 
 const ModalContext = createContext<ModalContext | null>(null);
@@ -56,7 +56,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
     ]);
   };
 
-  const pop: PopType = (id) => {
+  const remove: RemoveType = (id) => {
     setModalList((prev) => prev.filter((C) => C.id !== id));
 
     if (modalList.length === 1) {
@@ -76,10 +76,15 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
   }, []);
 
   return (
-    <ModalContext.Provider value={{ push, pop }}>
+    <ModalContext.Provider value={{ push, remove }}>
       {children}
       {modalList.map(({ id, modalComponent, isOpen }) => (
-        <ModalController key={id} isOpen={isOpen} modalController={modalComponent} unmount={() => pop(id)} />
+        <ModalController
+          key={id}
+          isOpen={isOpen}
+          modalController={modalComponent}
+          unmount={() => remove(id)}
+        />
       ))}
     </ModalContext.Provider>
   );
